@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="sumeru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Mod Sảnh</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Cùng bộ theme màu với trang user — bản thô, chưa hiệu ứng */
+[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.2);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.15);--danger:#e0432a;--danger-glow:rgba(224,67,42,0.12);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding:24px 16px 64px}
+.wrap{max-width:720px;margin:0 auto}
+.eyebrow{font-size:0.68rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h1{font-size:1.3rem;font-weight:900;margin-bottom:20px;color:var(--text-bright)}
+h2{font-size:0.95rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
+.card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.desc{color:var(--text-dim);font-size:0.78rem;margin:4px 0 12px;line-height:1.5}
+label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin:12px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
+input,textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+button{font-family:'Nunito',sans-serif;background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-weight:800;font-size:0.82rem;cursor:pointer;margin-top:12px}
+button:hover{opacity:0.9}
+button:disabled{opacity:0.4;cursor:not-allowed}
+button.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+button.danger{background:var(--danger);}
+button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.msg{font-size:0.78rem;border-radius:9px;padding:9px 12px;margin-top:10px;line-height:1.5;display:none;white-space:pre-wrap}
+.msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
+.msg.err{display:block;background:var(--danger-glow);border:1px solid var(--danger);color:var(--danger)}
+.list-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.8rem}
+.list-item:last-child{border-bottom:none}
+.li-main{min-width:0}
+.li-name{font-weight:800;color:var(--text-bright)}
+.li-sub{color:var(--text-dim);font-size:0.7rem;margin-top:2px;word-break:break-all}
+.badge{display:inline-block;font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:20px;background:var(--accent-glow);color:var(--accent2);text-transform:uppercase;letter-spacing:0.06em;margin-right:4px}
+.badge.status-new{background:var(--accent-glow);color:var(--accent2)}
+.badge.status-wip{background:rgba(240,180,40,0.15);color:#a87f10}
+.badge.status-done{background:rgba(80,80,80,0.1);color:var(--text-dim)}
+.badge.status-rejected{background:var(--danger-glow);color:var(--danger)}
+#gate{max-width:340px;margin:80px auto 0}
+.statusRow{display:flex;justify-content:space-between;gap:10px;font-size:0.78rem;padding:5px 0;border-bottom:1px solid var(--border)}
+.statusRow:last-child{border-bottom:none}
+.statusRow .k{color:var(--text-dim)}
+.statusRow .v{font-weight:700;text-align:right;word-break:break-all}
+select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="gate">
+  <div class="eyebrow">Admin</div>
+  <h1>Đăng nhập</h1>
+  <div class="card">
+    <label>Mật khẩu admin</label>
+    <input type="password" id="pw" placeholder="ADMIN_PASSWORD">
+    <button id="loginBtn">Đăng nhập</button>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<div class="wrap" id="main" style="display:none">
+  <div class="eyebrow">Admin</div>
+  <h1>Quản lý Mod Sảnh</h1>
+
+  <!-- ═══ CẤU HÌNH BNK / VIDEO FILENAME ═══ -->
+  <div class="card">
+    <h2>Cấu hình game (bnk + tên video)</h2>
+    <div class="desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
+    <div id="bnkStatusBox"></div>
+
+    <label>Link GitHub (raw) file Music_Login.bnk</label>
+    <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
+
+    <label>Source ID (ID slot nhạc gốc trong bnk)</label>
+    <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
+
+    <label>Replacement ID (ID mới gán cho track đã mod)</label>
+    <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
+
+    <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
+    <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+
+    <div class="desc">Để trống ô nào thì giữ nguyên giá trị đang lưu của ô đó.</div>
+    <button id="saveBnkBtn">💾 Lưu cấu hình</button>
+    <button class="secondary small" id="refreshBnkBtn" style="margin-left:8px">🔄 Refresh</button>
+    <div class="msg" id="bnkMsg"></div>
+  </div>
+
+  <!-- ═══ THƯ VIỆN NHẠC ═══ -->
+  <div class="card">
+    <h2>Thư viện nhạc (wem)</h2>
+    <div class="desc">Dán link Catbox file .wem chuẩn (đã convert bằng Wwise), kèm duration đo sẵn (ms). Có thể thêm link mp3 để user nghe thử.</div>
+
+    <label>Tên hiển thị</label>
+    <input type="text" id="wemNameInput" placeholder="vd: Lo-fi Chill">
+    <label>Link Catbox (.wem)</label>
+    <input type="text" id="wemUrlInput" placeholder="https://files.catbox.moe/xxxxxx.wem">
+    <label>Link Catbox mp3 nghe thử (tuỳ chọn)</label>
+    <input type="text" id="wemPreviewInput" placeholder="https://files.catbox.moe/xxxxxx.mp3">
+    <label>Duration (ms) — đo sẵn, bắt buộc</label>
+    <input type="number" id="wemDurationInput" placeholder="vd: 183500">
+    <button id="addWemBtn">➕ Thêm vào thư viện</button>
+    <div class="msg" id="wemMsg"></div>
+
+    <div id="wemList" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ═══ THƯ VIỆN VIDEO ═══ -->
+  <div class="card">
+    <h2>Thư viện video</h2>
+    <div class="desc">Dán link Catbox file video (.mp4).</div>
+
+    <label>Tên hiển thị</label>
+    <input type="text" id="vidNameInput" placeholder="vd: Sảnh Tết 2023">
+    <label>Link Catbox (video)</label>
+    <input type="text" id="vidUrlInput" placeholder="https://files.catbox.moe/xxxxxx.mp4">
+    <label>Link ảnh thumbnail (tuỳ chọn)</label>
+    <input type="text" id="vidThumbInput" placeholder="https://files.catbox.moe/xxxxxx.jpg">
+    <button id="addVidBtn">➕ Thêm vào thư viện</button>
+    <div class="msg" id="vidMsg"></div>
+
+    <div id="vidList" style="margin-top:14px"></div>
+  </div>
+
+  <!-- ═══ YÊU CẦU WEM ═══ -->
+  <div class="card">
+    <h2>Yêu cầu xin wem từ user</h2>
+    <button class="secondary small" id="refreshReqBtn">🔄 Refresh</button>
+    <div id="reqList" style="margin-top:12px"></div>
+  </div>
+
+</div>
+
+<script>
+let pw = sessionStorage.getItem('admin_pw') || '';
+
+const gate = document.getElementById('gate');
+const main = document.getElementById('main');
+const pwInput = document.getElementById('pw');
+
+async function api(path, opts = {}) {
+  opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers, { 'X-Admin-Password': pw });
+  const resp = await fetch(path, opts);
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.error || 'Lỗi không xác định');
+  return data;
+}
+function showMsg(el, ok, text) {
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  el.textContent = (ok ? '✅ ' : '⚠ ') + text;
+}
+
+// ── login ──
+document.getElementById('loginBtn').addEventListener('click', () => {
+  pw = pwInput.value;
+  sessionStorage.setItem('admin_pw', pw);
+  boot();
+});
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+
+async function boot(silent = false) {
+  try {
+    await api('/api/admin/status');
+    gate.style.display = 'none';
+    main.style.display = 'block';
+    await Promise.all([loadBnkStatus(), loadWemList(), loadVidList(), loadRequests()]);
+  } catch (e) {
+    if (!silent) showMsg(document.getElementById('loginMsg'), false, e.message);
+    sessionStorage.removeItem('admin_pw');
+  }
+}
+
+// ── bnk config ──
+async function loadBnkStatus() {
+  const data = await api('/api/admin/status');
+  const c = data.bnkConfig;
+  const box = document.getElementById('bnkStatusBox');
+  if (!c) {
+    box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào — cần điền đủ cả 4 ô bên dưới.</div>';
+    return;
+  }
+  const rows = [
+    ['Link GitHub bnk', c.bnk_url],
+    ['Source ID', c.source_id],
+    ['Replacement ID', c.replacement_id],
+    ['Tên file video', c.video_filename],
+    ['Cập nhật lúc', c.updated_at ? new Date(c.updated_at).toLocaleString('vi-VN') : '—'],
+    ['Người cập nhật', c.updated_by || '—']
+  ];
+  box.innerHTML = rows.map(([k, v]) => `<div class="statusRow"><span class="k">${k}</span><span class="v">${v ?? '—'}</span></div>`).join('');
+}
+
+document.getElementById('refreshBnkBtn').addEventListener('click', loadBnkStatus);
+
+document.getElementById('saveBnkBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('bnkMsg');
+  const bnkUrl = document.getElementById('bnkUrlInput').value.trim();
+  const sourceId = document.getElementById('sourceIdInput').value.trim();
+  const replacementId = document.getElementById('replacementIdInput').value.trim();
+  const videoFilename = document.getElementById('videoFilenameInput').value.trim();
+  const btn = document.getElementById('saveBnkBtn');
+  btn.disabled = true;
+  try {
+    await api('/api/admin/bnk-config', {
+      method: 'POST',
+      body: JSON.stringify({
+        bnkUrl: bnkUrl || undefined,
+        sourceId: sourceId || undefined,
+        replacementId: replacementId || undefined,
+        videoFilename: videoFilename || undefined
+      })
+    });
+    showMsg(msg, true, 'Đã lưu cấu hình.');
+    ['bnkUrlInput','sourceIdInput','replacementIdInput','videoFilenameInput'].forEach(id => document.getElementById(id).value = '');
+    await loadBnkStatus();
+  } catch (e) {
+    showMsg(msg, false, e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ── wem library ──
+async function loadWemList() {
+  const data = await api('/api/admin/wem-list');
+  const box = document.getElementById('wemList');
+  if (!data.wems.length) { box.innerHTML = '<div class="desc">Chưa có bài nào.</div>'; return; }
+  box.innerHTML = data.wems.map(w => `
+    <div class="list-item">
+      <div class="li-main">
+        <div class="li-name">${escapeHtml(w.name)}</div>
+        <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}</div>
+      </div>
+      <button class="danger small" data-id="${w.id}" data-kind="wem">Xoá</button>
+    </div>`).join('');
+}
+
+document.getElementById('addWemBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('wemMsg');
+  const name = document.getElementById('wemNameInput').value.trim();
+  const wemUrl = document.getElementById('wemUrlInput').value.trim();
+  const previewMp3Url = document.getElementById('wemPreviewInput').value.trim();
+  const durationMs = document.getElementById('wemDurationInput').value.trim();
+  if (!name || !wemUrl || !durationMs) { showMsg(msg, false, 'Cần tên, link wem, và duration.'); return; }
+  try {
+    await api('/api/admin/wem', { method: 'POST', body: JSON.stringify({ name, wemUrl, previewMp3Url: previewMp3Url || undefined, durationMs }) });
+    showMsg(msg, true, 'Đã thêm.');
+    ['wemNameInput','wemUrlInput','wemPreviewInput','wemDurationInput'].forEach(id => document.getElementById(id).value = '');
+    await loadWemList();
+  } catch (e) { showMsg(msg, false, e.message); }
+});
+
+// ── video library ──
+async function loadVidList() {
+  const data = await api('/api/admin/video-list');
+  const box = document.getElementById('vidList');
+  if (!data.videos.length) { box.innerHTML = '<div class="desc">Chưa có video nào.</div>'; return; }
+  box.innerHTML = data.videos.map(v => `
+    <div class="list-item">
+      <div class="li-main">
+        <div class="li-name">${escapeHtml(v.name)}</div>
+        <div class="li-sub">${v.video_url}</div>
+      </div>
+      <button class="danger small" data-id="${v.id}" data-kind="video">Xoá</button>
+    </div>`).join('');
+}
+
+document.getElementById('addVidBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('vidMsg');
+  const name = document.getElementById('vidNameInput').value.trim();
+  const videoUrl = document.getElementById('vidUrlInput').value.trim();
+  const thumbnailUrl = document.getElementById('vidThumbInput').value.trim();
+  if (!name || !videoUrl) { showMsg(msg, false, 'Cần tên và link video.'); return; }
+  try {
+    await api('/api/admin/video', { method: 'POST', body: JSON.stringify({ name, videoUrl, thumbnailUrl: thumbnailUrl || undefined }) });
+    showMsg(msg, true, 'Đã thêm.');
+    ['vidNameInput','vidUrlInput','vidThumbInput'].forEach(id => document.getElementById(id).value = '');
+    await loadVidList();
+  } catch (e) { showMsg(msg, false, e.message); }
+});
+
+// ── delete (dùng chung cho wem + video) ──
+document.body.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-id]');
+  if (!btn) return;
+  const { id, kind } = btn.dataset;
+  if (!confirm('Xoá mục này khỏi thư viện?')) return;
+  try {
+    await api(`/api/admin/${kind}/${id}`, { method: 'DELETE' });
+    if (kind === 'wem') await loadWemList(); else await loadVidList();
+  } catch (e2) { alert(e2.message); }
+});
+
+// ── requests ──
+document.getElementById('refreshReqBtn').addEventListener('click', loadRequests);
+
+async function loadRequests() {
+  const data = await api('/api/admin/requests');
+  const box = document.getElementById('reqList');
+  if (!data.requests.length) { box.innerHTML = '<div class="desc">Chưa có yêu cầu nào.</div>'; return; }
+  box.innerHTML = data.requests.map(r => `
+    <div class="list-item" style="align-items:flex-start;flex-direction:column">
+      <div class="li-main" style="width:100%">
+        <span class="badge status-${r.status}">${r.status}</span>
+        <span class="li-name">${escapeHtml(r.song_title)}</span>
+        <div class="li-sub">${escapeHtml(r.requester_name)} · ${escapeHtml(r.contact)}</div>
+        ${r.note ? `<div class="li-sub">Ghi chú: ${escapeHtml(r.note)}</div>` : ''}
+        <div class="row" style="margin-top:8px">
+          <select data-req-status="${r.id}" style="width:auto">
+            ${['new','wip','done','rejected'].map(s => `<option value="${s}" ${s===r.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <input type="text" data-req-note="${r.id}" placeholder="Phản hồi admin..." value="${escapeHtml(r.admin_note || '')}" style="flex:1;min-width:140px">
+          <button class="small" data-req-save="${r.id}">Lưu</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+document.body.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-req-save]');
+  if (!btn) return;
+  const id = btn.dataset.reqSave;
+  const status = document.querySelector(`[data-req-status="${id}"]`).value;
+  const adminNote = document.querySelector(`[data-req-note="${id}"]`).value;
+  try {
+    await api(`/api/admin/requests/${id}`, { method: 'PATCH', body: JSON.stringify({ status, adminNote }) });
+    await loadRequests();
+  } catch (e2) { alert(e2.message); }
+});
+
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+if (pw) boot(true); else gate.style.display = 'block';
+</script>
+</body>
+</html>

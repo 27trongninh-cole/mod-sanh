@@ -1,0 +1,19 @@
+{
+  "name": "nhac-sanh-v2",
+  "version": "1.0.0",
+  "description": "Web build mod nhac sanh: chon wem + video tu thu vien, dong goi zip",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "archiver": "^7.0.1",
+    "express": "^4.19.2",
+    "multer": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
