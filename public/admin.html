@@ -12,17 +12,21 @@
 body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;transition:background 0.3s,color 0.3s}
 
 /* ── layout ── */
-.topbar{position:sticky;top:0;z-index:50;background:var(--bg-card);border-bottom:1.5px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg-card);border-bottom:1.5px solid var(--border);padding:10px 0 0}
+.topbar-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 16px 8px}
 .brand{font-family:'Cinzel',Georgia,serif;font-size:1rem;font-weight:900;letter-spacing:0.12em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
-.tabs{display:flex;gap:4px;flex-wrap:wrap;flex:1}
-.tab-btn{position:relative;font-family:'Nunito',sans-serif;background:transparent;border:1.5px solid transparent;color:var(--text-dim);padding:7px 12px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;white-space:nowrap}
-.tab-btn:hover{background:var(--accent-glow);color:var(--accent2)}
-.tab-btn.active{background:var(--gradient);color:#fff}
-.tab-btn .cnt{display:inline-block;margin-left:5px;background:var(--danger);color:#fff;font-size:0.62rem;padding:1px 6px;border-radius:20px;font-weight:800}
-.tab-btn.active .cnt{background:rgba(255,255,255,0.3)}
+.topbar-right{display:flex;align-items:center;gap:8px}
 a.back-link{font-size:0.72rem;font-weight:700;color:var(--text-dim);white-space:nowrap}
 a.back-link:hover{color:var(--accent)}
 #logoutBtn{font-size:0.7rem;font-weight:700;color:var(--text-dim);background:transparent;border:1px solid var(--border);padding:6px 10px;border-radius:7px;cursor:pointer;margin:0}
+
+.tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0 16px 10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{position:relative;flex:0 0 auto;font-family:'Nunito',sans-serif;background:var(--bg);border:1.5px solid var(--border);color:var(--text-dim);padding:8px 14px;border-radius:20px;font-weight:800;font-size:0.78rem;cursor:pointer;white-space:nowrap}
+.tab-btn:hover{background:var(--accent-glow);color:var(--accent2)}
+.tab-btn.active{background:var(--gradient);color:#fff;border-color:transparent}
+.tab-btn .cnt{display:inline-block;margin-left:5px;background:var(--danger);color:#fff;font-size:0.62rem;padding:1px 6px;border-radius:20px;font-weight:800}
+.tab-btn.active .cnt{background:rgba(255,255,255,0.3)}
 
 .wrap{max-width:760px;margin:0 auto;padding:18px 16px 64px}
 .page{display:none}
@@ -82,12 +86,17 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 .stat-box .num{font-size:1.4rem;font-weight:900;color:var(--text-bright)}
 .stat-box .lbl{font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-top:2px}
 
+.cfg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:0.78rem;padding:8px 0;border-bottom:1px solid var(--border)}
+.cfg-row:last-child{border-bottom:none}
+.cfg-row .k{color:var(--text-dim);flex:0 0 auto}
+.cfg-row .v{font-weight:700;text-align:right;word-break:break-all}
+.edit-icon-btn{flex:0 0 auto;background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:4px 9px;border-radius:7px;font-size:0.68rem;font-weight:800;cursor:pointer;margin:0;box-shadow:none}
+.edit-icon-btn:hover{background:var(--accent-glow);color:var(--accent2);transform:none}
+
 .credit-bar{position:fixed;z-index:700;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.02em;color:var(--text-dim);background:var(--bg-card);opacity:0.85;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none;white-space:nowrap;user-select:none;bottom:0;left:0;padding:4px 10px;border-radius:0 6px 0 0}
 
 @media (max-width:560px){
   .grid2{grid-template-columns:1fr}
-  .tabs{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
-  .topbar{gap:8px}
 }
 </style>
 </head>
@@ -107,25 +116,28 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 
 <div id="main" style="display:none">
   <div class="topbar">
-    <div class="brand">Melodinity</div>
-    <div class="tabs">
-      <button class="tab-btn" data-page="overview">Tổng quan</button>
-      <button class="tab-btn" data-page="bnk">Cấu hình bnk</button>
-      <button class="tab-btn" data-page="wem">Nhạc</button>
-      <button class="tab-btn" data-page="video">Video</button>
-      <button class="tab-btn" data-page="requests">Yêu cầu<span class="cnt" id="reqCnt" style="display:none">0</span></button>
+    <div class="topbar-top">
+      <div class="brand">Melodinity</div>
+      <div class="topbar-right">
+        <a class="back-link" href="/">← Trang chủ</a>
+        <button id="logoutBtn">Đăng xuất</button>
+      </div>
     </div>
-    <a class="back-link" href="/">← Trang chủ</a>
-    <button id="logoutBtn">Đăng xuất</button>
+    <div class="tabs">
+      <button class="tab-btn" data-page="overview">🏠 Tổng quan</button>
+      <button class="tab-btn" data-page="wem">🎵 Nhạc</button>
+      <button class="tab-btn" data-page="video">🎬 Video</button>
+      <button class="tab-btn" data-page="requests">💌 Yêu cầu<span class="cnt" id="reqCnt" style="display:none">0</span></button>
+    </div>
   </div>
 
   <div class="wrap">
 
-    <!-- ═══ TỔNG QUAN ═══ -->
+    <!-- ═══ TỔNG QUAN + CẤU HÌNH BNK ═══ -->
     <div class="page" id="page-overview">
       <div class="eyebrow">Admin · Melodinity</div>
       <h1>Tổng quan</h1>
-      <div class="page-desc">Trạng thái hệ thống, xem nhanh trước khi chỉnh sửa.</div>
+      <div class="page-desc">Trạng thái hệ thống và cấu hình game — bấm "Sửa" ở mục nào để chỉnh mục đó.</div>
 
       <div class="stat-grid">
         <div class="stat-box"><div class="num" id="statWem">-</div><div class="lbl">Bài nhạc</div></div>
@@ -135,47 +147,37 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
       </div>
 
       <div class="card">
-        <h2>Cấu hình bnk hiện tại</h2>
-        <div class="desc">Xem nhanh — bấm tab "Cấu hình bnk" để sửa.</div>
-        <div id="bnkStatusBoxOverview"></div>
-      </div>
-    </div>
-
-    <!-- ═══ CẤU HÌNH BNK ═══ -->
-    <div class="page" id="page-bnk">
-      <div class="eyebrow">Admin · Melodinity</div>
-      <h1>Cấu hình game (bnk + video)</h1>
-      <div class="page-desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
-
-      <div class="card">
-        <h2>Trạng thái hiện tại</h2>
-        <div id="bnkStatusBox" style="margin-top:8px"></div>
-        <button class="secondary small" id="refreshBnkBtn" style="margin-top:12px">🔄 Refresh</button>
-      </div>
-
-      <div class="card">
-        <h2>Cập nhật cấu hình</h2>
-        <div class="desc">Để trống ô nào thì giữ nguyên giá trị đang lưu của ô đó.</div>
-
-        <label>Link GitHub (raw) file Music_Login.bnk</label>
-        <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
-
-        <div class="grid2">
-          <div>
-            <label>Source ID (slot nhạc gốc)</label>
-            <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
-          </div>
-          <div>
-            <label>Replacement ID (track đã mod)</label>
-            <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
-          </div>
+        <div class="add-toggle" id="bnkEditToggle">
+          <h2 style="margin-bottom:0">Cấu hình game (bnk + video)</h2>
+          <button class="edit-icon-btn" type="button">✏️ Sửa</button>
         </div>
+        <div class="desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
+        <div id="bnkStatusBox" style="margin-top:4px"></div>
 
-        <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
-        <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+        <div class="add-form" id="bnkEditForm">
+          <label>Link GitHub (raw) file Music_Login.bnk</label>
+          <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
 
-        <button id="saveBnkBtn">💾 Lưu cấu hình</button>
-        <div class="msg" id="bnkMsg"></div>
+          <div class="grid2">
+            <div>
+              <label>Source ID (slot nhạc gốc)</label>
+              <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
+            </div>
+            <div>
+              <label>Replacement ID (track đã mod)</label>
+              <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
+            </div>
+          </div>
+
+          <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
+          <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+
+          <div class="row">
+            <button id="saveBnkBtn">💾 Lưu cấu hình</button>
+            <button class="secondary small" id="cancelBnkBtn" type="button">Huỷ</button>
+          </div>
+          <div class="msg" id="bnkMsg"></div>
+        </div>
       </div>
     </div>
 
@@ -259,7 +261,7 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
     <div class="page" id="page-requests">
       <div class="eyebrow">Admin · Melodinity</div>
       <h1>Yêu cầu xin nhạc từ user</h1>
-      <div class="page-desc">Duyệt và phản hồi các yêu cầu.</div>
+      <div class="page-desc">Danh sách bài hát người dùng gửi yêu cầu xin thêm vào thư viện (từ trang chủ). Đổi trạng thái và ghi phản hồi để họ biết yêu cầu đang được xử lý ra sao.</div>
 
       <div class="card">
         <div class="row" style="justify-content:space-between">
@@ -328,6 +330,26 @@ function setupToggle(toggleId, formId) {
 setupToggle('wemAddToggle', 'wemAddForm');
 setupToggle('vidAddToggle', 'vidAddForm');
 
+// ── bnk edit toggle (prefill current values) ──
+const bnkToggle = document.getElementById('bnkEditToggle');
+const bnkForm = document.getElementById('bnkEditForm');
+let lastBnkConfig = null;
+bnkToggle.addEventListener('click', () => {
+  const opening = !bnkForm.classList.contains('open');
+  bnkToggle.classList.toggle('open');
+  bnkForm.classList.toggle('open');
+  if (opening && lastBnkConfig) {
+    document.getElementById('bnkUrlInput').value = lastBnkConfig.bnk_url || '';
+    document.getElementById('sourceIdInput').value = lastBnkConfig.source_id || '';
+    document.getElementById('replacementIdInput').value = lastBnkConfig.replacement_id || '';
+    document.getElementById('videoFilenameInput').value = lastBnkConfig.video_filename || '';
+  }
+});
+document.getElementById('cancelBnkBtn').addEventListener('click', () => {
+  bnkToggle.classList.remove('open');
+  bnkForm.classList.remove('open');
+});
+
 // ── login ──
 document.getElementById('loginBtn').addEventListener('click', () => {
   pw = pwInput.value;
@@ -349,7 +371,7 @@ async function boot(silent = false) {
     gate.style.display = 'none';
     main.style.display = 'block';
     const startPage = (location.hash || '#overview').slice(1);
-    goToPage(['overview','bnk','wem','video','requests'].includes(startPage) ? startPage : 'overview');
+    goToPage(['overview','wem','video','requests'].includes(startPage) ? startPage : 'overview');
     await Promise.all([loadBnkStatus(), loadWemList(), loadVidList(), loadRequests()]);
   } catch (e) {
     if (!silent) showMsg(document.getElementById('loginMsg'), false, e.message);
@@ -376,11 +398,9 @@ function renderBnkStatus(c, box) {
 
 async function loadBnkStatus() {
   const data = await api('/api/admin/status');
+  lastBnkConfig = data.bnkConfig;
   renderBnkStatus(data.bnkConfig, document.getElementById('bnkStatusBox'));
-  renderBnkStatus(data.bnkConfig, document.getElementById('bnkStatusBoxOverview'));
 }
-
-document.getElementById('refreshBnkBtn').addEventListener('click', loadBnkStatus);
 
 document.getElementById('saveBnkBtn').addEventListener('click', async () => {
   const msg = document.getElementById('bnkMsg');
@@ -400,9 +420,16 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
         videoFilename: videoFilename || undefined
       })
     });
-    if (data.warning) showMsg(msg, false, 'Đã lưu, nhưng: ' + data.warning);
-    else showMsg(msg, true, 'Đã lưu cấu hình.');
-    ['bnkUrlInput','sourceIdInput','replacementIdInput','videoFilenameInput'].forEach(id => document.getElementById(id).value = '');
+    if (data.warning) {
+      showMsg(msg, false, 'Đã lưu, nhưng: ' + data.warning);
+    } else {
+      showMsg(msg, true, 'Đã lưu cấu hình.');
+      setTimeout(() => {
+        bnkToggle.classList.remove('open');
+        bnkForm.classList.remove('open');
+        msg.className = 'msg';
+      }, 900);
+    }
     await loadBnkStatus();
   } catch (e) {
     showMsg(msg, false, e.message);
