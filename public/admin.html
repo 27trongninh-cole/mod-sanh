@@ -3,30 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Mod Sảnh</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>Admin — EchoHall Mod Sảnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Cùng bộ theme màu với trang user — bản thô, chưa hiệu ứng */
-[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.2);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.15);--danger:#e0432a;--danger-glow:rgba(224,67,42,0.12);}
+[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.2);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.15);--danger:#e0432a;--danger-glow:rgba(224,67,42,0.12);--gradient:linear-gradient(135deg,#72bc2a,#4e8a18);}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding:24px 16px 64px}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding:24px 16px 64px;transition:background 0.3s,color 0.3s}
 .wrap{max-width:720px;margin:0 auto}
+.brand{font-family:'Cinzel',Georgia,serif;font-size:1.1rem;font-weight:900;letter-spacing:0.14em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
 .eyebrow{font-size:0.68rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
-h1{font-size:1.3rem;font-weight:900;margin-bottom:20px;color:var(--text-bright)}
+h1{font-size:1.25rem;font-weight:900;margin-bottom:20px;color:var(--text-bright)}
 h2{font-size:0.95rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
-.card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px}
+.card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,0.04)}
 .desc{color:var(--text-dim);font-size:0.78rem;margin:4px 0 12px;line-height:1.5}
 label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin:12px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
-input,textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
-input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+input,textarea,select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 textarea{resize:vertical;min-height:60px}
-button{font-family:'Nunito',sans-serif;background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-weight:800;font-size:0.82rem;cursor:pointer;margin-top:12px}
-button:hover{opacity:0.9}
-button:disabled{opacity:0.4;cursor:not-allowed}
-button.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
-button.danger{background:var(--danger);}
+button{font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:10px 16px;border-radius:9px;font-weight:800;font-size:0.82rem;cursor:pointer;margin-top:12px;box-shadow:0 4px 14px var(--accent-glow);transition:transform 0.15s}
+button:hover{transform:translateY(-1px)}
+button:active{transform:scale(0.97)}
+button:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+button.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border);box-shadow:none}
+button.danger{background:var(--danger);box-shadow:none}
 button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
-.row{display:flex;gap:8px;flex-wrap:wrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .msg{font-size:0.78rem;border-radius:9px;padding:9px 12px;margin-top:10px;line-height:1.5;display:none;white-space:pre-wrap}
 .msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
 .msg.err{display:block;background:var(--danger-glow);border:1px solid var(--danger);color:var(--danger)}
@@ -45,13 +47,15 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 .statusRow:last-child{border-bottom:none}
 .statusRow .k{color:var(--text-dim)}
 .statusRow .v{font-weight:700;text-align:right;word-break:break-all}
-select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
+a.back-link{display:inline-block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin-bottom:14px}
+a.back-link:hover{color:var(--accent)}
 </style>
 </head>
 <body>
 
 <div class="wrap" id="gate">
-  <div class="eyebrow">Admin</div>
+  <div class="brand">EchoHall</div>
+  <div class="eyebrow">Admin · Mod Sảnh</div>
   <h1>Đăng nhập</h1>
   <div class="card">
     <label>Mật khẩu admin</label>
@@ -62,7 +66,9 @@ select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:va
 </div>
 
 <div class="wrap" id="main" style="display:none">
-  <div class="eyebrow">Admin</div>
+  <a class="back-link" href="/">← Về trang chủ</a>
+  <div class="brand">EchoHall</div>
+  <div class="eyebrow">Admin · Mod Sảnh</div>
   <h1>Quản lý Mod Sảnh</h1>
 
   <!-- ═══ CẤU HÌNH BNK / VIDEO FILENAME ═══ -->
@@ -129,9 +135,9 @@ select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:va
     <div id="vidList" style="margin-top:14px"></div>
   </div>
 
-  <!-- ═══ YÊU CẦU WEM ═══ -->
+  <!-- ═══ YÊU CẦU NHẠC ═══ -->
   <div class="card">
-    <h2>Yêu cầu xin wem từ user</h2>
+    <h2>Yêu cầu xin nhạc từ user</h2>
     <button class="secondary small" id="refreshReqBtn">🔄 Refresh</button>
     <div id="reqList" style="margin-top:12px"></div>
   </div>

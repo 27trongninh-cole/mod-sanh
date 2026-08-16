@@ -1,0 +1,55 @@
+═══════════════════════════════════════════════════════════════
+  ECHOHALL · MOD SẢNH — HƯỚNG DẪN DEPLOY
+═══════════════════════════════════════════════════════════════
+
+Đây là bản GHÉP: UI/hiệu ứng lấy từ EchoHall (theme 7 màu, particle,
+nhạc nền, mascot đổi theo theme) + tính năng build mod nhạc sảnh
+(chọn nhạc .wem + video, patch file .bnk, đóng gói zip tải về).
+
+Vì tính năng build cần xử lý file phía server, dự án này CẦN chạy
+trên nền tảng hỗ trợ Node.js (Render, Railway, Fly.io, VPS...),
+KHÔNG deploy được lên Netlify/Vercel static như bản EchoHall cũ.
+
+BƯỚC 1 — SUPABASE (bạn đã có sẵn project mới)
+------------------------------------------------
+1. Vào SQL Editor → chạy toàn bộ supabase/schema.sql
+2. Nếu project đã tạo từ trước theo bản cũ, chạy thêm 2 file migrate:
+   - supabase/migrate_add_keywords.sql
+   - supabase/migrate_add_bnk_ids.sql
+3. Project Settings → API → lấy Project URL + service_role key
+   (LƯU Ý: server dùng SERVICE KEY, không phải anon key, vì admin
+   cần quyền ghi/xoá trực tiếp)
+
+BƯỚC 2 — BIẾN MÔI TRƯỜNG
+------------------------------------------------
+Tạo các biến môi trường sau trên nền tảng host (Render/Railway...):
+  SUPABASE_URL=...
+  SUPABASE_SERVICE_KEY=...
+  ADMIN_PASSWORD=...   (mật khẩu bạn tự đặt để đăng nhập /admin)
+  PORT=3000             (thường nền tảng tự set, có thể bỏ qua)
+
+BƯỚC 3 — DEPLOY
+------------------------------------------------
+1. Push code lên GitHub
+2. Trên Render/Railway: New Web Service → connect repo
+   Build command:  npm install
+   Start command:  npm start
+3. Điền biến môi trường ở Bước 2
+4. Deploy xong → vào https://ten-app.onrender.com/ (trang chính)
+   và https://ten-app.onrender.com/admin (trang quản trị)
+
+BƯỚC 4 — CẤU HÌNH ADMIN LẦN ĐẦU
+------------------------------------------------
+1. Vào /admin, nhập ADMIN_PASSWORD đã set ở Bước 2
+2. Điền "Cấu hình game": link raw GitHub file Music_Login.bnk,
+   Source ID, Replacement ID, tên file video → Lưu cấu hình
+3. Thêm bài nhạc vào "Thư viện nhạc" (link Catbox .wem + duration ms)
+4. Thêm video vào "Thư viện video" (link Catbox .mp4)
+5. Ra trang chính thử tạo mod — nếu tải về .zip thành công là xong.
+
+GHI CHÚ
+------------------------------------------------
+• Nhạc nền theo theme + ảnh mascot vẫn dùng link Catbox có sẵn từ
+  bản EchoHall gốc — nếu link nào chết, thay trong index.html.
+• Form "Xin bài nhạc" (mascot) gọi API /api/request — xem & xử lý
+  trong /admin → mục "Yêu cầu xin nhạc từ user".

@@ -3,59 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mod Sảnh</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<title>EchoHall — Mod Sảnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* ═══ THEMES (7 bảng màu, dán từ EchoHall) ═══ */
-[data-theme="mondstadt"]{--bg:#e8f4ee;--bg-card:#ffffff;--text:#1e3228;--text-dim:#6a9078;--text-bright:#0e2018;--border:rgba(61,158,120,0.18);--accent:#2db87a;--accent2:#1a8c5a;--accent-glow:rgba(45,184,122,0.18);--danger:#e0432a;--shadow:rgba(0,80,40,0.12);--gradient:linear-gradient(135deg,#2db87a,#1a8c5a);}
-[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.18);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.18);--danger:#e0432a;--shadow:rgba(20,60,0,0.12);--gradient:linear-gradient(135deg,#72bc2a,#4e8a18);}
-[data-theme="fontaine"]{--bg:#deeef8;--bg-card:#ffffff;--text:#0e2038;--text-dim:#5a82aa;--text-bright:#061228;--border:rgba(46,143,212,0.18);--accent:#2090e0;--accent2:#1068b8;--accent-glow:rgba(32,144,224,0.18);--danger:#e0432a;--shadow:rgba(0,40,100,0.12);--gradient:linear-gradient(135deg,#2090e0,#1068b8);}
-[data-theme="natlan"]{--bg:#faeade;--bg-card:#ffffff;--text:#2e1000;--text-dim:#a05a30;--text-bright:#1e0800;--border:rgba(224,90,26,0.18);--accent:#f06020;--accent2:#c03e00;--accent-glow:rgba(240,96,32,0.18);--danger:#c02020;--shadow:rgba(80,20,0,0.12);--gradient:linear-gradient(135deg,#f06020,#c03e00);}
-[data-theme="liyue"]{--bg:#060810;--bg-card:#0b1020;--text:#c8b880;--text-dim:#7a6d4e;--text-bright:#f0d888;--border:rgba(232,184,109,0.16);--accent:#f0c060;--accent2:#c08830;--accent-glow:rgba(240,192,96,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#f0c060,#c08830);}
-[data-theme="inazuma"]{--bg:#07060e;--bg-card:#0e0b1c;--text:#c0a0e0;--text-dim:#6e5a90;--text-bright:#e8c8ff;--border:rgba(176,112,232,0.16);--accent:#c878f8;--accent2:#8840c8;--accent-glow:rgba(200,120,248,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#c878f8,#8840c8);}
-[data-theme="snezhnaya"]{--bg:#060b12;--bg-card:#0b1422;--text:#a0c8ee;--text-dim:#5a86ac;--text-bright:#d8eeff;--border:rgba(122,188,232,0.16);--accent:#80c8f8;--accent2:#3888c8;--accent-glow:rgba(128,200,248,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#80c8f8,#3888c8);}
 
+/* ═══ THEMES (giữ nguyên từ EchoHall) ═══ */
+[data-theme="mondstadt"] {
+  --bg:#e8f4ee;--bg-card:#ffffff;--bg-card-hover:#f4fbf7;--bg-nav:rgba(232,244,238,0.88);--bg-modal:#ffffff;--bg-glass:rgba(255,255,255,0.6);
+  --text:#1e3228;--text-dim:#6a9078;--text-bright:#0e2018;--border:rgba(61,158,120,0.15);
+  --accent:#2db87a;--accent2:#1a8c5a;--accent-glow:rgba(45,184,122,0.18);--accent-border:rgba(45,184,122,0.35);
+  --shadow:rgba(0,80,40,0.1);--chip-bg:rgba(45,184,122,0.1);--gradient:linear-gradient(135deg,#2db87a,#1a8c5a);--thumb-bg:linear-gradient(135deg,#d4f0e4,#e8f4ee);--danger:#e0432a;
+}
+[data-theme="sumeru"] {
+  --bg:#eaf4df;--bg-card:#ffffff;--bg-card-hover:#f4fbed;--bg-nav:rgba(234,244,223,0.88);--bg-modal:#ffffff;--bg-glass:rgba(255,255,255,0.6);
+  --text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.15);
+  --accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.18);--accent-border:rgba(114,188,42,0.35);
+  --shadow:rgba(20,60,0,0.1);--chip-bg:rgba(114,188,42,0.1);--gradient:linear-gradient(135deg,#72bc2a,#4e8a18);--thumb-bg:linear-gradient(135deg,#d8f0c0,#eaf4df);--danger:#e0432a;
+}
+[data-theme="fontaine"] {
+  --bg:#deeef8;--bg-card:#ffffff;--bg-card-hover:#eef6fc;--bg-nav:rgba(222,238,248,0.88);--bg-modal:#ffffff;--bg-glass:rgba(255,255,255,0.6);
+  --text:#0e2038;--text-dim:#5a82aa;--text-bright:#061228;--border:rgba(46,143,212,0.15);
+  --accent:#2090e0;--accent2:#1068b8;--accent-glow:rgba(32,144,224,0.18);--accent-border:rgba(32,144,224,0.35);
+  --shadow:rgba(0,40,100,0.1);--chip-bg:rgba(32,144,224,0.1);--gradient:linear-gradient(135deg,#2090e0,#1068b8);--thumb-bg:linear-gradient(135deg,#c0dff8,#deeef8);--danger:#e0432a;
+}
+[data-theme="natlan"] {
+  --bg:#faeade;--bg-card:#ffffff;--bg-card-hover:#fef5ee;--bg-nav:rgba(250,234,222,0.88);--bg-modal:#ffffff;--bg-glass:rgba(255,255,255,0.6);
+  --text:#2e1000;--text-dim:#a05a30;--text-bright:#1e0800;--border:rgba(224,90,26,0.15);
+  --accent:#f06020;--accent2:#c03e00;--accent-glow:rgba(240,96,32,0.18);--accent-border:rgba(240,96,32,0.35);
+  --shadow:rgba(80,20,0,0.1);--chip-bg:rgba(240,96,32,0.1);--gradient:linear-gradient(135deg,#f06020,#c03e00);--thumb-bg:linear-gradient(135deg,#ffd0b0,#faeade);--danger:#c02020;
+}
+[data-theme="liyue"] {
+  --bg:#060810;--bg-card:#0b1020;--bg-card-hover:#101828;--bg-nav:rgba(6,8,16,0.90);--bg-modal:#0d1422;--bg-glass:rgba(11,16,32,0.7);
+  --text:#c8b880;--text-dim:#584a2e;--text-bright:#f0d888;--border:rgba(232,184,109,0.12);
+  --accent:#f0c060;--accent2:#c08830;--accent-glow:rgba(240,192,96,0.2);--accent-border:rgba(240,192,96,0.3);
+  --shadow:rgba(0,0,0,0.5);--chip-bg:rgba(240,192,96,0.1);--gradient:linear-gradient(135deg,#f0c060,#c08830);--thumb-bg:linear-gradient(135deg,#1a1408,#0b1020);--danger:#ff6050;
+}
+[data-theme="inazuma"] {
+  --bg:#07060e;--bg-card:#0e0b1c;--bg-card-hover:#14102a;--bg-nav:rgba(7,6,14,0.90);--bg-modal:#100d20;--bg-glass:rgba(14,11,28,0.7);
+  --text:#c0a0e0;--text-dim:#483560;--text-bright:#e8c8ff;--border:rgba(176,112,232,0.12);
+  --accent:#c878f8;--accent2:#8840c8;--accent-glow:rgba(200,120,248,0.2);--accent-border:rgba(200,120,248,0.3);
+  --shadow:rgba(0,0,0,0.5);--chip-bg:rgba(200,120,248,0.1);--gradient:linear-gradient(135deg,#c878f8,#8840c8);--thumb-bg:linear-gradient(135deg,#1a0830,#0e0b1c);--danger:#ff6050;
+}
+[data-theme="snezhnaya"] {
+  --bg:#060b12;--bg-card:#0b1422;--bg-card-hover:#101c2e;--bg-nav:rgba(6,11,18,0.90);--bg-modal:#0d1828;--bg-glass:rgba(11,20,34,0.7);
+  --text:#a0c8ee;--text-dim:#386080;--text-bright:#d8eeff;--border:rgba(122,188,232,0.12);
+  --accent:#80c8f8;--accent2:#3888c8;--accent-glow:rgba(128,200,248,0.2);--accent-border:rgba(128,200,248,0.3);
+  --shadow:rgba(0,0,0,0.5);--chip-bg:rgba(128,200,248,0.1);--gradient:linear-gradient(135deg,#80c8f8,#3888c8);--thumb-bg:linear-gradient(135deg,#082040,#0b1422);--danger:#ff6050;
+}
+
+/* BASE */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding-bottom:64px;transition:background 0.4s,color 0.4s;overflow-x:hidden}
-#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s,border-color 0.4s}
-.nav-logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1.05rem;background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:0.02em}
-.nav-right{display:flex;align-items:center;gap:8px;position:relative}
-.theme-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
-.theme-dot{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s}
-.theme-dot.active{border-color:var(--text-bright);transform:scale(1.15)}
-.icon-btn{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;cursor:pointer;transition:all 0.15s}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent2)}
-.icon-btn.off{opacity:0.4}
-.settings-panel{position:absolute;top:38px;right:0;background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 8px 28px var(--shadow);width:180px;z-index:150;opacity:0;visibility:hidden;transform:translateY(-6px) scale(0.96);transition:all 0.18s}
-.settings-panel.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
-.settings-label{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:2px}
-.settings-donate-btn{width:100%;background:var(--gradient);color:#fff;border:none;padding:8px;border-radius:9px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer}
-.page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px}
+:root{color-scheme:light dark}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.93rem;line-height:1.6;min-height:100vh;transition:background 0.4s,color 0.4s;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
 
-/* home / landing */
-.home-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:60vh;gap:18px}
-.home-hero h1{font-size:1.5rem;font-weight:900;letter-spacing:0.02em}
-.home-hero p{color:var(--text-dim);font-size:0.82rem;max-width:280px}
-.home-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.03em;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:16px 42px;cursor:pointer;box-shadow:0 10px 26px var(--shadow);transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:var(--bg-nav);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);transition:background 0.4s,border-color 0.4s}
+.nav-logo{font-family:'Cinzel',Georgia,serif;font-size:0.9rem;font-weight:900;letter-spacing:0.16em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;transition:opacity 0.2s}
+.nav-logo:hover{opacity:0.8}
+.nav-track{display:flex;align-items:center;gap:0;max-width:120px;overflow:hidden;flex:1;min-width:0;margin:0 12px}
+.track-progress{width:100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0;min-width:40px;max-width:120px}
+.track-progress-bar{height:100%;background:var(--gradient);border-radius:2px;width:0%;transition:width 0.5s linear}
+.settings-btn{background:var(--chip-bg);border:1px solid var(--border);color:var(--text-dim);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.settings-btn:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-glow)}
+#musicBtn.playing{background:var(--accent-glow);border-color:var(--accent-border);color:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+#musicBtn.paused{background:var(--chip-bg);border-color:var(--border);color:var(--text-dim);opacity:0.55;text-decoration:line-through}
+
+/* THEME PANEL */
+.theme-panel{position:fixed;top:64px;right:28px;z-index:300;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:16px;width:224px;opacity:0;pointer-events:none;transform:translateY(-8px) scale(0.97);transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 12px 40px var(--shadow)}
+.theme-panel.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.panel-title{font-family:'Nunito',sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.theme-opt{display:flex;align-items:center;gap:7px;padding:8px 10px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:none;color:var(--text-dim);font-family:'Nunito',sans-serif;font-size:0.7rem;font-weight:700;text-align:left;width:100%;transition:all 0.18s}
+.theme-opt:hover{border-color:var(--accent-border);color:var(--text);background:var(--chip-bg)}
+.theme-opt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-glow)}
+.theme-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.panel-divider{height:1px;background:var(--border);margin:14px 0}
+.panel-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:6px 2px;cursor:pointer;user-select:none}
+.panel-toggle-label{font-size:0.75rem;font-weight:700;color:var(--text-dim);transition:color 0.2s}
+.panel-toggle-row:hover .panel-toggle-label{color:var(--accent)}
+.panel-toggle-track{width:36px;height:20px;border-radius:20px;background:var(--border);border:1.5px solid var(--border);position:relative;transition:background 0.22s,border-color 0.22s;flex-shrink:0}
+.panel-toggle-track.on{background:var(--accent);border-color:var(--accent)}
+.panel-toggle-thumb{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform 0.22s cubic-bezier(0.34,1.4,0.64,1),box-shadow 0.22s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.panel-toggle-track.on .panel-toggle-thumb{transform:translateX(16px)}
+.donate-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:700;color:var(--text-dim);transition:all 0.18s}
+.donate-row:hover{border-color:var(--accent-border);color:var(--accent);background:var(--accent-glow)}
+.donate-caret{opacity:0.5}
+
+/* DONATE MODAL */
+.donate-backdrop{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.25s;padding:24px}
+.donate-backdrop.open{opacity:1;visibility:visible}
+.donate-box{background:var(--bg-card);border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;max-width:280px;width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;animation:wb-in 0.3s cubic-bezier(0.34,1.3,0.64,1)}
+@keyframes wb-in{from{opacity:0;transform:translateY(14px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.donate-title{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text-bright)}
+.donate-qr-wrap{width:170px;height:170px;border-radius:14px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px var(--shadow)}
+.donate-qr-img{width:100%;height:100%;object-fit:cover;display:block}
+.donate-desc{font-size:0.78rem;color:var(--text-dim);font-weight:600}
+.donate-close{font-size:0.72rem;font-weight:700;color:var(--text-dim);background:none;border:1.5px solid var(--border);padding:9px 22px;border-radius:10px;cursor:pointer;transition:all 0.2s;width:100%}
+.donate-close:hover{border-color:var(--accent-border);color:var(--text)}
+
+/* PAGE / HOME HERO */
+.page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:84px 20px 64px}
+.home-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:62vh;gap:18px}
+.home-badge{display:inline-flex;align-items:center;gap:6px;font-size:0.66rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:2px;background:var(--accent-glow);padding:4px 12px;border-radius:20px;border:1px solid var(--accent-border)}
+.home-hero h1{font-family:'Cinzel',Georgia,serif;font-size:1.7rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.home-hero p{color:var(--text-dim);font-size:0.85rem;max-width:320px;line-height:1.6}
+.home-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.03em;background:var(--gradient);color:#fff;border:none;border-radius:50px;padding:16px 42px;cursor:pointer;box-shadow:0 10px 30px var(--accent-glow);transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
+.home-cta:hover{transform:translateY(-2px)}
 .home-cta:active{transform:scale(0.96)}
 #homePage{display:block}
 #wizardPage{display:none}
 #wizardPage.show{display:block}
-.wizard-back{background:none;border:none;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;padding:6px 0 12px}
-.tab-switcher{display:flex;gap:6px;border-bottom:1.5px solid var(--border);margin-bottom:20px}
-.tab-btn{flex:1;background:none;border:none;padding:10px 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2.5px solid transparent;transition:color 0.2s,border-color 0.2s}
-.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
-.tab-btn:active{transform:scale(0.97)}
-.tab-page{display:none}
-.tab-page.active{display:block}
-h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
+.wizard-back{background:none;border:none;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;padding:6px 0 16px}
+.wizard-back:hover{color:var(--accent)}
+h2{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
 .section-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:12px}
 .section{margin-bottom:26px}
+.empty{color:var(--text-dim);font-size:0.8rem;padding:10px 0}
 
-/* wem list */
+/* FORM BASE (dùng lại token EchoHall) */
+input,textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:0.85rem;font-family:'Nunito',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+input::placeholder,textarea::placeholder{color:var(--text-dim)}
+textarea{resize:vertical;min-height:80px}
+label{display:block;font-size:0.68rem;font-weight:800;color:var(--text-dim);margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.1em}
+button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:18px;box-shadow:0 4px 16px var(--accent-glow);transition:transform 0.15s,box-shadow 0.15s}
+button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
+button.primary:active:not(:disabled){transform:scale(0.97)}
+button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
+button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;padding:13px 16px;border-radius:10px;cursor:pointer;box-shadow:0 4px 16px var(--shadow);transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s,color 0.15s}
+button.ghost:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
+button.ghost:active{transform:scale(0.97)}
+.msg{font-size:0.8rem;border-radius:9px;padding:10px 12px;margin-top:12px;line-height:1.5;display:none;white-space:pre-wrap}
+.msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
+.msg.err{display:block;background:rgba(224,67,42,0.1);border:1px solid var(--danger);color:var(--danger)}
+
+/* WEM LIST */
 .wem-item{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s,background 0.15s}
-.wem-item:hover{transform:translateY(-1px)}
+.wem-item:hover{transform:translateY(-1px);border-color:var(--accent-border)}
 .wem-item:active{transform:scale(0.98)}
 .wem-item.selected{border-color:var(--accent);background:var(--accent-glow)}
 .wem-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
@@ -66,7 +154,7 @@ h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bot
 .wem-play-btn{background:var(--bg);border:1.5px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.75rem}
 .wem-play-btn.playing{color:var(--accent2);border-color:var(--accent)}
 
-/* video grid */
+/* VIDEO GRID */
 .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .video-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s}
 .video-card:hover{transform:translateY(-2px)}
@@ -75,39 +163,32 @@ h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bot
 .video-thumb{aspect-ratio:16/9;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent2);overflow:hidden}
 .video-thumb img{width:100%;height:100%;object-fit:cover}
 .video-name{padding:6px 8px;font-size:0.72rem;font-weight:700;color:var(--text-bright)}
-.upload-own{border:1.5px dashed var(--border);border-radius:12px;padding:14px;text-align:center;margin-top:10px;cursor:pointer;color:var(--text-dim);font-size:0.78rem;font-weight:700}
 .video-card.upload-card{border-style:dashed}
 .video-card.upload-card .video-thumb{background:transparent;font-size:1.6rem;color:var(--text-dim)}
-.video-card.upload-card.has-file{border-style:solid}
+.video-card.upload-card.has-file{border-style:solid;border-color:var(--accent)}
 .video-card.upload-card .video-name{color:var(--text-dim)}
 .video-card.upload-card.has-file .video-name{color:var(--text-bright)}
-.upload-own.has-file{border-color:var(--accent);color:var(--accent2)}
 
-/* wizard steps */
+/* WIZARD STEPS */
 .step-page{display:none}
 .step-page.active{display:block;animation:step-in 0.35s cubic-bezier(0.25,0.8,0.4,1) both}
 @keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 .step-nav{display:flex;gap:10px;margin-top:20px}
 .step-nav button{flex:1;margin-top:0}
-button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;padding:13px 16px;border-radius:10px;cursor:pointer;box-shadow:0 4px 16px var(--shadow);transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s,color 0.15s}
-button.ghost:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
-button.ghost:active{transform:scale(0.97)}
 
-/* preview step */
-.preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
+/* PREVIEW STEP */
+.preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px;box-shadow:0 10px 30px var(--shadow)}
 .preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
 .preview-scrub button{background:rgba(255,255,255,0.18);border:none;color:#fff;width:26px;height:26px;border-radius:50%;font-size:0.7rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px}
 .preview-scrub .time{color:#fff;font-size:0.65rem;font-variant-numeric:tabular-nums;flex-shrink:0}
-audio{width:100%}
 
-/* loading modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(14,30,0,0.55);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+/* LOADING MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(--bg-card);border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:100%;animation:modal-in 0.3s cubic-bezier(0.34,1.3,0.64,1)}
-@keyframes modal-in{from{opacity:0;transform:scale(0.9) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-box{background:var(--bg-card);border:1.5px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:100%;animation:wb-in 0.3s cubic-bezier(0.34,1.3,0.64,1)}
 .eq{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:32px;margin:0 auto 14px}
 .eq span{width:5px;background:var(--gradient);border-radius:3px;animation:eq-bounce 1s ease-in-out infinite}
 .eq span:nth-child(1){animation-delay:0s;height:40%}
@@ -116,59 +197,117 @@ audio{width:100%}
 .eq span:nth-child(4){animation-delay:0.45s;height:60%}
 .eq span:nth-child(5){animation-delay:0.6s;height:85%}
 @keyframes eq-bounce{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
-.modal-title{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
+.modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
 .modal-sub{font-size:0.76rem;color:var(--text-dim)}
 
-/* mascot */
-.mascot-wrap{position:fixed;bottom:16px;right:14px;z-index:400;display:flex;flex-direction:column;align-items:flex-end;gap:6px;animation:mascot-appear 0.5s 0.4s cubic-bezier(0.34,1.4,0.64,1) both}
-@keyframes mascot-appear{from{opacity:0;transform:translateY(16px) scale(0.7)}to{opacity:1;transform:translateY(0) scale(1)}}
-.mascot-speech{position:relative;background:var(--bg-card);border:1.5px solid var(--accent);color:var(--text);font-size:0.68rem;font-weight:700;padding:7px 11px;border-radius:16px 16px 4px 16px;box-shadow:0 6px 20px var(--shadow);max-width:180px;opacity:0;transform:translateY(6px) scale(0.95);transition:opacity 0.25s,transform 0.25s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none}
-.mascot-speech.visible{opacity:1;transform:translateY(0) scale(1)}
-.mascot-img-btn{position:relative;width:60px;height:60px;cursor:pointer;filter:drop-shadow(0 4px 10px var(--shadow));transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
-.mascot-img-btn:hover{transform:scale(1.08) translateY(-3px)}
+/* MASCOT (giữ nguyên EchoHall) */
+.mascot-wrap{position:fixed;bottom:24px;right:24px;z-index:400;display:flex;flex-direction:column;align-items:flex-end;gap:8px;transform:scale(0.55);transform-origin:bottom right;animation:mascot-appear 0.5s 0.6s cubic-bezier(0.34,1.4,0.64,1) both}
+.mascot-speech{position:relative;background:var(--bg-card);border:1.5px solid var(--accent-border);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;padding:7px 11px;border-radius:16px 16px 4px 16px;box-shadow:0 6px 24px var(--shadow);max-width:200px;opacity:0;transform:translateY(6px) scale(0.95);transition:opacity 0.3s,transform 0.3s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none;line-height:1.4}
+.mascot-speech.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:none}
+.mascot-speech::after{content:'';position:absolute;bottom:-7px;right:18px;width:12px;height:7px;background:var(--bg-card);clip-path:polygon(0 0,100% 0,50% 100%)}
+.mascot-img-btn{position:relative;width:80px;height:80px;cursor:pointer;pointer-events:all;flex-shrink:0;filter:drop-shadow(0 0 6px var(--accent));transition:filter 0.3s,transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
+.mascot-img-btn:hover{transform:scale(1.1) translateY(-4px)}
 .mascot-img-front,.mascot-img-back{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backface-visibility:hidden;transition:transform 0.15s ease-in,opacity 0.15s ease}
 .mascot-img-back{transform:rotateY(90deg);opacity:0}
 .mascot-img-btn.flipping .mascot-img-front{transform:rotateY(-90deg);opacity:0}
 .mascot-img-btn.flipping .mascot-img-back{transform:rotateY(0deg);opacity:1}
+@keyframes mascot-appear{from{opacity:0;transform:translateY(20px) scale(0.7)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-/* form */
-input,textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
-textarea{resize:vertical;min-height:70px}
-label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin:12px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
-button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:18px;box-shadow:0 4px 16px var(--accent-glow);transition:transform 0.15s,box-shadow 0.15s}
-button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
-button.primary:active:not(:disabled){transform:scale(0.97)}
-button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
-.msg{font-size:0.8rem;border-radius:9px;padding:10px 12px;margin-top:12px;line-height:1.5;display:none;white-space:pre-wrap}
-.msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
-.msg.err{display:block;background:rgba(224,67,42,0.1);border:1px solid var(--danger);color:var(--danger)}
-.progress-wrap{height:5px;background:var(--border);border-radius:5px;overflow:hidden;margin-top:10px;display:none}
-.progress-bar{height:100%;width:0%;background:var(--accent);transition:width 0.2s}
-.empty{color:var(--text-dim);font-size:0.8rem;padding:10px 0}
+/* REQUEST MODAL (giữ nguyên EchoHall, đổi field) */
+.req-modal-backdrop{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.req-modal-backdrop.open{opacity:1;pointer-events:all}
+.req-modal{background:var(--bg-modal);border:1.5px solid var(--border);border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(0.97);transition:transform 0.28s cubic-bezier(0.34,1.3,0.64,1);box-shadow:0 30px 80px var(--shadow)}
+.req-modal-backdrop.open .req-modal{transform:translateY(0) scale(1)}
+.req-modal-header{padding:22px 26px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.req-modal-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-bright);line-height:1.3}
+.req-modal-sub{font-size:0.78rem;color:var(--text-dim);margin-top:4px}
+.req-modal-close{background:none;border:1.5px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;transition:all 0.2s}
+.req-modal-close:hover{border-color:var(--accent-border);color:var(--text)}
+.req-modal-body{padding:18px 26px 26px}
+.req-modal-note{font-size:0.78rem;color:var(--text-dim);line-height:1.6;padding:10px 14px;border-left:3px solid var(--accent);background:var(--chip-bg);border-radius:0 10px 10px 0;margin-bottom:20px}
+.req-form-row{margin-bottom:14px}
+.req-form-label{display:block;font-size:0.65rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px}
+.req-form-input,.req-form-textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
+.req-form-input:focus,.req-form-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.req-form-textarea{resize:vertical;min-height:80px}
+.req-modal-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding-top:6px}
+.req-btn-cancel{font-size:0.72rem;font-weight:700;color:var(--text-dim);background:none;border:1.5px solid var(--border);padding:9px 18px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+.req-btn-cancel:hover{border-color:var(--accent-border);color:var(--text)}
+.req-btn-send{font-size:0.72rem;font-weight:800;letter-spacing:0.06em;color:#fff;border:none;background:var(--gradient);padding:9px 22px;border-radius:10px;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px var(--accent-glow)}
+.req-btn-send:hover{opacity:0.88;transform:translateY(-1px)}
+.req-btn-send:disabled{opacity:0.5;cursor:not-allowed}
+.req-success{text-align:center;padding:20px 0 8px;display:none}
+.req-success-icon{font-size:2.5rem;margin-bottom:10px}
+.req-success-text{font-family:'Nunito',sans-serif;font-size:0.95rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.req-success-sub{font-size:0.8rem;color:var(--text-dim)}
+
+@media(max-width:600px){
+  nav{padding:0 16px}
+  .page{padding:76px 16px 48px}
+  .theme-panel{right:16px}
+  .theme-grid{grid-template-columns:1fr}
+  .req-modal-body{padding:16px 18px 20px}
+}
 </style>
 </head>
 <body>
 
+<canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
 <nav>
-  <div class="nav-logo">MOD SẢNH</div>
-  <div class="nav-right">
-    <button class="icon-btn" id="particleToggleBtn" title="Bật/tắt hiệu ứng nền">✨</button>
-    <button class="icon-btn" id="settingsBtn" title="Cài đặt">⚙️</button>
-    <div class="settings-panel" id="settingsPanel">
-      <div class="settings-label">Đổi màu giao diện</div>
-      <div class="theme-row" id="themeRow"></div>
-      <button class="settings-donate-btn" id="donateBtn">☕ Ủng hộ admin</button>
-    </div>
+  <span class="nav-logo" id="navLogo">EchoHall</span>
+  <div class="nav-track" id="navTrack" style="display:none">
+    <div class="track-progress"><div class="track-progress-bar" id="trackProgressBar"></div></div>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center;margin-left:8px">
+    <button class="settings-btn" id="musicBtn" title="Tạm dừng nhạc">♪</button>
+    <button class="settings-btn" id="togglePanelBtn">⚙</button>
   </div>
 </nav>
-<canvas id="particleCanvas"></canvas>
+
+<div class="theme-panel" id="themePanel">
+  <div class="panel-title">Chọn Vương Quốc</div>
+  <div class="theme-grid">
+    <button class="theme-opt" data-theme-opt="mondstadt"><span class="theme-dot" style="background:#2db87a"></span>Mondstadt</button>
+    <button class="theme-opt" data-theme-opt="liyue"><span class="theme-dot" style="background:#f0c060"></span>Liyue</button>
+    <button class="theme-opt" data-theme-opt="inazuma"><span class="theme-dot" style="background:#c878f8"></span>Inazuma</button>
+    <button class="theme-opt active" data-theme-opt="sumeru"><span class="theme-dot" style="background:#72bc2a"></span>Sumeru</button>
+    <button class="theme-opt" data-theme-opt="fontaine"><span class="theme-dot" style="background:#2090e0"></span>Fontaine</button>
+    <button class="theme-opt" data-theme-opt="natlan"><span class="theme-dot" style="background:#f06020"></span>Natlan</button>
+    <button class="theme-opt" data-theme-opt="snezhnaya"><span class="theme-dot" style="background:#80c8f8"></span>Nod-Krai</button>
+  </div>
+  <div class="panel-divider"></div>
+  <div class="panel-toggle-row" id="particleToggleRow">
+    <span class="panel-toggle-label">✦ Hiệu ứng nền</span>
+    <div class="panel-toggle-track" id="particleToggleTrack">
+      <div class="panel-toggle-thumb"></div>
+    </div>
+  </div>
+  <div class="donate-row" id="donateRow">
+    <span>☕ Ủng hộ tác giả</span>
+    <span class="donate-caret">›</span>
+  </div>
+</div>
+
+<!-- DONATE MODAL -->
+<div class="donate-backdrop" id="donateBackdrop">
+  <div class="donate-box" onclick="event.stopPropagation()">
+    <div class="donate-title">☕ Ủng Hộ Admin</div>
+    <div class="donate-qr-wrap">
+      <img class="donate-qr-img" src="/img/donate-qr.png" alt="QR donate" draggable="false">
+    </div>
+    <p class="donate-desc">MB Bank - NGUYEN TRONG NINH</p>
+    <button class="donate-close" id="donateCloseBtn">Đóng</button>
+  </div>
+</div>
 
 <div class="page">
   <!-- ═══ TRANG CHỦ ═══ -->
   <div id="homePage">
     <div class="home-hero">
+      <span class="home-badge">🏛 EchoHall</span>
       <h1>MOD SẢNH</h1>
-      <p>Ghép nhạc và video sảnh riêng của bồ chỉ trong vài bước.</p>
+      <p>Ghép nhạc và video sảnh chờ riêng của bồ chỉ trong vài bước — nhấn nút bên dưới để bắt đầu.</p>
       <button class="home-cta" id="startBuildBtn">🎬 Tạo mod ngay</button>
     </div>
   </div>
@@ -220,12 +359,12 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
           </div>
         </div>
         <audio id="previewAudioStep" style="display:none"></audio>
-    <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
+        <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
         <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
       </div>
       <div class="step-nav">
         <button class="ghost" id="backTo2Btn">← Đổi video</button>
-        <button class="primary" id="buildBtn">💾 Lưu & tải về</button>
+        <button class="primary" id="buildBtn">💾 Lưu &amp; tải về</button>
       </div>
       <div class="msg" id="buildMsg"></div>
     </div>
@@ -234,6 +373,7 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
 
 <audio id="previewAudio" style="display:none"></audio>
 
+<!-- LOADING MODAL -->
 <div class="modal-overlay" id="loadingModal">
   <div class="modal-box">
     <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
@@ -242,527 +382,644 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
   </div>
 </div>
 
-<!-- ═══ MASCOT (bong bóng tự đổi luân phiên, bấm vào mở popup yêu cầu wem) ═══ -->
+<!-- MASCOT -->
 <div class="mascot-wrap" id="mascotWrap">
   <div class="mascot-speech" id="mascotSpeech"></div>
-  <div class="mascot-img-btn" id="mascotBtn">
+  <div class="mascot-img-btn" id="mascotBtn" title="Yêu cầu nhạc">
     <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
-    <img class="mascot-img-back" id="mascotImgBack" src="" alt="mascot" draggable="false">
+    <img class="mascot-img-back"  id="mascotImgBack"  src="" alt="mascot" draggable="false">
   </div>
 </div>
 
-<!-- ═══ YÊU CẦU WEM MODAL (mở khi bấm mascot) ═══ -->
-<div class="modal-overlay" id="requestModal">
-  <div class="modal-box" style="max-width:320px;text-align:left">
-    <div class="modal-title" style="text-align:center;margin-bottom:10px">Xin bài nhạc chưa có</div>
-    <div class="modal-sub" style="text-align:center;margin-bottom:14px">Điền thông tin, admin sẽ liên hệ lại khi có wem.</div>
-
-    <label>Tên/nickname của bồ</label>
-    <input type="text" id="reqName" placeholder="vd: Minh">
-    <label>Cách liên hệ lại (Zalo / Discord / FB...)</label>
-    <input type="text" id="reqContact" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
-    <label>Tên bài nhạc muốn xin</label>
-    <input type="text" id="reqSong" placeholder="vd: Sảnh Tết 2024">
-    <label>Ghi chú thêm (tuỳ chọn)</label>
-    <textarea id="reqNote" placeholder="Link nhạc mẫu, mùa nào, v.v."></textarea>
-
-    <button class="primary" id="reqSendBtn" style="width:100%;margin-top:10px">Gửi yêu cầu</button>
-    <div class="msg" id="reqMsg"></div>
-    <button class="ghost" id="reqCloseBtn" style="width:100%;padding:9px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer;margin-top:10px">Đóng</button>
+<!-- REQUEST MODAL (yêu cầu wem/nhạc) -->
+<div class="req-modal-backdrop" id="reqModalBackdrop">
+  <div class="req-modal" id="reqModal">
+    <div class="req-modal-header">
+      <div>
+        <div class="req-modal-title">✦ Xin Bài Nhạc</div>
+        <div class="req-modal-sub">Chưa có bản nhạc bồ cần? Điền form, admin sẽ liên hệ lại.</div>
+      </div>
+      <button class="req-modal-close" id="reqCloseBtn">✕</button>
+    </div>
+    <div class="req-modal-body">
+      <div id="reqForm">
+        <p class="req-modal-note">Không có hẹn giờ cụ thể — admin sẽ liên hệ lại qua cách bồ để lại bên dưới khi có bài nhạc.</p>
+        <div class="req-form-row">
+          <label class="req-form-label">Tên / nickname</label>
+          <input class="req-form-input" id="reqName" type="text" placeholder="vd: Minh">
+        </div>
+        <div class="req-form-row">
+          <label class="req-form-label">Cách liên hệ (Zalo / Discord / FB...)</label>
+          <input class="req-form-input" id="reqContact" type="text" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
+        </div>
+        <div class="req-form-row">
+          <label class="req-form-label">Tên bài nhạc muốn xin</label>
+          <input class="req-form-input" id="reqSong" type="text" placeholder="vd: Sảnh Tết 2024">
+        </div>
+        <div class="req-form-row">
+          <label class="req-form-label">Ghi chú thêm (tuỳ chọn)</label>
+          <textarea class="req-form-textarea" id="reqNote" placeholder="Link nhạc mẫu, mùa nào, v.v."></textarea>
+        </div>
+        <div class="req-modal-footer">
+          <button class="req-btn-cancel" id="reqCancelBtn">Huỷ</button>
+          <button class="req-btn-send" id="reqSendBtn">⬆ Gửi Yêu Cầu</button>
+        </div>
+        <div class="msg" id="reqMsg"></div>
+      </div>
+      <div class="req-success" id="reqSuccess">
+        <div class="req-success-icon">✨</div>
+        <div class="req-success-text">Đã nhận yêu cầu!</div>
+        <div class="req-success-sub">Admin sẽ liên hệ bồ khi có bài nhạc nhé.</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══ DONATE MODAL ═══ -->
-<div class="modal-overlay" id="donateModal">
-  <div class="modal-box">
-    <div class="modal-title">☕ Ủng hộ admin</div>
-    <img src="/img/donate-qr.png" alt="QR donate" style="width:160px;height:160px;border-radius:12px;margin:12px 0;object-fit:cover">
-    <div class="modal-sub" style="margin-bottom:14px">MB Bank - NGUYEN TRONG NINH</div>
-    <button class="ghost" id="donateCloseBtn" style="width:100%;padding:9px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer">Đóng</button>
-  </div>
-</div>
-<script>
-// ═══ THEME SWITCHER ═══
-const THEMES = ['mondstadt','sumeru','fontaine','natlan','liyue','inazuma','snezhnaya'];
-const THEME_COLORS = {mondstadt:'#2db87a',sumeru:'#72bc2a',fontaine:'#2090e0',natlan:'#f06020',liyue:'#f0c060',inazuma:'#c878f8',snezhnaya:'#80c8f8'};
-let currentTheme = localStorage.getItem('modsanh-theme') || 'sumeru';
-function applyTheme(t) {
-  currentTheme = t;
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('modsanh-theme', t);
-  document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d.dataset.theme === t));
-  updateMascotImages();
-  if (typeof initParticles === 'function') initParticles();
-}
-const themeRow = document.getElementById('themeRow');
-THEMES.forEach(t => {
-  const dot = document.createElement('div');
-  dot.className = 'theme-dot';
-  dot.dataset.theme = t;
-  dot.style.background = THEME_COLORS[t];
-  dot.title = t;
-  dot.addEventListener('click', () => applyTheme(t));
-  themeRow.appendChild(dot);
-});
-
-// ═══ SETTINGS PANEL (gộp theme + donate) ═══
-const settingsBtn = document.getElementById('settingsBtn');
-const settingsPanel = document.getElementById('settingsPanel');
-settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); settingsPanel.classList.toggle('open'); });
-document.addEventListener('click', (e) => {
-  if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) settingsPanel.classList.remove('open');
-});
-
-// ═══ PARTICLE BACKGROUND — 7 kiểu riêng theo theme (+ toggle) ═══
-const pCanvas = document.getElementById('particleCanvas');
-const pCtx = pCanvas.getContext('2d');
-let particles = [], particlesOn = localStorage.getItem('modsanh-particles') !== 'off';
-function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; initParticles(); }
-window.addEventListener('resize', resizeCanvas);
-
-// Mỗi theme 1 kiểu hạt đặc trưng: hướng bay, có lắc ngang không, có nhấp nháy không, hình dạng
-const PARTICLE_STYLES = {
-  mondstadt: { count: 26, dir: -1, speed: [0.3, 0.7], size: [2, 4], wobble: 1.2, twinkle: false, shape: 'leaf' },   // lá theo gió
-  sumeru:    { count: 34, dir: -1, speed: [0.15, 0.5], size: [1, 3], wobble: 0.3, twinkle: false, shape: 'dot' },   // bụi rừng bay nhẹ
-  fontaine:  { count: 22, dir: -1, speed: [0.2, 0.45], size: [2, 5], wobble: 0.8, twinkle: false, shape: 'ring' },  // bong bóng nước
-  natlan:    { count: 24, dir: -1, speed: [0.4, 0.9], size: [1, 2.5], wobble: 0.6, twinkle: true, shape: 'dot' },   // tia lửa lập loè
-  liyue:     { count: 20, dir: -1, speed: [0.1, 0.3], size: [1.5, 3], wobble: 0.2, twinkle: true, shape: 'star' },  // ánh vàng lấp lánh
-  inazuma:   { count: 16, dir: -1, speed: [0.05, 0.2], size: [1, 3.5], wobble: 0, twinkle: true, shape: 'spark' },  // tia điện chớp tắt
-  snezhnaya: { count: 30, dir: 1,  speed: [0.25, 0.6], size: [2, 4], wobble: 1.5, twinkle: false, shape: 'dot' }    // tuyết rơi xuống
-};
-function initParticles() {
-  const style = PARTICLE_STYLES[currentTheme] || PARTICLE_STYLES.sumeru;
-  particles = Array.from({ length: style.count }, () => ({
-    x: Math.random() * pCanvas.width, y: Math.random() * pCanvas.height,
-    r: style.size[0] + Math.random() * (style.size[1] - style.size[0]),
-    v: style.speed[0] + Math.random() * (style.speed[1] - style.speed[0]),
-    o: 0.25 + Math.random() * 0.5,
-    phase: Math.random() * Math.PI * 2,
-    twinklePhase: Math.random() * Math.PI * 2
-  }));
-}
-initParticles();
-applyTheme(currentTheme);
-function drawParticle(p, style, color, t) {
-  let alpha = p.o;
-  if (style.twinkle) alpha *= 0.4 + 0.6 * Math.abs(Math.sin(t * 0.002 + p.twinklePhase));
-  pCtx.globalAlpha = alpha;
-  pCtx.fillStyle = color;
-  if (style.shape === 'ring') {
-    pCtx.beginPath(); pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    pCtx.strokeStyle = color; pCtx.lineWidth = 1; pCtx.stroke();
-  } else if (style.shape === 'star' || style.shape === 'spark') {
-    pCtx.save(); pCtx.translate(p.x, p.y); pCtx.rotate(t * 0.0004);
-    pCtx.fillRect(-p.r, -0.6, p.r * 2, 1.2);
-    pCtx.fillRect(-0.6, -p.r, 1.2, p.r * 2);
-    pCtx.restore();
-  } else if (style.shape === 'leaf') {
-    pCtx.save(); pCtx.translate(p.x, p.y); pCtx.rotate(p.phase);
-    pCtx.beginPath(); pCtx.ellipse(0, 0, p.r, p.r * 0.55, 0, 0, Math.PI * 2); pCtx.fill();
-    pCtx.restore();
-  } else {
-    pCtx.beginPath(); pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2); pCtx.fill();
-  }
-}
-function animateParticles(t) {
-  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-  if (particlesOn) {
-    const style = PARTICLE_STYLES[currentTheme] || PARTICLE_STYLES.sumeru;
-    const color = THEME_COLORS[currentTheme];
-    particles.forEach(p => {
-      p.y -= style.dir * p.v;
-      p.x += Math.sin(t * 0.001 + p.phase) * style.wobble * 0.05;
-      if (style.dir === -1 && p.y < -6) { p.y = pCanvas.height + 6; p.x = Math.random() * pCanvas.width; }
-      if (style.dir === 1 && p.y > pCanvas.height + 6) { p.y = -6; p.x = Math.random() * pCanvas.width; }
-      drawParticle(p, style, color, t || 0);
-    });
-    pCtx.globalAlpha = 1;
-  }
-  requestAnimationFrame(animateParticles);
-}
-resizeCanvas();
-animateParticles(0);
-const particleBtn = document.getElementById('particleToggleBtn');
-function syncParticleBtn() { particleBtn.classList.toggle('off', !particlesOn); }
-syncParticleBtn();
-particleBtn.addEventListener('click', () => {
-  particlesOn = !particlesOn;
-  localStorage.setItem('modsanh-particles', particlesOn ? 'on' : 'off');
-  syncParticleBtn();
-});
-
-// ═══ MASCOT (luôn hiện góc màn hình, bong bóng tự đổi luân phiên; bấm vào mở popup yêu cầu wem) ═══
-const MASCOT_LINES = ['Chọn bài nhạc ưng ý nè~', 'Nhớ xem trước trước khi tải nha!', 'Thiếu bài mình thích? Bấm vào mình để xin nha!', 'Chúc bồ có sảnh đẹp lung linh ✨'];
-function updateMascotImages() {
-  document.getElementById('mascotImgFront').src = `/img/mascot/${currentTheme}/front.png`;
-  document.getElementById('mascotImgBack').src = `/img/mascot/${currentTheme}/back.png`;
-}
-const mascotBtn = document.getElementById('mascotBtn');
-const mascotSpeech = document.getElementById('mascotSpeech');
-let mascotLineIdx = 0;
-function showNextMascotLine() {
-  mascotSpeech.textContent = MASCOT_LINES[mascotLineIdx % MASCOT_LINES.length];
-  mascotLineIdx++;
-  mascotSpeech.classList.add('visible');
-}
-function hideMascotLine() { mascotSpeech.classList.remove('visible'); }
-// tự động luân phiên hiện/ẩn từng câu, không cần bấm
-showNextMascotLine();
-setInterval(() => {
-  hideMascotLine();
-  setTimeout(showNextMascotLine, 300);
-}, 4000);
-
-const requestModal = document.getElementById('requestModal');
-mascotBtn.addEventListener('click', () => {
-  mascotBtn.classList.add('flipping');
-  setTimeout(() => mascotBtn.classList.remove('flipping'), 300);
-  requestModal.classList.add('show');
-});
-document.getElementById('reqCloseBtn').addEventListener('click', () => requestModal.classList.remove('show'));
-requestModal.addEventListener('click', (e) => { if (e.target === requestModal) requestModal.classList.remove('show'); });
-
-// ═══ TRANG CHỦ ↔ WIZARD ═══
-const homePage = document.getElementById('homePage');
-const wizardPage = document.getElementById('wizardPage');
-document.getElementById('startBuildBtn').addEventListener('click', () => {
-  homePage.style.display = 'none';
-  wizardPage.classList.add('show');
-});
-document.getElementById('wizardBackHomeBtn').addEventListener('click', () => {
-  wizardPage.classList.remove('show');
-  homePage.style.display = 'block';
-  audio.pause();
-  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
-  const pv = document.getElementById('previewVideo'), pa = document.getElementById('previewAudioStep');
-  pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src');
-});
-
-// ═══ DONATE MODAL ═══
-const donateModal = document.getElementById('donateModal');
-document.getElementById('donateBtn').addEventListener('click', () => { settingsPanel.classList.remove('open'); donateModal.classList.add('show'); });
-document.getElementById('donateCloseBtn').addEventListener('click', () => donateModal.classList.remove('show'));
-donateModal.addEventListener('click', (e) => { if (e.target === donateModal) donateModal.classList.remove('show'); });
-
-// ═══ (phần cũ tiếp tục bên dưới) ═══
-</script>
 <script src="/wemogg.js"></script>
 <script>
-let wems = [], videos = [];
-let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
-let currentPlayingId = null;
+/* ═══════════════════════ THEME SWITCHER ═══════════════════════ */
+const THEMES = ['mondstadt','sumeru','fontaine','natlan','liyue','inazuma','snezhnaya'];
+let currentTheme = localStorage.getItem('echohall-theme') || 'sumeru';
 
-const audio = document.getElementById('previewAudio');
+function applyTheme(name){
+  document.documentElement.setAttribute('data-theme', name);
+  document.querySelectorAll('.theme-opt').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.themeOpt === name);
+  });
+  playThemeMusic(name);
+  if(window.particleSetTheme) window.particleSetTheme(name);
+  if(window.setMascotTheme) window.setMascotTheme(name);
+}
+function setTheme(name){ currentTheme = name; applyTheme(name); localStorage.setItem('echohall-theme', name); }
+document.querySelectorAll('.theme-opt').forEach(btn=>{
+  btn.addEventListener('click', ()=> setTheme(btn.dataset.themeOpt));
+});
+function togglePanel(){ document.getElementById('themePanel').classList.toggle('open'); }
+document.getElementById('togglePanelBtn').addEventListener('click', togglePanel);
+document.addEventListener('click', e=>{
+  const panel = document.getElementById('themePanel');
+  if(!panel.contains(e.target) && !e.target.closest('.settings-btn')) panel.classList.remove('open');
+});
 
-
-// ── load libraries ──
-async function loadLibraries() {
-  try {
-    const [wemRes, vidRes] = await Promise.all([
-      fetch('/api/wem-list').then(r => r.json()),
-      fetch('/api/video-list').then(r => r.json())
-    ]);
-    wems = wemRes.wems || [];
-    videos = vidRes.videos || [];
-    renderWemList();
-    renderVideoGrid();
-  } catch (e) {
-    document.getElementById('wemListBox').innerHTML = `<div class="empty">Lỗi tải thư viện: ${e.message}</div>`;
+/* Particle on/off */
+let particlesEnabled = localStorage.getItem('echohall-particles') !== 'off';
+function toggleParticles(){
+  particlesEnabled = !particlesEnabled;
+  localStorage.setItem('echohall-particles', particlesEnabled ? 'on' : 'off');
+  document.getElementById('particleToggleTrack').classList.toggle('on', particlesEnabled);
+  const canvas = document.getElementById('particleCanvas');
+  canvas.style.opacity = particlesEnabled ? '1' : '0';
+  if(particlesEnabled && window.particleSetTheme){
+    window.particleSetTheme(null);
+    window.particleSetTheme(document.documentElement.getAttribute('data-theme'));
   }
 }
+document.getElementById('particleToggleRow').addEventListener('click', toggleParticles);
+(function(){
+  document.getElementById('particleToggleTrack').classList.toggle('on', particlesEnabled);
+  document.getElementById('particleCanvas').style.opacity = particlesEnabled ? '1' : '0';
+})();
 
-function fmtDuration(ms) {
-  if (!ms) return '?';
-  const s = Math.round(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-}
+/* Donate modal */
+document.getElementById('donateRow').addEventListener('click', ()=>{
+  document.getElementById('themePanel').classList.remove('open');
+  document.getElementById('donateBackdrop').classList.add('open');
+});
+document.getElementById('donateCloseBtn').addEventListener('click', ()=> document.getElementById('donateBackdrop').classList.remove('open'));
+document.getElementById('donateBackdrop').addEventListener('click', e=>{
+  if(e.target === document.getElementById('donateBackdrop')) e.currentTarget.classList.remove('open');
+});
+document.getElementById('navLogo').addEventListener('click', ()=> goHome());
 
-// ── tìm kiếm: so khớp tên hoặc từ khoá, không phân biệt hoa/thường/dấu ──
-function normalizeSearch(s) {
-  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-function matchesSearch(item, term) {
-  if (!term) return true;
-  const hay = normalizeSearch(item.name) + ' ' + (item.keywords || []).map(normalizeSearch).join(' ');
-  return hay.includes(term);
-}
+/* ═══════════════════════ NHẠC NỀN THEO THEME ═══════════════════════ */
+const themeMusic = {
+  mondstadt: "https://files.catbox.moe/0ccjp7.mp3",
+  liyue:     "https://files.catbox.moe/l0xjbw.mp3",
+  inazuma:   "https://files.catbox.moe/o2azb0.mp3",
+  sumeru:    "https://files.catbox.moe/7ua6kp.mp3",
+  fontaine:  "https://files.catbox.moe/x5uzfe.mp3",
+  natlan:    "https://files.catbox.moe/q981dk.mp3",
+  snezhnaya: "https://files.catbox.moe/kn4p3j.mp3",
+};
+const SUMERU_VOL = 0.55;
+const themeVolume = { sumeru:SUMERU_VOL, mondstadt:SUMERU_VOL, liyue:SUMERU_VOL, inazuma:SUMERU_VOL, fontaine:SUMERU_VOL, natlan:SUMERU_VOL, snezhnaya:SUMERU_VOL };
 
-function renderWemList() {
+let bgAudio = null;
+let musicEnabled = localStorage.getItem("echohall-music") !== "off";
+let _unlocked = false;
+
+function fadeVolume(audio, from, to, duration, cb){
+  const steps=30, interval=duration/steps;
+  let current=from; const step=(to-from)/steps;
+  audio.volume=Math.max(0,Math.min(1,from));
+  const id=setInterval(()=>{
+    current+=step; audio.volume=Math.max(0,Math.min(1,current));
+    if((step>0&&current>=to)||(step<0&&current<=to)){ audio.volume=Math.max(0,Math.min(1,to)); clearInterval(id); if(cb)cb(); }
+  },interval);
+  return id;
+}
+let _bgDucked=false, _bgDuckFade=null;
+function duckBgMusic(){
+  if(_bgDucked||!bgAudio||bgAudio.paused)return;
+  _bgDucked=true; if(_bgDuckFade)clearInterval(_bgDuckFade);
+  _bgDuckFade=fadeVolume(bgAudio,bgAudio.volume,0,400,()=>{ bgAudio&&bgAudio.pause(); });
+}
+function restoreBgMusic(){
+  if(!_bgDucked)return; _bgDucked=false; if(_bgDuckFade)clearInterval(_bgDuckFade);
+  if(!musicEnabled||!bgAudio)return;
+  bgAudio.play().catch(()=>{}).then(()=>{
+    const targetVol=themeVolume[bgAudio.dataset.theme]||SUMERU_VOL;
+    _bgDuckFade=fadeVolume(bgAudio,0,targetVol,500);
+    startProgressLoop();
+  });
+}
+let _progressRaf = null;
+function startProgressLoop(){
+  cancelAnimationFrame(_progressRaf);
+  function tick(){
+    if(!bgAudio||bgAudio.paused||!bgAudio.duration){_progressRaf=requestAnimationFrame(tick);return;}
+    const pct=(bgAudio.currentTime/bgAudio.duration)*100;
+    const bar=document.getElementById("trackProgressBar");
+    if(bar)bar.style.width=pct+"%";
+    _progressRaf=requestAnimationFrame(tick);
+  }
+  _progressRaf=requestAnimationFrame(tick);
+}
+let _fadingOut = null;
+function playThemeMusic(name){
+  const src = themeMusic[name];
+  if(!src){ if(bgAudio){bgAudio.pause();bgAudio=null;} return; }
+  if(bgAudio && bgAudio.dataset.theme===name && !bgAudio.paused) return;
+  const targetVol = themeVolume[name] || SUMERU_VOL;
+  if(bgAudio && bgAudio.dataset.theme !== name){
+    const old = bgAudio; bgAudio = null;
+    if(_fadingOut) clearInterval(_fadingOut);
+    _fadingOut = fadeVolume(old, old.volume, 0, 400, ()=>{ old.pause(); _fadingOut=null; _startNewTrack(name, src, targetVol); });
+  } else {
+    _startNewTrack(name, src, targetVol);
+  }
+}
+function _startNewTrack(name, src, targetVol){
+  const audio = new Audio(src);
+  audio.dataset.theme = name; audio.loop = true; audio.volume = 0;
+  bgAudio = audio;
+  document.getElementById("navTrack").style.display = "flex";
+  if(musicEnabled && _unlocked){
+    audio.play().catch(()=>{}).then(()=>{ fadeVolume(audio, 0, targetVol, 600); startProgressLoop(); });
+  } else if(!_unlocked && musicEnabled){
+    audio.volume = targetVol;
+  }
+}
+function toggleMusic(){
+  musicEnabled = !musicEnabled;
+  localStorage.setItem("echohall-music", musicEnabled?"on":"off");
+  const btn=document.getElementById("musicBtn");
+  if(musicEnabled){
+    btn.classList.add("playing"); btn.classList.remove("paused"); btn.title="Tạm dừng nhạc";
+    if(bgAudio){ bgAudio.play().catch(()=>{}); fadeVolume(bgAudio,0,themeVolume[bgAudio.dataset.theme]||SUMERU_VOL,400); startProgressLoop(); }
+    else playThemeMusic(document.documentElement.getAttribute("data-theme"));
+  } else {
+    btn.classList.add("paused"); btn.classList.remove("playing"); btn.title="Phát nhạc nền";
+    if(bgAudio) fadeVolume(bgAudio,bgAudio.volume,0,400,()=>{bgAudio&&bgAudio.pause();});
+  }
+}
+document.getElementById("musicBtn").addEventListener("click", toggleMusic);
+(function(){
+  const btn=document.getElementById("musicBtn");
+  if(musicEnabled){btn.classList.add("playing");btn.title="Tạm dừng nhạc";}else{btn.classList.add("paused");btn.title="Phát nhạc nền";}
+})();
+function unlockMusicOnce(){
+  if(_unlocked) return; _unlocked = true;
+  if(musicEnabled) playThemeMusic(document.documentElement.getAttribute("data-theme") || "sumeru");
+  window.removeEventListener("pointerdown", unlockMusicOnce);
+}
+window.addEventListener("pointerdown", unlockMusicOnce, { once:true });
+
+/* ═══════════════════════ PARTICLE ENGINE (giữ nguyên EchoHall) ═══════════════════════ */
+(function(){
+  const canvas = document.getElementById("particleCanvas");
+  const ctx    = canvas.getContext("2d");
+  let W, H, particles=[], animId=null, fadeOut=false, globalAlpha=1, currentTheme=null;
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  window.addEventListener("resize", resize); resize();
+
+  let tiltGamma=0, tiltBeta=0; const TILT_SMOOTH=0.08; let _rawGamma=0,_rawBeta=0;
+  if(window.DeviceOrientationEvent){
+    window.addEventListener("deviceorientation", e=>{
+      if(e.gamma!==null) _rawGamma=e.gamma;
+      if(e.beta!==null) _rawBeta=Math.max(-60,Math.min(60,e.beta));
+    }, {passive:true});
+  }
+  function smoothTilt(){ tiltGamma += (_rawGamma-tiltGamma)*TILT_SMOOTH; tiltBeta += (_rawBeta-tiltBeta)*TILT_SMOOTH; }
+
+  const CONFIGS = {
+    mondstadt:{ count:38,
+      factory(){return{x:Math.random()*W,y:Math.random()*H,size:4+Math.random()*6,vx:0.3+Math.random()*0.5,vy:-0.15+Math.random()*0.3,phase:Math.random()*Math.PI*2,alpha:0.25+Math.random()*0.4,rotation:Math.random()*Math.PI*2,rotSpeed:(Math.random()-0.5)*0.04,color:Math.random()<0.6?'#4caf7d':'#a8d5b5'}},
+      draw(p){ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rotation);ctx.globalAlpha=p.alpha*globalAlpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.ellipse(0,0,p.size*0.4,p.size,0,0,Math.PI*2);ctx.fill();ctx.restore();},
+      update(p,t){const gx=tiltGamma*0.018;p.x+=p.vx+Math.sin(t*0.008+p.phase)*0.6+gx;p.y+=p.vy+Math.sin(t*0.006+p.phase)*0.3;p.rotation+=p.rotSpeed;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;}
+    },
+    liyue:{ count:22,
+      factory(){return{x:Math.random()*W,y:H+Math.random()*H*0.3,size:6+Math.random()*10,vy:-(0.25+Math.random()*0.45),vx:(Math.random()-0.5)*0.3,phase:Math.random()*Math.PI*2,alpha:0.3+Math.random()*0.4,color:Math.random()<0.6?'#e8432a':'#f5b942',glow:Math.random()<0.5}},
+      draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;if(p.glow){ctx.shadowColor=p.color;ctx.shadowBlur=p.size*3;}ctx.fillStyle=p.color;ctx.beginPath();ctx.ellipse(p.x,p.y,p.size*0.55,p.size*0.8,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c4922a';ctx.beginPath();ctx.ellipse(p.x,p.y-p.size*0.7,p.size*0.3,p.size*0.18,0,0,Math.PI*2);ctx.fill();ctx.restore();},
+      update(p,t){const gx=tiltGamma*0.016;p.y+=p.vy;p.x+=p.vx+Math.sin(t*0.005+p.phase)*0.4+gx;if(p.y<-p.size*3){p.y=H+p.size*2;p.x=Math.random()*W;}}
+    },
+    inazuma:{ count:40, flash:0,
+      factory(){return{x:Math.random()*W,y:Math.random()*H*0.8,len:10+Math.random()*18,vx:-(1.8+Math.random()*1.2),vy:4+Math.random()*2.5,alpha:0.25+Math.random()*0.35}},
+      draw(p,t,cfg){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;ctx.strokeStyle='#b8c8f8';ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+p.len*0.4,p.y+p.len);ctx.stroke();ctx.restore();if(cfg.flash>0){ctx.save();ctx.globalAlpha=cfg.flash*0.05*globalAlpha;ctx.fillStyle='#dde8ff';ctx.fillRect(0,0,W,H);ctx.restore();}},
+      update(p,t,cfg){const gx=tiltGamma*0.025;p.x+=p.vx+gx;p.y+=p.vy;if(p.y>H+20){p.x=Math.random()*W;p.y=-20;}if(p.x<-20){p.x=W+20;p.y=Math.random()*H*0.5;}if(Math.random()<0.00015)cfg.flash=1;if(cfg.flash>0)cfg.flash=Math.max(0,cfg.flash-0.04);}
+    },
+    sumeru:{ count:40,
+      factory(){return{x:Math.random()*W,y:Math.random()*H,r:1.5+Math.random()*2.5,vx:(Math.random()-0.5)*0.35,vy:-0.12-Math.random()*0.25,phase:Math.random()*Math.PI*2,alpha:0.2+Math.random()*0.45,color:Math.random()<0.5?'#a8e063':'#f0e678'}},
+      draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=p.r*3;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();},
+      update(p,t){const gx=tiltGamma*0.010;const gy=tiltBeta*0.006;p.x+=p.vx+Math.sin(t*0.009+p.phase)*0.5+gx;p.y+=p.vy+Math.cos(t*0.007+p.phase)*0.2+gy;if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;}
+    },
+    fontaine:{ count:28,
+      factory(){return{x:Math.random()*W,y:H+Math.random()*50,r:3+Math.random()*8,vy:-(0.3+Math.random()*0.5),vx:(Math.random()-0.5)*0.3,alpha:0.12+Math.random()*0.22,wobble:Math.random()*Math.PI*2,wobbleSpeed:0.02+Math.random()*0.02}},
+      draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;const g=ctx.createRadialGradient(p.x-p.r*0.3,p.y-p.r*0.3,p.r*0.1,p.x,p.y,p.r);g.addColorStop(0,'rgba(200,240,255,0.35)');g.addColorStop(1,'rgba(126,200,227,0.05)');ctx.fillStyle=g;ctx.strokeStyle='#7ec8e3';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();},
+      update(p){const gx=tiltGamma*0.015;const gy=tiltBeta*0.010;p.wobble+=p.wobbleSpeed;p.x+=p.vx+Math.sin(p.wobble)*0.4+gx;p.y+=p.vy+gy;if(p.y<-p.r*2){p.y=H+p.r;p.x=Math.random()*W;}if(p.y>H+p.r*2){p.y=-p.r;p.x=Math.random()*W;}}
+    },
+    natlan:{ count:35,
+      factory(){return{x:Math.random()*W,y:H*0.6+Math.random()*H*0.4,r:1+Math.random()*2.5,vx:(Math.random()-0.5)*0.8,vy:-(1.2+Math.random()*1.8),alpha:0.5+Math.random()*0.4,decay:0.008+Math.random()*0.008,color:Math.random()<0.6?'#ff6b2b':'#ffaa44'}},
+      draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=p.r*5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();},
+      update(p){const gx=tiltGamma*0.022;const gy=tiltBeta*0.012;p.x+=p.vx+(Math.random()-0.5)*0.3+gx;p.y+=p.vy+gy;p.vy*=0.985;p.r*=0.993;p.alpha-=p.decay;if(p.alpha<=0||p.r<0.3){p.x=Math.random()*W;p.y=H*0.7+Math.random()*H*0.35;p.r=1+Math.random()*2.5;p.vy=-(1.2+Math.random()*1.8);p.vx=(Math.random()-0.5)*0.8;p.alpha=0.5+Math.random()*0.4;}}
+    },
+    snezhnaya:{ count:40,
+      factory(){return{x:Math.random()*W,y:Math.random()*H,r:0.8+Math.random()*2,vx:-0.2+(Math.random()-0.5)*0.3,vy:0.4+Math.random()*0.8,alpha:0.2+Math.random()*0.5,phase:Math.random()*Math.PI*2}},
+      draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;ctx.fillStyle='#e8f4ff';ctx.shadowColor='#ffffff';ctx.shadowBlur=p.r*2;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore();},
+      update(p,t){const gx=tiltGamma*0.020;p.x+=p.vx+Math.sin(t*0.006+p.phase)*0.5+gx;p.y+=p.vy;if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;}
+    },
+  };
+
+  let activeCfg=null, t=0;
+  function spawnParticles(theme){
+    const cfg = CONFIGS[theme]; if(!cfg) return;
+    activeCfg = cfg; particles = [];
+    for(let i=0;i<cfg.count;i++){
+      const p = cfg.factory();
+      for(let s=0;s<Math.floor(Math.random()*180+20);s++) cfg.update(p, t+s, cfg);
+      particles.push(p);
+    }
+  }
+  function loop(){
+    animId = requestAnimationFrame(loop); t++;
+    smoothTilt(); ctx.clearRect(0,0,W,H);
+    if(!activeCfg) return;
+    particles.forEach(p=>{ activeCfg.update(p,t,activeCfg); activeCfg.draw(p,t,activeCfg); });
+    if(fadeOut){ globalAlpha=Math.max(0,globalAlpha-0.04); if(globalAlpha<=0) fadeOut=false; }
+    else if(globalAlpha<1){ globalAlpha=Math.min(1,globalAlpha+0.025); }
+  }
+  window.particleSetTheme = function(theme){
+    if(theme===currentTheme) return;
+    currentTheme=theme;
+    if(!CONFIGS[theme]){ particles=[]; return; }
+    fadeOut=true; globalAlpha=1;
+    setTimeout(()=>{ spawnParticles(theme); fadeOut=false; globalAlpha=0; }, 380);
+  };
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.hidden){ cancelAnimationFrame(animId); animId=null; } else if(!animId) loop();
+  });
+  loop();
+  const initTheme = document.documentElement.getAttribute("data-theme") || "sumeru";
+  currentTheme = initTheme; spawnParticles(initTheme);
+})();
+
+/* ═══════════════════════ MASCOT (giữ nguyên EchoHall) ═══════════════════════ */
+const MASCOT_DATA = {
+  mondstadt: { name:"Venti", emotes:[
+    { url:"https://files.catbox.moe/ny158h.png", line:"Cậu đang nghe <em><strong>\"Bard's Adventure\"</strong></em> — chọn nhạc rồi ghép video sảnh của riêng cậu đi!" },
+    { url:"https://files.catbox.moe/jh4zlx.png", line:"Chưa có bài ưng ý? Bấm vào mình, mình chuyển lời <strong>xin nhạc</strong> giúp cho." },
+    { url:"https://files.catbox.moe/8hzg2y.png", line:"Gì chứ! Cậu không biết đến danh tiếng nhà thơ vĩ đại Venti sao?" },
+    { url:"https://files.catbox.moe/079rcq.png", line:"Ở Mod Sảnh giờ có thể tự <strong>xin bài nhạc</strong> chưa có nữa đó!" },
+  ]},
+  liyue: { name:"Zhongli", emotes:[
+    { url:"https://files.catbox.moe/ia2a0a.png", line:"Cuộc hành trình nào rồi cũng sẽ kết thúc, không cần phải vội vàng." },
+    { url:"https://files.catbox.moe/cn1cuv.png", line:"<em><strong>\"Rex Incognito\"</strong></em> thực sự là một bản nhạc hay, thử ghép vào mod xem." },
+    { url:"https://files.catbox.moe/0lz8wb.png", line:"Chưa tìm được bài ưng ý? Bấm vào mình để <strong>xin bài nhạc</strong> nhé." },
+    { url:"https://files.catbox.moe/p0bmw5.png", line:"Muốn ăn thứ gì để giúp tỉnh táo à. Ở Ngật Hổ Nham có một quán không tồi..." },
+  ]},
+  inazuma: { name:"Raiden Shogun", emotes:[
+    { url:"https://files.catbox.moe/mt6a23.png", line:"Đừng bảo tôi đi nấu cơm là được. Tôi cái gì cũng làm được, ngoại trừ nấu cơm." },
+    { url:"https://files.catbox.moe/vxastw.png", line:"Chà, cậu sợ sấm sét sao? Hiện thân của sấm chớp kinh hoàng nhất đang nhắm vào cậu rồi đấy." },
+    { url:"https://files.catbox.moe/hqk51g.png", line:"Thử <strong>xin bài nhạc</strong> một lần xem, sấm sét sẽ không nỡ tìm cậu đâu." },
+    { url:"https://files.catbox.moe/4vedoy.png", line:"<em><strong>\"Termination of Desires\"</strong></em> mỗi khi vào Nhất Tâm Tịnh Thổ sẽ phát một lần, còn lý do thì không ai biết." },
+  ]},
+  sumeru: { name:"Nahida", emotes:[
+    { url:"https://files.catbox.moe/yfjwz6.png", line:"Nói thật lòng đi, <em><strong>\"Surasthana Fantasia\"</strong></em> thực sự rất hay mà phải không!" },
+    { url:"https://files.catbox.moe/0meb4c.png", line:"Bạn đang loay hoay tìm nơi <strong>xin bài nhạc</strong> sao? Tôi ở ngay đây nè!" },
+    { url:"https://files.catbox.moe/jlfh1z.png", line:"Nếu không biết chọn bài nào thì có muốn tôi gợi ý không? Tôi muốn nghe lại Surasthana Fantasia." },
+    { url:"https://files.catbox.moe/sybylh.png", line:"Mau chọn video và nhạc đi nào, không thôi là trên đầu sẽ mọc nấm đấy nhé!" },
+  ]},
+  fontaine: { name:"Furina", emotes:[
+    { url:"https://files.catbox.moe/ex251r.png", line:"Cậu còn chưa có lấy một bản nhạc cho riêng mình sao? Hãy <strong>xin bài nhạc</strong> ngay đi!" },
+    { url:"https://files.catbox.moe/0relye.png", line:"Bình thường cậu chỉ ăn mấy thứ này thôi sao? Ôi, để tôi chia một ít nui cho nhé!" },
+    { url:"https://files.catbox.moe/zl2ege.png", line:"Bản nhạc <em><strong>\"Se mettre sur son trente-et-un !\"</strong></em> này tức là muốn mời bạn đi xem buổi phán quyết của thần." },
+    { url:"https://files.catbox.moe/xl2hlo.png", line:"Haiz, nổi tiếng quá cũng khổ, ai bảo tôi được yêu thích quá làm chi!" },
+  ]},
+  natlan: { name:"Mavuika", emotes:[
+    { url:"https://files.catbox.moe/50ey9r.png", line:"Thần linh thì cũng nên thường xuyên xuống mặt đất đi dạo, chứ cứ mãi ở trên trời cao là không được." },
+    { url:"https://files.catbox.moe/wa4blt.png", line:"Thời tiết đẹp rất thích hợp để đi dạo bên ngoài. Nào, chọn nhạc rồi lượn vài vòng thử mod mới nhé!" },
+    { url:"https://files.catbox.moe/g4ahyd.png", line:"Ai đến Natlan cũng nhất định phải nghe <em><strong>\"Blazing Heart\"</strong></em> một lần." },
+    { url:"https://files.catbox.moe/67vnli.png", line:"Muốn <strong>xin bài nhạc</strong> sao, bấm vào mình, mình am hiểu âm nhạc ở nhiều thời đại lắm đó!" },
+  ]},
+  snezhnaya: { name:"Columbina", emotes:[
+    { url:"https://files.catbox.moe/ronpz3.png", line:"Sau cơn mưa trời lại sáng rồi, tối nay chắc sẽ ngắm được mặt trăng nhỉ!" },
+    { url:"https://files.catbox.moe/q5erus.png", line:"<em><strong>\"Song to the Mirrored Moon\"</strong></em> tức là khúc hát gửi về miền Nguyệt Cảnh." },
+    { url:"https://files.catbox.moe/eyla2n.png", line:"Không có ý tưởng chọn bài nào sao? Bấm vào mình để <strong>xin bài nhạc</strong> nhé." },
+    { url:"https://files.catbox.moe/ronpz3.png", line:"Sau cơn mưa trời lại sáng rồi, tối nay chắc sẽ ngắm được mặt trăng nhỉ!" },
+  ]},
+};
+(function(){
+  let mascotTheme = document.documentElement.getAttribute("data-theme") || "sumeru";
+  let emoteIdx = 0, flipTimer=null, speechTimer=null;
+  const front=document.getElementById("mascotImgFront"), back=document.getElementById("mascotImgBack");
+  const btn=document.getElementById("mascotBtn"), speech=document.getElementById("mascotSpeech");
+  function getMascot(theme){ return MASCOT_DATA[theme] || MASCOT_DATA.sumeru; }
+  function showSpeech(line){ speech.innerHTML=line; speech.classList.add("visible"); clearTimeout(speechTimer); speechTimer=setTimeout(()=>speech.classList.remove("visible"),9000); }
+  function applyEmote(theme, idx, animate){
+    const mascot=getMascot(theme), emote=mascot.emotes[idx];
+    if(!animate){
+      front.src=emote.url; back.src=emote.url;
+      front.style.transform=""; front.style.opacity="";
+      back.style.transform="rotateY(90deg)"; back.style.opacity="0";
+      btn.classList.remove("flipping"); return;
+    }
+    back.src=emote.url; btn.classList.add("flipping");
+    setTimeout(()=>{ front.src=emote.url; btn.classList.remove("flipping"); }, 160);
+    showSpeech(emote.line);
+  }
+  function nextEmote(){ const mascot=getMascot(mascotTheme); emoteIdx=(emoteIdx+1)%mascot.emotes.length; applyEmote(mascotTheme, emoteIdx, true); }
+  function startTimer(){ clearInterval(flipTimer); flipTimer=setInterval(nextEmote, 8000); }
+  window.setMascotTheme = function(theme){ mascotTheme=theme; emoteIdx=0; applyEmote(theme,0,false); startTimer(); };
+  window.setMascotTheme(mascotTheme);
+  setTimeout(()=>{ const mascot=getMascot(mascotTheme); showSpeech(mascot.emotes[0].line); }, 1400);
+  btn.addEventListener("click", openReqModal);
+})();
+
+/* ═══════════════════════ REQUEST MODAL (xin bài nhạc) ═══════════════════════ */
+function openReqModal(){
+  document.getElementById("reqForm").style.display = "";
+  document.getElementById("reqSuccess").style.display = "none";
+  document.getElementById("reqMsg").style.display = "none";
+  document.getElementById("reqModalBackdrop").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeReqModal(){
+  document.getElementById("reqModalBackdrop").classList.remove("open");
+  document.body.style.overflow = "";
+}
+document.getElementById("reqCloseBtn").addEventListener("click", closeReqModal);
+document.getElementById("reqCancelBtn").addEventListener("click", closeReqModal);
+document.getElementById("reqModalBackdrop").addEventListener("click", e=>{
+  if(e.target === document.getElementById("reqModalBackdrop")) closeReqModal();
+});
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeReqModal(); });
+
+document.getElementById("reqSendBtn").addEventListener("click", async ()=>{
+  const msg = document.getElementById("reqMsg");
+  const requesterName = document.getElementById("reqName").value.trim();
+  const contact = document.getElementById("reqContact").value.trim();
+  const songTitle = document.getElementById("reqSong").value.trim();
+  const note = document.getElementById("reqNote").value.trim();
+  if(!requesterName || !contact || !songTitle){
+    msg.className="msg err"; msg.style.display="block";
+    msg.textContent="⚠ Cần điền tên, cách liên hệ, và tên bài nhạc.";
+    return;
+  }
+  const btn = document.getElementById("reqSendBtn");
+  btn.disabled = true;
+  try{
+    const resp = await fetch("/api/request", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ requesterName, contact, songTitle, note })
+    });
+    const data = await resp.json();
+    if(!resp.ok) throw new Error(data.error || "Lỗi không xác định");
+    document.getElementById("reqForm").style.display="none";
+    document.getElementById("reqSuccess").style.display="block";
+    ["reqName","reqContact","reqSong","reqNote"].forEach(id=>document.getElementById(id).value="");
+    setTimeout(closeReqModal, 2200);
+  }catch(e){
+    msg.className="msg err"; msg.style.display="block";
+    msg.textContent="⚠ " + e.message;
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+/* ═══════════════════════ WIZARD: TẠO MOD ═══════════════════════ */
+function goHome(){
+  document.getElementById('homePage').style.display = 'block';
+  document.getElementById('wizardPage').classList.remove('show');
+}
+document.getElementById('startBuildBtn').addEventListener('click', ()=>{
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('wizardPage').classList.add('show');
+});
+document.getElementById('wizardBackHomeBtn').addEventListener('click', goHome);
+
+let wemLibrary = {}, videoLibrary = {};
+let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
+
+async function loadLibraries(){
+  try{
+    const [wr, vr] = await Promise.all([
+      fetch('/api/wem-list').then(r=>r.json()),
+      fetch('/api/video-list').then(r=>r.json())
+    ]);
+    wemLibrary = {}; (wr.wems||[]).forEach(w=>wemLibrary[w.id]=w);
+    videoLibrary = {}; (vr.videos||[]).forEach(v=>videoLibrary[v.id]=v);
+    renderWemList(); renderVideoGrid();
+  }catch(e){
+    document.getElementById('wemListBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện nhạc.</div>';
+    document.getElementById('videoGridBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện video.</div>';
+  }
+}
+function fmtDuration(ms){
+  if(!ms) return '';
+  const s = Math.round(ms/1000);
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+function normalizeSearch(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+function matchesSearch(item, term){
+  if(!term) return true;
+  const hay = normalizeSearch(item.name + ' ' + (item.keywords||[]).join(' '));
+  return hay.includes(normalizeSearch(term));
+}
+function renderWemList(){
+  const term = document.getElementById('wemSearchInput').value;
   const box = document.getElementById('wemListBox');
-  if (!wems.length) { box.innerHTML = '<div class="empty">Thư viện nhạc đang trống.</div>'; return; }
-  const term = normalizeSearch(document.getElementById('wemSearchInput').value.trim());
-  const filtered = wems.filter(w => matchesSearch(w, term));
-  if (!filtered.length) { box.innerHTML = '<div class="empty">Không tìm thấy bài nào khớp.</div>'; return; }
-  box.innerHTML = filtered.map(w => `
-    <div class="wem-item ${w.id === selectedWemId ? 'selected' : ''}" data-wem-id="${w.id}">
-      <div class="wem-radio"></div>
+  const items = Object.values(wemLibrary).filter(w=>matchesSearch(w, term));
+  if(!items.length){ box.innerHTML = '<div class="empty">Không tìm thấy bài nào.</div>'; return; }
+  box.innerHTML = items.map(w => `
+    <div class="wem-item ${w.id===selectedWemId?'selected':''}" data-id="${w.id}">
+      <span class="wem-radio"></span>
       <div class="wem-main">
         <div class="wem-name">${escapeHtml(w.name)}</div>
         <div class="wem-sub">${fmtDuration(w.duration_ms)}</div>
       </div>
-      <button class="wem-play-btn" data-play-id="${w.id}">▶</button>
-    </div>`).join('');
+      <button class="wem-play-btn" data-play="${w.id}" type="button">▶</button>
+    </div>
+  `).join('');
 }
 document.getElementById('wemSearchInput').addEventListener('input', renderWemList);
 
-// ── cache ogg blob URL đã convert theo từng wem id, tránh convert lại mỗi lần bấm ──
-const oggUrlCache = new Map();
-async function getPreviewOggUrl(id) {
-  if (oggUrlCache.has(id)) return oggUrlCache.get(id);
-  const resp = await fetch(`/api/wem-preview/${id}`);
-  if (!resp.ok) throw new Error('Không tải được audio');
-  const rawBytes = new Uint8Array(await resp.arrayBuffer());
-  const oggBytes = WemOgg.wemToOgg(rawBytes, CODEBOOK_BYTES);
-  const url = URL.createObjectURL(new Blob([oggBytes], { type: 'audio/ogg' }));
-  oggUrlCache.set(id, url);
+let previewOggCache = {};
+async function getPreviewOggUrl(id){
+  if(previewOggCache[id]) return previewOggCache[id];
+  const resp = await fetch('/api/wem-preview/' + id);
+  if(!resp.ok) throw new Error('Không tải được file nhạc');
+  const wemBytes = await resp.arrayBuffer();
+  const oggBytes = await window.wemToOgg(wemBytes);
+  const blob = new Blob([oggBytes], { type: 'audio/ogg' });
+  const url = URL.createObjectURL(blob);
+  previewOggCache[id] = url;
   return url;
 }
+const audio = document.getElementById('previewAudio');
+let playingBtn = null;
+async function togglePreview(id, btn){
+  if(playingBtn === btn){ audio.pause(); playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; return; }
+  if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); }
+  btn.textContent='…';
+  try{
+    const url = await getPreviewOggUrl(id);
+    audio.src = url; await audio.play();
+    btn.textContent='⏸'; btn.classList.add('playing'); playingBtn = btn;
+  }catch(e){ btn.textContent='▶'; alert('Không phát được: ' + e.message); }
+}
+audio.addEventListener('ended', ()=>{ if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; } });
 
-function renderVideoGrid() {
+document.getElementById('wemListBox').addEventListener('click', (e)=>{
+  const playBtn = e.target.closest('[data-play]');
+  if(playBtn){ togglePreview(playBtn.dataset.play, playBtn); return; }
+  const item = e.target.closest('.wem-item');
+  if(item){
+    selectedWemId = item.dataset.id;
+    renderWemList();
+    document.getElementById('toStep2Btn').disabled = false;
+  }
+});
+
+function renderVideoGrid(){
+  const term = document.getElementById('vidSearchInput').value;
   const box = document.getElementById('videoGridBox');
-  const term = normalizeSearch(document.getElementById('vidSearchInput').value.trim());
-  const filtered = videos.filter(v => matchesSearch(v, term));
-
-  const uploadCardHtml = `
-    <div class="video-card upload-card ${ownVideoFile ? 'selected has-file' : ''}" id="uploadOwnCard">
-      <div class="video-thumb">📤</div>
-      <div class="video-name">${ownVideoFile ? '✅ ' + escapeHtml(ownVideoFile.name) : 'Tự upload video (.mp4)'}</div>
-    </div>`;
-
-  const libraryHtml = filtered.map(v => `
-    <div class="video-card ${v.id === selectedVideoId ? 'selected' : ''}" data-video-id="${v.id}">
-      <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}">` : '🎬'}</div>
+  const items = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
+  let html = items.map(v => `
+    <div class="video-card ${v.id===selectedVideoId && !ownVideoFile ?'selected':''}" data-id="${v.id}">
+      <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}" alt="">` : '🎬'}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
-    </div>`).join('');
-
-  box.innerHTML = uploadCardHtml + libraryHtml + (!videos.length ? '<div class="empty">Thư viện video đang trống.</div>' : (!filtered.length ? '<div class="empty">Không tìm thấy video nào khớp.</div>' : ''));
+    </div>
+  `).join('');
+  html += `
+    <div class="video-card upload-card ${ownVideoFile?'has-file':''}" id="uploadCard">
+      <div class="video-thumb">📤</div>
+      <div class="video-name">${ownVideoFile ? escapeHtml(ownVideoFile.name) : 'Tự upload video...'}</div>
+    </div>
+  `;
+  box.innerHTML = items.length || true ? html : '<div class="empty">Không tìm thấy video nào.</div>';
 }
 document.getElementById('vidSearchInput').addEventListener('input', renderVideoGrid);
-
-// ── select wem ──
-document.getElementById('wemListBox').addEventListener('click', (e) => {
-  const playBtn = e.target.closest('[data-play-id]');
-  if (playBtn) {
-    e.stopPropagation();
-    togglePreview(playBtn.dataset.playId, playBtn);
-    return;
+document.getElementById('videoGridBox').addEventListener('click', (e)=>{
+  const uploadCard = e.target.closest('#uploadCard');
+  if(uploadCard){ document.getElementById('ownVideoInput').click(); return; }
+  const card = e.target.closest('.video-card[data-id]');
+  if(card){
+    selectedVideoId = card.dataset.id; ownVideoFile = null;
+    document.getElementById('ownVideoInput').value = '';
+    renderVideoGrid();
+    document.getElementById('toStep3Btn').disabled = false;
   }
-  const item = e.target.closest('[data-wem-id]');
-  if (!item) return;
-  selectedWemId = item.dataset.wemId;
-  renderWemList();
-  document.getElementById('toStep2Btn').disabled = false;
 });
-
-async function togglePreview(id, btn) {
-  if (currentPlayingId === id && !audio.paused) {
-    audio.pause();
-    btn.classList.remove('playing'); btn.textContent = '▶';
-    currentPlayingId = null;
-    return;
-  }
-  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
-  const prevText = btn.textContent;
-  btn.textContent = '…'; btn.disabled = true;
-  try {
-    const url = await getPreviewOggUrl(id);
-    audio.src = url;
-    await audio.play();
-    btn.classList.add('playing'); btn.textContent = '⏸';
-    currentPlayingId = id;
-  } catch (err) {
-    btn.textContent = prevText;
-    console.error('Không nghe thử được:', err);
-  } finally {
-    btn.disabled = false;
-  }
-}
-audio.addEventListener('ended', () => {
-  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
-  currentPlayingId = null;
-});
-
-// ── select video (thư viện hoặc upload riêng — loại trừ nhau) ──
-document.getElementById('videoGridBox').addEventListener('click', (e) => {
-  if (e.target.closest('#uploadOwnCard')) {
-    document.getElementById('ownVideoInput').click();
-    return;
-  }
-  const card = e.target.closest('[data-video-id]');
-  if (!card) return;
-  selectedVideoId = card.dataset.videoId;
-  ownVideoFile = null;
-  document.getElementById('ownVideoInput').value = '';
-  renderVideoGrid();
-  document.getElementById('toStep3Btn').disabled = false;
-});
-
-document.getElementById('ownVideoInput').addEventListener('change', (e) => {
+document.getElementById('ownVideoInput').addEventListener('change', (e)=>{
   const f = e.target.files[0];
-  if (!f) return;
-  ownVideoFile = f;
-  selectedVideoId = null;
-  renderVideoGrid();
-  document.getElementById('toStep3Btn').disabled = false;
+  if(f){ ownVideoFile = f; selectedVideoId = null; renderVideoGrid(); document.getElementById('toStep3Btn').disabled = false; }
 });
 
-// ── wizard nav ──
-function goToStep(name) {
-  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+function goToStep(name){
+  document.querySelectorAll('.step-page').forEach(p=>p.classList.remove('active'));
   document.getElementById('step-' + name).classList.add('active');
-  // dừng mọi phát nhạc/video khi rời bước
-  audio.pause();
-  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
-  const pv = document.getElementById('previewVideo'), pa = document.getElementById('previewAudioStep');
-  if (name !== 'preview') {
-    pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src');
-    document.getElementById('scrubRange').value = 0;
-    document.getElementById('scrubTime').textContent = '0:00';
-  }
 }
+document.getElementById('toStep2Btn').addEventListener('click', ()=>goToStep('video'));
+document.getElementById('backTo1Btn').addEventListener('click', ()=>goToStep('wem'));
+document.getElementById('backTo2Btn').addEventListener('click', ()=>goToStep('video'));
 
-document.getElementById('toStep2Btn').addEventListener('click', () => goToStep('video'));
-document.getElementById('backTo1Btn').addEventListener('click', () => goToStep('wem'));
-document.getElementById('backTo2Btn').addEventListener('click', () => goToStep('video'));
-
-document.getElementById('toStep3Btn').addEventListener('click', async () => {
+document.getElementById('toStep3Btn').addEventListener('click', async ()=>{
   goToStep('preview');
-  const wem = wems.find(w => w.id === selectedWemId);
-  document.getElementById('previewWemName').textContent = wem ? wem.name : '';
-
-  const pa = document.getElementById('previewAudioStep');
-  const loadingNote = document.getElementById('previewLoadingNote');
-  pa.removeAttribute('src');
-  if (wem) {
-    loadingNote.style.display = '';
-    try {
-      pa.src = await getPreviewOggUrl(wem.id);
-      await pa.play().catch(() => {});
-    } catch (err) {
-      console.error('Không tải được audio preview:', err);
-    } finally {
-      loadingNote.style.display = 'none';
-    }
-  }
-
-  const pv = document.getElementById('previewVideo');
-  if (ownVideoFile) {
-    pv.src = URL.createObjectURL(ownVideoFile);
-  } else {
-    const vid = videos.find(v => v.id === selectedVideoId);
-    pv.src = vid ? vid.video_url : '';
-  }
-  if (pv.src) pv.play().catch(() => {});
+  const wem = wemLibrary[selectedWemId];
+  document.getElementById('previewWemName').textContent = wem ? '🎵 ' + wem.name : '';
+  const video = document.getElementById('previewVideo');
+  if(ownVideoFile){ video.src = URL.createObjectURL(ownVideoFile); }
+  else{ const v = videoLibrary[selectedVideoId]; video.src = v ? v.video_url : ''; }
+  video.play().catch(()=>{});
+  const note = document.getElementById('previewLoadingNote');
+  const pa2 = document.getElementById('previewAudioStep');
+  try{
+    note.style.display = 'block';
+    const url = await getPreviewOggUrl(selectedWemId);
+    pa2.src = url; note.style.display = 'none';
+    pa2.play().catch(()=>{});
+  }catch(e){ note.style.display='none'; alert('Không tải được nhạc xem trước: ' + e.message); }
 });
 
-// ── thanh tua custom lồng trong khung preview (điều khiển audio) ──
 const scrubBtn = document.getElementById('scrubPlayBtn');
 const scrubRange = document.getElementById('scrubRange');
 const scrubTime = document.getElementById('scrubTime');
 const pa2 = document.getElementById('previewAudioStep');
 let scrubDragging = false;
+function fmtTime(s){ if(!isFinite(s)) return '0:00'; s=Math.max(0,Math.round(s)); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
+scrubBtn.addEventListener('click', ()=>{ if(!pa2.src) return; if(pa2.paused) pa2.play(); else pa2.pause(); });
+pa2.addEventListener('play', ()=> scrubBtn.textContent='⏸');
+pa2.addEventListener('pause', ()=> scrubBtn.textContent='▶');
+pa2.addEventListener('loadedmetadata', ()=>{ scrubRange.max = pa2.duration || 100; });
+pa2.addEventListener('timeupdate', ()=>{ if(scrubDragging) return; scrubRange.value=pa2.currentTime; scrubTime.textContent=fmtTime(pa2.currentTime); });
+scrubRange.addEventListener('input', ()=>{ scrubDragging=true; scrubTime.textContent=fmtTime(scrubRange.value); });
+scrubRange.addEventListener('change', ()=>{ pa2.currentTime=scrubRange.value; scrubDragging=false; });
+pa2.addEventListener('play', duckBgMusic);
+pa2.addEventListener('pause', restoreBgMusic);
+pa2.addEventListener('ended', restoreBgMusic);
 
-function fmtTime(s) {
-  if (!isFinite(s)) return '0:00';
-  s = Math.max(0, Math.round(s));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-}
-scrubBtn.addEventListener('click', () => {
-  if (!pa2.src) return;
-  if (pa2.paused) { pa2.play(); } else { pa2.pause(); }
-});
-pa2.addEventListener('play', () => scrubBtn.textContent = '⏸');
-pa2.addEventListener('pause', () => scrubBtn.textContent = '▶');
-pa2.addEventListener('loadedmetadata', () => { scrubRange.max = pa2.duration || 100; });
-pa2.addEventListener('timeupdate', () => {
-  if (scrubDragging) return;
-  scrubRange.value = pa2.currentTime;
-  scrubTime.textContent = fmtTime(pa2.currentTime);
-});
-scrubRange.addEventListener('input', () => { scrubDragging = true; scrubTime.textContent = fmtTime(scrubRange.value); });
-scrubRange.addEventListener('change', () => { pa2.currentTime = scrubRange.value; scrubDragging = false; });
-
-// ── build ──
-function showLoadingModal(show, title, sub) {
+function showLoadingModal(show, title, sub){
   const modal = document.getElementById('loadingModal');
-  if (title) document.getElementById('loadingTitle').textContent = title;
-  if (sub) document.getElementById('loadingSub').textContent = sub;
+  if(title) document.getElementById('loadingTitle').textContent = title;
+  if(sub) document.getElementById('loadingSub').textContent = sub;
   modal.classList.toggle('show', show);
 }
-
-document.getElementById('buildBtn').addEventListener('click', async () => {
+document.getElementById('buildBtn').addEventListener('click', async ()=>{
   const msg = document.getElementById('buildMsg');
-  msg.className = 'msg'; msg.style.display = 'none';
+  msg.className='msg'; msg.style.display='none';
   const btn = document.getElementById('buildBtn');
   btn.disabled = true;
   showLoadingModal(true, 'Đang tạo file...', 'Chờ chút nhé, sắp xong rồi');
-
-  try {
+  try{
     const fd = new FormData();
     fd.append('wemId', selectedWemId);
-    if (ownVideoFile) fd.append('video', ownVideoFile);
+    if(ownVideoFile) fd.append('video', ownVideoFile);
     else fd.append('videoId', selectedVideoId);
-
-    const resp = await fetch('/api/build', { method: 'POST', body: fd });
-    if (!resp.ok) {
-      const data = await resp.json().catch(() => ({}));
-      throw new Error(data.error || 'Lỗi build không xác định');
-    }
+    const resp = await fetch('/api/build', { method:'POST', body: fd });
+    if(!resp.ok){ const data = await resp.json().catch(()=>({})); throw new Error(data.error || 'Lỗi build không xác định'); }
     showLoadingModal(true, 'Đang tải về máy...', 'Gần xong rồi');
     const blob = await resp.blob();
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'Nhac_sanh.zip';
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href=url; a.download='Nhac_sanh.zip';
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     showLoadingModal(false);
-    msg.className = 'msg ok'; msg.style.display = 'block';
-    msg.textContent = '✅ Đã tạo xong, file đang tải về.';
-  } catch (e) {
+    msg.className='msg ok'; msg.style.display='block';
+    msg.textContent='✅ Đã tạo xong, file đang tải về.';
+  }catch(e){
     showLoadingModal(false);
-    msg.className = 'msg err'; msg.style.display = 'block';
-    msg.textContent = '⚠ ' + e.message;
-  } finally {
-    btn.disabled = false;
-  }
+    msg.className='msg err'; msg.style.display='block';
+    msg.textContent='⚠ ' + e.message;
+  }finally{ btn.disabled=false; }
 });
 
-// ── request tab ──
-document.getElementById('reqSendBtn').addEventListener('click', async () => {
-  const msg = document.getElementById('reqMsg');
-  const requesterName = document.getElementById('reqName').value.trim();
-  const contact = document.getElementById('reqContact').value.trim();
-  const songTitle = document.getElementById('reqSong').value.trim();
-  const note = document.getElementById('reqNote').value.trim();
-  if (!requesterName || !contact || !songTitle) {
-    msg.className = 'msg err'; msg.style.display = 'block';
-    msg.textContent = '⚠ Cần điền tên, cách liên hệ, và tên bài nhạc.';
-    return;
-  }
-  const btn = document.getElementById('reqSendBtn');
-  btn.disabled = true;
-  try {
-    const resp = await fetch('/api/request', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ requesterName, contact, songTitle, note })
-    });
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || 'Lỗi không xác định');
-    msg.className = 'msg ok'; msg.style.display = 'block';
-    msg.textContent = '✅ Đã gửi yêu cầu, admin sẽ liên hệ lại qua ' + contact;
-    ['reqName','reqContact','reqSong','reqNote'].forEach(id => document.getElementById(id).value = '');
-  } catch (e) {
-    msg.className = 'msg err'; msg.style.display = 'block';
-    msg.textContent = '⚠ ' + e.message;
-  } finally {
-    btn.disabled = false;
-  }
-});
+function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-function escapeHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
+applyTheme(currentTheme);
 loadLibraries();
 </script>
 </body>
