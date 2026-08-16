@@ -282,7 +282,6 @@ THEMES.forEach(t => {
   dot.addEventListener('click', () => applyTheme(t));
   themeRow.appendChild(dot);
 });
-applyTheme(currentTheme);
 
 // ═══ SETTINGS PANEL (gộp theme + donate) ═══
 const settingsBtn = document.getElementById('settingsBtn');
@@ -321,6 +320,7 @@ function initParticles() {
   }));
 }
 initParticles();
+applyTheme(currentTheme);
 function drawParticle(p, style, color, t) {
   let alpha = p.o;
   if (style.twinkle) alpha *= 0.4 + 0.6 * Math.abs(Math.sin(t * 0.002 + p.twinklePhase));
