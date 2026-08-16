@@ -122,8 +122,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .builder-header .home-badge{margin-bottom:6px}
 .builder-header h1{font-family:'Cinzel',Georgia,serif;font-size:1.15rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
 .builder-header p{color:var(--text-dim);font-size:0.74rem;max-width:360px;margin:0 auto;line-height:1.4}
-.builder-preview-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:4px}
-.preview-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.builder-preview-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:4px;margin:0 -14px}
+.preview-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 4px}
+
+/* TOGGLE overlay UI mô phỏng (không dùng icon, dạng pill-switch đồng bộ theme panel) */
+.overlay-toggle-chip{position:absolute;top:10px;right:10px;z-index:6;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:5px 8px 5px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background 0.2s}
+.overlay-toggle-chip:hover{background:rgba(0,0,0,0.6)}
+.overlay-toggle-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:0.04em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.6);white-space:nowrap}
+.overlay-toggle-track{width:30px;height:17px;border-radius:20px;background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.3);position:relative;flex-shrink:0;transition:background 0.22s,border-color 0.22s}
+.overlay-toggle-track.on{background:var(--accent);border-color:var(--accent)}
+.overlay-toggle-thumb{position:absolute;top:1px;left:1px;width:11px;height:11px;border-radius:50%;background:#fff;transition:transform 0.22s cubic-bezier(0.34,1.4,0.64,1);box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.overlay-toggle-track.on .overlay-toggle-thumb{transform:translateX(13px)}
+.preview-overlay-img.hidden-overlay{opacity:0}
 
 /* PICKER CARDS (chọn nhạc / chọn video ngay trên UI chính) */
 .picker-row{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -190,7 +200,7 @@ button.ghost:active{transform:scale(0.97)}
 /* PREVIEW (UI chính) */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
 .preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
-.preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity 0.25s}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
 .preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px;padding:0;margin:0;border:none;background:transparent;border-radius:0;width:auto;min-width:0}
 .preview-scrub .time{color:#fff;font-size:0.65rem;font-variant-numeric:tabular-nums;flex-shrink:0}
@@ -335,7 +345,11 @@ button.ghost:active{transform:scale(0.97)}
       <div class="preview-stage" id="previewStage">
         <div class="preview-video-wrap" id="previewVideoWrap">
           <video id="previewVideo" muted loop autoplay playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false" style="pointer-events:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none"></video>
-          <img class="preview-overlay-img" src="/img/overlay.png" alt="">
+          <img class="preview-overlay-img" src="/img/overlay.png" alt="" id="previewOverlayImg">
+          <div class="overlay-toggle-chip" id="overlayToggleChip" role="button" tabindex="0">
+            <span class="overlay-toggle-label">UI mô phỏng</span>
+            <div class="overlay-toggle-track on" id="overlayToggleTrack"><div class="overlay-toggle-thumb"></div></div>
+          </div>
           <div class="preview-empty-overlay" id="previewEmptyOverlay">
             <p>Hãy chọn nhạc và video để xem preview tại đây nhé!</p>
           </div>
@@ -1093,6 +1107,22 @@ document.getElementById('buildBtn').addEventListener('click', async ()=>{
 });
 
 function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* Toggle bật/tắt lớp UI mô phỏng đè trên preview - mặc định BẬT */
+(function(){
+  const chip = document.getElementById('overlayToggleChip');
+  const track = document.getElementById('overlayToggleTrack');
+  const img = document.getElementById('previewOverlayImg');
+  if(!chip || !track || !img) return;
+  let overlayOn = true;
+  function render(){
+    track.classList.toggle('on', overlayOn);
+    img.classList.toggle('hidden-overlay', !overlayOn);
+  }
+  chip.addEventListener('click', (e) => { e.stopPropagation(); overlayOn = !overlayOn; render(); });
+  chip.addEventListener('keydown', (e) => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); overlayOn = !overlayOn; render(); } });
+  render();
+})();
 
 /* Khoá cứng tỉ lệ 16:9 cho khung preview, tự co theo khoảng trống còn lại (không tràn, không scroll) */
 function fitPreviewBox(){
