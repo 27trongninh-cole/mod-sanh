@@ -63,7 +63,7 @@ button{font-family:inherit;cursor:pointer}
 
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:var(--bg-nav);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);transition:background 0.4s,border-color 0.4s}
-.nav-logo{font-family:'Cinzel',Georgia,serif;font-size:0.9rem;font-weight:900;letter-spacing:0.16em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;transition:opacity 0.2s}
+.nav-logo{font-family:'Cinzel',Georgia,serif;font-size:0.78rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52vw;flex-shrink:1}
 .nav-logo:hover{opacity:0.8}
 .nav-track{display:flex;align-items:center;gap:0;max-width:120px;overflow:hidden;flex:1;min-width:0;margin:0 12px}
 .track-progress{width:100%;height:2px;background:var(--border);border-radius:2px;overflow:hidden;flex-shrink:0;min-width:40px;max-width:120px}
@@ -195,11 +195,19 @@ button.ghost:active{transform:scale(0.97)}
 .video-thumb{aspect-ratio:16/9;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent2);overflow:hidden}
 .video-thumb img{width:100%;height:100%;object-fit:cover}
 .video-name{padding:6px 8px;font-size:0.72rem;font-weight:700;color:var(--text-bright)}
-.video-card.upload-card{border-style:dashed}
-.video-card.upload-card .video-thumb{background:transparent;font-size:1.6rem;color:var(--text-dim)}
-.video-card.upload-card.has-file{border-style:solid;border-color:var(--accent)}
-.video-card.upload-card .video-name{color:var(--text-dim)}
-.video-card.upload-card.has-file .video-name{color:var(--text-bright)}
+/* Hàng upload ghim cố định, tách khỏi lưới thư viện (không phải card, không bị xáo trộn khi tìm kiếm) */
+.upload-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px dashed var(--border);border-radius:12px;cursor:pointer;transition:border-color 0.15s,background 0.15s;margin-bottom:12px}
+.upload-row:hover{border-color:var(--accent-border);background:var(--chip-bg)}
+.upload-row.has-file{border-style:solid;border-color:var(--accent);background:var(--accent-glow)}
+.upload-row-icon{font-size:1.15rem;flex-shrink:0;color:var(--text-dim)}
+.upload-row.has-file .upload-row-icon{color:var(--accent2)}
+.upload-row-text{flex:1;min-width:0}
+.upload-row-title{font-size:0.8rem;font-weight:700;color:var(--text-bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.upload-row-sub{font-size:0.65rem;color:var(--text-dim)}
+.upload-row-clear{display:none;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,0.1);color:var(--text-bright);font-size:0.62rem;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.upload-row.has-file .upload-row-clear{display:flex}
+.upload-row-clear:hover{background:var(--danger);color:#fff}
+.video-grid-label{font-size:0.6rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin:0 0 8px 2px}
 
 /* PREVIEW (UI chính) */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
@@ -290,7 +298,7 @@ button.ghost:active{transform:scale(0.97)}
 <canvas id="particleCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
 
 <nav>
-  <span class="nav-logo" id="navLogo">Melodinity</span>
+  <span class="nav-logo" id="navLogo">Ninfinity Workspace</span>
   <div class="nav-track" id="navTrack" style="display:none">
     <div class="track-progress"><div class="track-progress-bar" id="trackProgressBar"></div></div>
   </div>
@@ -352,7 +360,7 @@ button.ghost:active{transform:scale(0.97)}
             <video id="previewVideo" muted loop autoplay playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false" style="pointer-events:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none"></video>
             <img class="preview-overlay-img" src="/img/overlay.png" alt="" id="previewOverlayImg">
             <div class="overlay-toggle-chip" id="overlayToggleChip" role="button" tabindex="0">
-              <span class="overlay-toggle-label">UI mô phỏng</span>
+              <span class="overlay-toggle-label">UI</span>
               <div class="overlay-toggle-track on" id="overlayToggleTrack"><div class="overlay-toggle-thumb"></div></div>
             </div>
             <div class="preview-empty-overlay" id="previewEmptyOverlay">
@@ -419,6 +427,15 @@ button.ghost:active{transform:scale(0.97)}
     </div>
     <div class="req-modal-body">
       <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
+      <div class="upload-row" id="uploadRow" role="button" tabindex="0">
+        <div class="upload-row-icon">📤</div>
+        <div class="upload-row-text">
+          <div class="upload-row-title" id="uploadRowTitle">Tự upload video...</div>
+          <div class="upload-row-sub">MP4 từ máy của bồ</div>
+        </div>
+        <button type="button" class="upload-row-clear" id="uploadRowClear" title="Bỏ chọn">✕</button>
+      </div>
+      <div class="video-grid-label">Thư viện</div>
       <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
       <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
     </div>
@@ -989,24 +1006,35 @@ function renderVideoGrid(){
   const term = document.getElementById('vidSearchInput').value;
   const box = document.getElementById('videoGridBox');
   const items = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
-  let html = items.map(v => `
+  const html = items.map(v => `
     <div class="video-card ${v.id===selectedVideoId && !ownVideoFile ?'selected':''}" data-id="${v.id}">
       <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}" alt="">` : '🎬'}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>
   `).join('');
-  html += `
-    <div class="video-card upload-card ${ownVideoFile?'has-file':''}" id="uploadCard">
-      <div class="video-thumb">📤</div>
-      <div class="video-name">${ownVideoFile ? escapeHtml(ownVideoFile.name) : 'Tự upload video...'}</div>
-    </div>
-  `;
-  box.innerHTML = items.length || true ? html : '<div class="empty">Không tìm thấy video nào.</div>';
+  box.innerHTML = items.length ? html : '<div class="empty">Không tìm thấy video nào.</div>';
+  renderUploadRow();
+}
+function renderUploadRow(){
+  const row = document.getElementById('uploadRow');
+  row.classList.toggle('has-file', !!ownVideoFile);
+  document.getElementById('uploadRowTitle').textContent = ownVideoFile ? ownVideoFile.name : 'Tự upload video...';
 }
 document.getElementById('vidSearchInput').addEventListener('input', renderVideoGrid);
+document.getElementById('uploadRow').addEventListener('click', (e)=>{
+  if(e.target.closest('#uploadRowClear')){
+    ownVideoFile = null;
+    document.getElementById('ownVideoInput').value = '';
+    renderVideoGrid();
+    updatePreviewVideo();
+    return;
+  }
+  document.getElementById('ownVideoInput').click();
+});
+document.getElementById('uploadRow').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter' || e.key===' '){ e.preventDefault(); document.getElementById('ownVideoInput').click(); }
+});
 document.getElementById('videoGridBox').addEventListener('click', (e)=>{
-  const uploadCard = e.target.closest('#uploadCard');
-  if(uploadCard){ document.getElementById('ownVideoInput').click(); return; }
   const card = e.target.closest('.video-card[data-id]');
   if(card){
     selectedVideoId = card.dataset.id; ownVideoFile = null;
