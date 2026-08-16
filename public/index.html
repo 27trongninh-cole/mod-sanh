@@ -189,8 +189,7 @@ button.ghost:active{transform:scale(0.97)}
 .preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
-.preview-scrub button{background:rgba(255,255,255,0.18);border:none;color:#fff;width:26px;height:26px;border-radius:50%;font-size:0.7rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px}
+.preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px;padding:0;margin:0;border:none;background:transparent;border-radius:0;width:auto;min-width:0}
 .preview-scrub .time{color:#fff;font-size:0.65rem;font-variant-numeric:tabular-nums;flex-shrink:0}
 
 /* LOADING MODAL */
@@ -327,7 +326,6 @@ button.ghost:active{transform:scale(0.97)}
           <video id="previewVideo" muted loop autoplay playsinline></video>
           <img class="preview-overlay-img" src="/img/overlay.png" alt="">
           <div class="preview-scrub">
-            <button id="scrubPlayBtn">⏸</button>
             <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
             <span class="time" id="scrubTime">0:00</span>
           </div>
@@ -1012,15 +1010,11 @@ function updateBuildBtnState(){
   document.getElementById('buildBtn').disabled = !(selectedWemId && (selectedVideoId || ownVideoFile));
 }
 
-const scrubBtn = document.getElementById('scrubPlayBtn');
 const scrubRange = document.getElementById('scrubRange');
 const scrubTime = document.getElementById('scrubTime');
 const pa2 = document.getElementById('previewAudioStep');
 let scrubDragging = false;
 function fmtTime(s){ if(!isFinite(s)) return '0:00'; s=Math.max(0,Math.round(s)); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
-scrubBtn.addEventListener('click', ()=>{ if(!pa2.src) return; if(pa2.paused) pa2.play(); else pa2.pause(); });
-pa2.addEventListener('play', ()=> scrubBtn.textContent='⏸');
-pa2.addEventListener('pause', ()=> scrubBtn.textContent='▶');
 pa2.addEventListener('loadedmetadata', ()=>{ scrubRange.max = pa2.duration || 100; });
 pa2.addEventListener('timeupdate', ()=>{ if(scrubDragging) return; scrubRange.value=pa2.currentTime; scrubTime.textContent=fmtTime(pa2.currentTime); });
 scrubRange.addEventListener('input', ()=>{ scrubDragging=true; scrubTime.textContent=fmtTime(scrubRange.value); });
