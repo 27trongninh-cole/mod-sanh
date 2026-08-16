@@ -153,6 +153,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .picker-value{font-size:0.8rem;font-weight:700;color:var(--text-bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 h2{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
 .section-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:12px}
+.preview-note{margin:0;text-align:center;height:1.35em;line-height:1.35em;overflow:hidden;visibility:hidden}
+.preview-note.show{visibility:visible}
 .section{margin-bottom:26px}
 .empty{color:var(--text-dim);font-size:0.8rem;padding:10px 0}
 
@@ -373,8 +375,8 @@ button.ghost:active{transform:scale(0.97)}
           </div>
         </div>
         <audio id="previewAudioStep" style="display:none"></audio>
-        <div class="section-desc" id="previewLoadingNote" style="display:none;margin:0;text-align:center">Đang giải mã audio…</div>
-        <div class="section-desc" id="previewWemName" style="margin:0;text-align:center"></div>
+        <div class="section-desc preview-note" id="previewLoadingNote">Đang tải nhạc từ máy chủ...</div>
+        <div class="section-desc preview-note" id="previewWemName"></div>
       </div>
 
       <div class="picker-row">
@@ -1074,17 +1076,19 @@ async function updatePreviewAudio(){
   const picker = document.getElementById('openWemPickerBtn');
   pickerVal.textContent = wem ? wem.name : 'Chọn nhạc...';
   picker.classList.toggle('filled', !!wem);
-  document.getElementById('previewWemName').textContent = wem ? '🎵 ' + wem.name : '';
+  const wemNameEl = document.getElementById('previewWemName');
+  wemNameEl.textContent = wem ? '🎵 ' + wem.name : '';
+  wemNameEl.classList.toggle('show', !!wem);
   updateBuildBtnState();
   if(!wem) { const pa2x = document.getElementById('previewAudioStep'); pa2x.pause(); pa2x.removeAttribute('src'); return; }
   const note = document.getElementById('previewLoadingNote');
   const pa2 = document.getElementById('previewAudioStep');
   try{
-    note.style.display = 'block';
+    note.classList.add('show');
     const url = await getPreviewOggUrl(selectedWemId);
-    pa2.src = url; note.style.display = 'none';
+    pa2.src = url; note.classList.remove('show');
     pa2.play().catch(()=>{});
-  }catch(e){ note.style.display='none'; alert('Không tải được nhạc xem trước: ' + e.message); }
+  }catch(e){ note.classList.remove('show'); alert('Không tải được nhạc xem trước: ' + e.message); }
 }
 function updateBuildBtnState(){
   const hasBoth = selectedWemId && (selectedVideoId || ownVideoFile);
