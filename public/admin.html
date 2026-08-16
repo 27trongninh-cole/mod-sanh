@@ -204,7 +204,7 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
   const btn = document.getElementById('saveBnkBtn');
   btn.disabled = true;
   try {
-    await api('/api/admin/bnk-config', {
+    const data = await api('/api/admin/bnk-config', {
       method: 'POST',
       body: JSON.stringify({
         bnkUrl: bnkUrl || undefined,
@@ -213,7 +213,8 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
         videoFilename: videoFilename || undefined
       })
     });
-    showMsg(msg, true, 'Đã lưu cấu hình.');
+    if (data.warning) showMsg(msg, false, 'Đã lưu, nhưng: ' + data.warning);
+    else showMsg(msg, true, 'Đã lưu cấu hình.');
     ['bnkUrlInput','sourceIdInput','replacementIdInput','videoFilenameInput'].forEach(id => document.getElementById(id).value = '');
     await loadBnkStatus();
   } catch (e) {

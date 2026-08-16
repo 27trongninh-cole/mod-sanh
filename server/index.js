@@ -210,8 +210,15 @@ app.post('/api/admin/bnk-config', requireAdmin, async (req, res) => {
       updatedBy
     });
     bnkCache.invalidate();
-    await bnkCache.getActive({ forceRefresh: true }); // xác nhận link tải được ngay
-    res.json({ ok: true, config: saved });
+    // Thử tải lại bnk để xác nhận link còn sống — nếu bước này lỗi (mất mạng,
+    // GitHub chậm...) thì KHÔNG huỷ kết quả đã lưu, chỉ cảnh báo cho admin biết.
+    let verifyWarning = null;
+    try {
+      await bnkCache.getActive({ forceRefresh: true });
+    } catch (verifyErr) {
+      verifyWarning = 'Đã lưu cấu hình, nhưng chưa xác nhận được link bnk còn sống: ' + verifyErr.message;
+    }
+    res.json({ ok: true, config: saved, warning: verifyWarning });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
