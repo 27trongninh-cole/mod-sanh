@@ -200,6 +200,7 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
           </div>
         </div>
         <audio id="previewAudioStep" style="display:none"></audio>
+    <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
         <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
       </div>
       <div class="step-nav">
@@ -396,6 +397,7 @@ donateModal.addEventListener('click', (e) => { if (e.target === donateModal) don
 
 // ═══ (phần cũ tiếp tục bên dưới) ═══
 </script>
+<script src="/wemogg.js"></script>
 <script>
 let wems = [], videos = [];
 let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
@@ -445,8 +447,21 @@ function renderWemList() {
         <div class="wem-name">${escapeHtml(w.name)}</div>
         <div class="wem-sub">${fmtDuration(w.duration_ms)}</div>
       </div>
-      ${w.preview_mp3_url ? `<button class="wem-play-btn" data-play-id="${w.id}" data-url="${w.preview_mp3_url}">▶</button>` : ''}
+      <button class="wem-play-btn" data-play-id="${w.id}">▶</button>
     </div>`).join('');
+}
+
+// ── cache ogg blob URL đã convert theo từng wem id, tránh convert lại mỗi lần bấm ──
+const oggUrlCache = new Map();
+async function getPreviewOggUrl(id) {
+  if (oggUrlCache.has(id)) return oggUrlCache.get(id);
+  const resp = await fetch(`/api/wem-preview/${id}`);
+  if (!resp.ok) throw new Error('Không tải được audio');
+  const rawBytes = new Uint8Array(await resp.arrayBuffer());
+  const oggBytes = WemOgg.wemToOgg(rawBytes, CODEBOOK_BYTES);
+  const url = URL.createObjectURL(new Blob([oggBytes], { type: 'audio/ogg' }));
+  oggUrlCache.set(id, url);
+  return url;
 }
 
 function renderVideoGrid() {
@@ -464,7 +479,7 @@ document.getElementById('wemListBox').addEventListener('click', (e) => {
   const playBtn = e.target.closest('[data-play-id]');
   if (playBtn) {
     e.stopPropagation();
-    togglePreview(playBtn.dataset.playId, playBtn.dataset.url, playBtn);
+    togglePreview(playBtn.dataset.playId, playBtn);
     return;
   }
   const item = e.target.closest('[data-wem-id]');
@@ -474,7 +489,7 @@ document.getElementById('wemListBox').addEventListener('click', (e) => {
   document.getElementById('toStep2Btn').disabled = false;
 });
 
-function togglePreview(id, url, btn) {
+async function togglePreview(id, btn) {
   if (currentPlayingId === id && !audio.paused) {
     audio.pause();
     btn.classList.remove('playing'); btn.textContent = '▶';
@@ -482,10 +497,20 @@ function togglePreview(id, url, btn) {
     return;
   }
   document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
-  audio.src = url;
-  audio.play();
-  btn.classList.add('playing'); btn.textContent = '⏸';
-  currentPlayingId = id;
+  const prevText = btn.textContent;
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    const url = await getPreviewOggUrl(id);
+    audio.src = url;
+    await audio.play();
+    btn.classList.add('playing'); btn.textContent = '⏸';
+    currentPlayingId = id;
+  } catch (err) {
+    btn.textContent = prevText;
+    console.error('Không nghe thử được:', err);
+  } finally {
+    btn.disabled = false;
+  }
 }
 audio.addEventListener('ended', () => {
   document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
@@ -537,14 +562,25 @@ document.getElementById('toStep2Btn').addEventListener('click', () => goToStep('
 document.getElementById('backTo1Btn').addEventListener('click', () => goToStep('wem'));
 document.getElementById('backTo2Btn').addEventListener('click', () => goToStep('video'));
 
-document.getElementById('toStep3Btn').addEventListener('click', () => {
+document.getElementById('toStep3Btn').addEventListener('click', async () => {
   goToStep('preview');
   const wem = wems.find(w => w.id === selectedWemId);
   document.getElementById('previewWemName').textContent = wem ? wem.name : '';
 
   const pa = document.getElementById('previewAudioStep');
-  pa.src = wem && wem.preview_mp3_url ? wem.preview_mp3_url : '';
-  if (pa.src) pa.play().catch(() => {});
+  const loadingNote = document.getElementById('previewLoadingNote');
+  pa.removeAttribute('src');
+  if (wem) {
+    loadingNote.style.display = '';
+    try {
+      pa.src = await getPreviewOggUrl(wem.id);
+      await pa.play().catch(() => {});
+    } catch (err) {
+      console.error('Không tải được audio preview:', err);
+    } finally {
+      loadingNote.style.display = 'none';
+    }
+  }
 
   const pv = document.getElementById('previewVideo');
   if (ownVideoFile) {

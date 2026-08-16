@@ -53,6 +53,21 @@ app.get('/api/wem-list', async (req, res) => {
   }
 });
 
+// Proxy tải raw bytes .wem để client tự convert sang ogg (Web Audio) mà không
+// lộ wem_url thật (giữ đúng nguyên tắc ẩn URL như wem-list ở trên).
+app.get('/api/wem-preview/:id', async (req, res) => {
+  try {
+    const wem = await supabaseStore.getWemById(req.params.id);
+    if (!wem) return res.status(404).json({ ok: false, error: 'Không tìm thấy bài nhạc' });
+    const wemBytes = await bnkCache.fetchBuffer(wem.wem_url);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.send(wemBytes);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 app.get('/api/video-list', async (req, res) => {
   try {
     const videos = await supabaseStore.listVideos();
