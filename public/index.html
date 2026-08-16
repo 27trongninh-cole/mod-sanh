@@ -6,6 +6,9 @@
 <title>Melodinity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Bắt đầu gọi API thư viện càng sớm càng tốt, ngay khi trình duyệt vừa parse xong <head>, thay vì đợi tới lúc JS ở cuối trang chạy -->
+<link rel="preload" as="fetch" href="/api/wem-list" crossorigin="anonymous">
+<link rel="preload" as="fetch" href="/api/video-list" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 
@@ -156,7 +159,9 @@ h2{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bott
 .preview-note{margin:0;text-align:center;height:1.35em;line-height:1.35em;overflow:hidden;visibility:hidden}
 .preview-note.show{visibility:visible}
 .section{margin-bottom:26px}
-.empty{color:var(--text-dim);font-size:0.8rem;padding:10px 0}
+.empty{color:var(--text-dim);font-size:0.8rem;padding:10px 0;text-align:center}
+.retry-btn{display:inline-block;margin-left:6px;padding:4px 12px;border-radius:20px;border:1.5px solid var(--accent-border);background:var(--accent-glow);color:var(--accent2);font-size:0.72rem;font-weight:700;cursor:pointer}
+.retry-btn:hover{background:var(--accent);color:#fff}
 
 /* FORM BASE (dùng lại token EchoHall) */
 input,textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:0.85rem;font-family:'Nunito',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s}
@@ -921,19 +926,53 @@ document.getElementById('clearVideoBtn').addEventListener('click', (e)=>{
 
 let wemLibrary = {}, videoLibrary = {};
 let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
+const LIB_CACHE_KEY = 'melodinity_lib_cache_v1';
 
-async function loadLibraries(){
+// Hiện tạm dữ liệu lần trước (nếu có) ngay lập tức trong lúc chờ mạng, để picker
+// không bao giờ trông "trống" — chỉ chờ mạng thật sự khi chưa từng tải lần nào.
+function loadCachedLibraries(){
   try{
-    const [wr, vr] = await Promise.all([
-      fetch('/api/wem-list').then(r=>r.json()),
-      fetch('/api/video-list').then(r=>r.json())
-    ]);
-    wemLibrary = {}; (wr.wems||[]).forEach(w=>wemLibrary[w.id]=w);
-    videoLibrary = {}; (vr.videos||[]).forEach(v=>videoLibrary[v.id]=v);
+    const cached = JSON.parse(sessionStorage.getItem(LIB_CACHE_KEY) || 'null');
+    if(cached && cached.wems && cached.videos){
+      wemLibrary = {}; cached.wems.forEach(w=>wemLibrary[w.id]=w);
+      videoLibrary = {}; cached.videos.forEach(v=>videoLibrary[v.id]=v);
+      renderWemList(); renderVideoGrid();
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+function saveCachedLibraries(wems, videos){
+  try{ sessionStorage.setItem(LIB_CACHE_KEY, JSON.stringify({ wems, videos })); }catch(e){}
+}
+async function fetchLibrariesOnce(){
+  const [wr, vr] = await Promise.all([
+    fetch('/api/wem-list').then(r=>r.json()),
+    fetch('/api/video-list').then(r=>r.json())
+  ]);
+  return { wems: wr.wems || [], videos: vr.videos || [] };
+}
+async function loadLibraries(hadCache){
+  try{
+    let result;
+    try{
+      result = await fetchLibrariesOnce();
+    }catch(firstErr){
+      // Chập chờn mạng lúc vừa vào trang: tự thử lại 1 lần trước khi báo lỗi hẳn
+      await new Promise(r=>setTimeout(r, 1200));
+      result = await fetchLibrariesOnce();
+    }
+    wemLibrary = {}; result.wems.forEach(w=>wemLibrary[w.id]=w);
+    videoLibrary = {}; result.videos.forEach(v=>videoLibrary[v.id]=v);
+    saveCachedLibraries(result.wems, result.videos);
     renderWemList(); renderVideoGrid();
   }catch(e){
-    document.getElementById('wemListBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện nhạc.</div>';
-    document.getElementById('videoGridBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện video.</div>';
+    if(hadCache) return; // vẫn còn danh sách cũ hiển thị, khỏi ghi đè bằng lỗi
+    document.getElementById('wemListBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện nhạc. <button type="button" class="retry-btn" id="retryWemBtn">Thử lại</button></div>';
+    document.getElementById('videoGridBox').innerHTML = '<div class="empty">⚠ Không tải được thư viện video. <button type="button" class="retry-btn" id="retryVideoBtn">Thử lại</button></div>';
+    const retry = ()=> loadLibraries(false);
+    document.getElementById('retryWemBtn') && document.getElementById('retryWemBtn').addEventListener('click', retry);
+    document.getElementById('retryVideoBtn') && document.getElementById('retryVideoBtn').addEventListener('click', retry);
   }
 }
 function fmtDuration(ms){
@@ -1010,7 +1049,7 @@ function renderVideoGrid(){
   const items = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
   const html = items.map(v => `
     <div class="video-card ${v.id===selectedVideoId && !ownVideoFile ?'selected':''}" data-id="${v.id}">
-      <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}" alt="">` : '🎬'}</div>
+      <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : '🎬'}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>
   `).join('');
@@ -1178,7 +1217,8 @@ window.addEventListener('resize', fitPreviewBox);
 window.addEventListener('orientationchange', ()=> setTimeout(fitPreviewBox, 50));
 
 applyTheme(currentTheme);
-loadLibraries();
+const hadCache = loadCachedLibraries();
+loadLibraries(hadCache);
 fitPreviewBox();
 setTimeout(fitPreviewBox, 50);
 </script>
