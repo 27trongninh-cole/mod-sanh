@@ -42,6 +42,29 @@ h2{font-size:0.95rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
 .upload-own{border:1.5px dashed var(--border);border-radius:12px;padding:14px;text-align:center;margin-top:10px;cursor:pointer;color:var(--text-dim);font-size:0.78rem;font-weight:700}
 .upload-own.has-file{border-color:var(--accent);color:var(--accent2)}
 
+/* wizard steps */
+.step-page{display:none}
+.step-page.active{display:block}
+.step-nav{display:flex;gap:10px;margin-top:20px}
+.step-nav button{flex:1}
+button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border)}
+
+/* preview step */
+.preview-video-wrap{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
+.preview-video-wrap video{width:100%;height:100%;object-fit:contain}
+.preview-audio-box{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:12px}
+.preview-audio-box .wem-name{margin-bottom:8px}
+audio{width:100%}
+
+/* loading modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(14,30,0,0.55);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-card);border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:100%}
+.spinner{width:36px;height:36px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 14px;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-title{font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
+.modal-sub{font-size:0.76rem;color:var(--text-dim)}
+
 /* form */
 input,textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
 textarea{resize:vertical;min-height:70px}
@@ -66,28 +89,57 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed}
     <button class="tab-btn" data-tab="request">Yêu Cầu Wem</button>
   </div>
 
-  <!-- ═══ TAB: TẠO MOD ═══ -->
+  <!-- ═══ TAB: TẠO MOD (wizard 3 bước) ═══ -->
   <div class="tab-page active" id="tab-build">
 
-    <div class="section">
-      <h2>1. Chọn nhạc</h2>
-      <div class="section-desc">Bấm vào bài để chọn, bấm nút tròn để nghe thử.</div>
-      <div id="wemListBox"><div class="empty">Đang tải...</div></div>
-    </div>
-
-    <div class="section">
-      <h2>2. Chọn video</h2>
-      <div class="section-desc">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
-      <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
-      <div class="upload-own" id="uploadOwnBox">
-        📤 Hoặc bấm để tự upload video (.mp4)
-        <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
+    <!-- Bước 1: chọn nhạc -->
+    <div class="step-page active" id="step-wem">
+      <div class="section">
+        <h2>1. Chọn nhạc</h2>
+        <div class="section-desc">Bấm vào bài để chọn, bấm nút tròn để nghe thử.</div>
+        <div id="wemListBox"><div class="empty">Đang tải...</div></div>
+      </div>
+      <div class="step-nav">
+        <button class="primary" id="toStep2Btn" disabled>Tiếp theo →</button>
       </div>
     </div>
 
-    <button class="primary" id="buildBtn" disabled>Chọn nhạc + video để tiếp tục</button>
-    <div class="progress-wrap" id="buildProgressWrap"><div class="progress-bar" id="buildProgressBar"></div></div>
-    <div class="msg" id="buildMsg"></div>
+    <!-- Bước 2: chọn video -->
+    <div class="step-page" id="step-video">
+      <div class="section">
+        <h2>2. Chọn video</h2>
+        <div class="section-desc">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
+        <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
+        <div class="upload-own" id="uploadOwnBox">
+          📤 Hoặc bấm để tự upload video (.mp4)
+          <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="ghost" id="backTo1Btn">← Quay lại</button>
+        <button class="primary" id="toStep3Btn" disabled>Xem trước →</button>
+      </div>
+    </div>
+
+    <!-- Bước 3: preview + lưu -->
+    <div class="step-page" id="step-preview">
+      <div class="section">
+        <h2>3. Xem trước</h2>
+        <div class="section-desc">Video phát lặp lại, nhạc phát kèm bên dưới (có thanh tua).</div>
+        <div class="preview-video-wrap">
+          <video id="previewVideo" muted loop autoplay playsinline></video>
+        </div>
+        <div class="preview-audio-box">
+          <div class="wem-name" id="previewWemName"></div>
+          <audio id="previewAudioStep" controls autoplay></audio>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="ghost" id="backTo2Btn">← Đổi video</button>
+        <button class="primary" id="buildBtn">💾 Lưu & tải về</button>
+      </div>
+      <div class="msg" id="buildMsg"></div>
+    </div>
   </div>
 
   <!-- ═══ TAB: YÊU CẦU WEM ═══ -->
@@ -112,6 +164,14 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed}
 </div>
 
 <audio id="previewAudio" style="display:none"></audio>
+
+<div class="modal-overlay" id="loadingModal">
+  <div class="modal-box">
+    <div class="spinner"></div>
+    <div class="modal-title" id="loadingTitle">Đang tạo file...</div>
+    <div class="modal-sub" id="loadingSub">Chờ chút nhé, sắp xong rồi</div>
+  </div>
+</div>
 
 <script>
 let wems = [], videos = [];
@@ -188,7 +248,7 @@ document.getElementById('wemListBox').addEventListener('click', (e) => {
   if (!item) return;
   selectedWemId = item.dataset.wemId;
   renderWemList();
-  updateBuildBtn();
+  document.getElementById('toStep2Btn').disabled = false;
 });
 
 function togglePreview(id, url, btn) {
@@ -219,7 +279,7 @@ document.getElementById('videoGridBox').addEventListener('click', (e) => {
   document.getElementById('uploadOwnBox').classList.remove('has-file');
   document.getElementById('uploadOwnBox').textContent = '📤 Hoặc bấm để tự upload video (.mp4)';
   renderVideoGrid();
-  updateBuildBtn();
+  document.getElementById('toStep3Btn').disabled = false;
 });
 
 document.getElementById('uploadOwnBox').addEventListener('click', () => document.getElementById('ownVideoInput').click());
@@ -232,25 +292,57 @@ document.getElementById('ownVideoInput').addEventListener('change', (e) => {
   const box = document.getElementById('uploadOwnBox');
   box.classList.add('has-file');
   box.textContent = '✅ ' + f.name;
-  updateBuildBtn();
+  document.getElementById('toStep3Btn').disabled = false;
 });
 
-function updateBuildBtn() {
-  const btn = document.getElementById('buildBtn');
-  const ok = selectedWemId && (selectedVideoId || ownVideoFile);
-  btn.disabled = !ok;
-  btn.textContent = ok ? '🎁 Tạo & tải file' : 'Chọn nhạc + video để tiếp tục';
+// ── wizard nav ──
+function goToStep(name) {
+  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-' + name).classList.add('active');
+  // dừng mọi phát nhạc/video khi rời bước
+  audio.pause();
+  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
+  const pv = document.getElementById('previewVideo'), pa = document.getElementById('previewAudioStep');
+  if (name !== 'preview') { pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src'); }
 }
 
+document.getElementById('toStep2Btn').addEventListener('click', () => goToStep('video'));
+document.getElementById('backTo1Btn').addEventListener('click', () => goToStep('wem'));
+document.getElementById('backTo2Btn').addEventListener('click', () => goToStep('video'));
+
+document.getElementById('toStep3Btn').addEventListener('click', () => {
+  goToStep('preview');
+  const wem = wems.find(w => w.id === selectedWemId);
+  document.getElementById('previewWemName').textContent = wem ? wem.name : '';
+
+  const pa = document.getElementById('previewAudioStep');
+  pa.src = wem && wem.preview_mp3_url ? wem.preview_mp3_url : '';
+  if (pa.src) pa.play().catch(() => {});
+
+  const pv = document.getElementById('previewVideo');
+  if (ownVideoFile) {
+    pv.src = URL.createObjectURL(ownVideoFile);
+  } else {
+    const vid = videos.find(v => v.id === selectedVideoId);
+    pv.src = vid ? vid.video_url : '';
+  }
+  if (pv.src) pv.play().catch(() => {});
+});
+
 // ── build ──
+function showLoadingModal(show, title, sub) {
+  const modal = document.getElementById('loadingModal');
+  if (title) document.getElementById('loadingTitle').textContent = title;
+  if (sub) document.getElementById('loadingSub').textContent = sub;
+  modal.classList.toggle('show', show);
+}
+
 document.getElementById('buildBtn').addEventListener('click', async () => {
   const msg = document.getElementById('buildMsg');
-  const progWrap = document.getElementById('buildProgressWrap');
-  const progBar = document.getElementById('buildProgressBar');
   msg.className = 'msg'; msg.style.display = 'none';
   const btn = document.getElementById('buildBtn');
   btn.disabled = true;
-  progWrap.style.display = 'block'; progBar.style.width = '20%';
+  showLoadingModal(true, 'Đang tạo file...', 'Chờ chút nhé, sắp xong rồi');
 
   try {
     const fd = new FormData();
@@ -258,29 +350,27 @@ document.getElementById('buildBtn').addEventListener('click', async () => {
     if (ownVideoFile) fd.append('video', ownVideoFile);
     else fd.append('videoId', selectedVideoId);
 
-    progBar.style.width = '50%';
     const resp = await fetch('/api/build', { method: 'POST', body: fd });
     if (!resp.ok) {
       const data = await resp.json().catch(() => ({}));
       throw new Error(data.error || 'Lỗi build không xác định');
     }
-    progBar.style.width = '85%';
+    showLoadingModal(true, 'Đang tải về máy...', 'Gần xong rồi');
     const blob = await resp.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url; a.download = 'Nhac_sanh.zip';
     document.body.appendChild(a); a.click(); a.remove();
     URL.revokeObjectURL(url);
-    progBar.style.width = '100%';
+    showLoadingModal(false);
     msg.className = 'msg ok'; msg.style.display = 'block';
     msg.textContent = '✅ Đã tạo xong, file đang tải về.';
   } catch (e) {
+    showLoadingModal(false);
     msg.className = 'msg err'; msg.style.display = 'block';
     msg.textContent = '⚠ ' + e.message;
   } finally {
     btn.disabled = false;
-    updateBuildBtn();
-    setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 800);
   }
 });
 
