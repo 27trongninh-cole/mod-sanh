@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — EchoHall Mod Sảnh</title>
+<title>Admin - Melodinity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -54,8 +54,8 @@ a.back-link:hover{color:var(--accent)}
 <body>
 
 <div class="wrap" id="gate">
-  <div class="brand">EchoHall</div>
-  <div class="eyebrow">Admin · Mod Sảnh</div>
+  <div class="brand">Melodinity</div>
+  <div class="eyebrow">Admin · Melodinity</div>
   <h1>Đăng nhập</h1>
   <div class="card">
     <label>Mật khẩu admin</label>
@@ -67,14 +67,14 @@ a.back-link:hover{color:var(--accent)}
 
 <div class="wrap" id="main" style="display:none">
   <a class="back-link" href="/">← Về trang chủ</a>
-  <div class="brand">EchoHall</div>
-  <div class="eyebrow">Admin · Mod Sảnh</div>
-  <h1>Quản lý Mod Sảnh</h1>
+  <div class="brand">Melodinity</div>
+  <div class="eyebrow">Admin · Melodinity</div>
+  <h1>Quản lý Melodinity</h1>
 
   <!-- ═══ CẤU HÌNH BNK / VIDEO FILENAME ═══ -->
   <div class="card">
     <h2>Cấu hình game (bnk + tên video)</h2>
-    <div class="desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
+    <div class="desc">3 thứ này luôn đi cùng nhau - mỗi khi game update cần đổi cả 3.</div>
     <div id="bnkStatusBox"></div>
 
     <label>Link GitHub (raw) file Music_Login.bnk</label>
@@ -106,7 +106,7 @@ a.back-link:hover{color:var(--accent)}
     <input type="text" id="wemUrlInput" placeholder="https://files.catbox.moe/xxxxxx.wem">
     <label>Link Catbox mp3 nghe thử (tuỳ chọn)</label>
     <input type="text" id="wemPreviewInput" placeholder="https://files.catbox.moe/xxxxxx.mp3">
-    <label>Duration (ms) — đo sẵn, bắt buộc</label>
+    <label>Duration (ms) - đo sẵn, bắt buộc</label>
     <input type="number" id="wemDurationInput" placeholder="vd: 183500">
     <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
     <input type="text" id="wemKeywordsInput" placeholder="vd: buồn, chill, tết, lofi">
@@ -189,7 +189,7 @@ async function loadBnkStatus() {
   const c = data.bnkConfig;
   const box = document.getElementById('bnkStatusBox');
   if (!c) {
-    box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào — cần điền đủ cả 4 ô bên dưới.</div>';
+    box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào - cần điền đủ cả 4 ô bên dưới.</div>';
     return;
   }
   const rows = [
@@ -197,10 +197,10 @@ async function loadBnkStatus() {
     ['Source ID', c.source_id],
     ['Replacement ID', c.replacement_id],
     ['Tên file video', c.video_filename],
-    ['Cập nhật lúc', c.updated_at ? new Date(c.updated_at).toLocaleString('vi-VN') : '—'],
-    ['Người cập nhật', c.updated_by || '—']
+    ['Cập nhật lúc', c.updated_at ? new Date(c.updated_at).toLocaleString('vi-VN') : '-'],
+    ['Người cập nhật', c.updated_by || '-']
   ];
-  box.innerHTML = rows.map(([k, v]) => `<div class="statusRow"><span class="k">${k}</span><span class="v">${v ?? '—'}</span></div>`).join('');
+  box.innerHTML = rows.map(([k, v]) => `<div class="statusRow"><span class="k">${k}</span><span class="v">${v ?? '-'}</span></div>`).join('');
 }
 
 document.getElementById('refreshBnkBtn').addEventListener('click', loadBnkStatus);
