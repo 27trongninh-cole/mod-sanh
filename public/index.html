@@ -76,6 +76,11 @@ h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bot
 .video-thumb img{width:100%;height:100%;object-fit:cover}
 .video-name{padding:6px 8px;font-size:0.72rem;font-weight:700;color:var(--text-bright)}
 .upload-own{border:1.5px dashed var(--border);border-radius:12px;padding:14px;text-align:center;margin-top:10px;cursor:pointer;color:var(--text-dim);font-size:0.78rem;font-weight:700}
+.video-card.upload-card{border-style:dashed}
+.video-card.upload-card .video-thumb{background:transparent;font-size:1.6rem;color:var(--text-dim)}
+.video-card.upload-card.has-file{border-style:solid}
+.video-card.upload-card .video-name{color:var(--text-dim)}
+.video-card.upload-card.has-file .video-name{color:var(--text-bright)}
 .upload-own.has-file{border-color:var(--accent);color:var(--accent2)}
 
 /* wizard steps */
@@ -83,9 +88,9 @@ h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bot
 .step-page.active{display:block;animation:step-in 0.35s cubic-bezier(0.25,0.8,0.4,1) both}
 @keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 .step-nav{display:flex;gap:10px;margin-top:20px}
-.step-nav button{flex:1}
-button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border);transition:all 0.15s}
-button.ghost:hover{border-color:var(--accent);color:var(--accent2)}
+.step-nav button{flex:1;margin-top:0}
+button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;padding:13px 16px;border-radius:10px;cursor:pointer;box-shadow:0 4px 16px var(--shadow);transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s,color 0.15s}
+button.ghost:hover{border-color:var(--accent);color:var(--accent2);transform:translateY(-1px)}
 button.ghost:active{transform:scale(0.97)}
 
 /* preview step */
@@ -192,10 +197,7 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
         <div class="section-desc">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
         <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
         <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
-        <div class="upload-own" id="uploadOwnBox">
-          📤 Hoặc bấm để tự upload video (.mp4)
-          <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
-        </div>
+        <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
       </div>
       <div class="step-nav">
         <button class="ghost" id="backTo1Btn">← Quay lại</button>
@@ -518,15 +520,22 @@ async function getPreviewOggUrl(id) {
 
 function renderVideoGrid() {
   const box = document.getElementById('videoGridBox');
-  if (!videos.length) { box.innerHTML = '<div class="empty">Thư viện video đang trống.</div>'; return; }
   const term = normalizeSearch(document.getElementById('vidSearchInput').value.trim());
   const filtered = videos.filter(v => matchesSearch(v, term));
-  if (!filtered.length) { box.innerHTML = '<div class="empty">Không tìm thấy video nào khớp.</div>'; return; }
-  box.innerHTML = filtered.map(v => `
+
+  const uploadCardHtml = `
+    <div class="video-card upload-card ${ownVideoFile ? 'selected has-file' : ''}" id="uploadOwnCard">
+      <div class="video-thumb">📤</div>
+      <div class="video-name">${ownVideoFile ? '✅ ' + escapeHtml(ownVideoFile.name) : 'Tự upload video (.mp4)'}</div>
+    </div>`;
+
+  const libraryHtml = filtered.map(v => `
     <div class="video-card ${v.id === selectedVideoId ? 'selected' : ''}" data-video-id="${v.id}">
       <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}">` : '🎬'}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>`).join('');
+
+  box.innerHTML = uploadCardHtml + libraryHtml + (!videos.length ? '<div class="empty">Thư viện video đang trống.</div>' : (!filtered.length ? '<div class="empty">Không tìm thấy video nào khớp.</div>' : ''));
 }
 document.getElementById('vidSearchInput').addEventListener('input', renderVideoGrid);
 
@@ -575,27 +584,25 @@ audio.addEventListener('ended', () => {
 
 // ── select video (thư viện hoặc upload riêng — loại trừ nhau) ──
 document.getElementById('videoGridBox').addEventListener('click', (e) => {
+  if (e.target.closest('#uploadOwnCard')) {
+    document.getElementById('ownVideoInput').click();
+    return;
+  }
   const card = e.target.closest('[data-video-id]');
   if (!card) return;
   selectedVideoId = card.dataset.videoId;
   ownVideoFile = null;
   document.getElementById('ownVideoInput').value = '';
-  document.getElementById('uploadOwnBox').classList.remove('has-file');
-  document.getElementById('uploadOwnBox').textContent = '📤 Hoặc bấm để tự upload video (.mp4)';
   renderVideoGrid();
   document.getElementById('toStep3Btn').disabled = false;
 });
 
-document.getElementById('uploadOwnBox').addEventListener('click', () => document.getElementById('ownVideoInput').click());
 document.getElementById('ownVideoInput').addEventListener('change', (e) => {
   const f = e.target.files[0];
   if (!f) return;
   ownVideoFile = f;
   selectedVideoId = null;
   renderVideoGrid();
-  const box = document.getElementById('uploadOwnBox');
-  box.classList.add('has-file');
-  box.textContent = '✅ ' + f.name;
   document.getElementById('toStep3Btn').disabled = false;
 });
 
