@@ -102,6 +102,8 @@ select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:va
     <input type="text" id="wemPreviewInput" placeholder="https://files.catbox.moe/xxxxxx.mp3">
     <label>Duration (ms) — đo sẵn, bắt buộc</label>
     <input type="number" id="wemDurationInput" placeholder="vd: 183500">
+    <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
+    <input type="text" id="wemKeywordsInput" placeholder="vd: buồn, chill, tết, lofi">
     <button id="addWemBtn">➕ Thêm vào thư viện</button>
     <div class="msg" id="wemMsg"></div>
 
@@ -119,6 +121,8 @@ select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:va
     <input type="text" id="vidUrlInput" placeholder="https://files.catbox.moe/xxxxxx.mp4">
     <label>Link ảnh thumbnail (tuỳ chọn)</label>
     <input type="text" id="vidThumbInput" placeholder="https://files.catbox.moe/xxxxxx.jpg">
+    <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
+    <input type="text" id="vidKeywordsInput" placeholder="vd: tết, mùa hè, sự kiện">
     <button id="addVidBtn">➕ Thêm vào thư viện</button>
     <div class="msg" id="vidMsg"></div>
 
@@ -233,7 +237,7 @@ async function loadWemList() {
     <div class="list-item">
       <div class="li-main">
         <div class="li-name">${escapeHtml(w.name)}</div>
-        <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}</div>
+        <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}${(w.keywords && w.keywords.length) ? ' · từ khoá: ' + w.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
       <button class="danger small" data-id="${w.id}" data-kind="wem">Xoá</button>
     </div>`).join('');
@@ -245,11 +249,12 @@ document.getElementById('addWemBtn').addEventListener('click', async () => {
   const wemUrl = document.getElementById('wemUrlInput').value.trim();
   const previewMp3Url = document.getElementById('wemPreviewInput').value.trim();
   const durationMs = document.getElementById('wemDurationInput').value.trim();
+  const keywords = document.getElementById('wemKeywordsInput').value.trim();
   if (!name || !wemUrl || !durationMs) { showMsg(msg, false, 'Cần tên, link wem, và duration.'); return; }
   try {
-    await api('/api/admin/wem', { method: 'POST', body: JSON.stringify({ name, wemUrl, previewMp3Url: previewMp3Url || undefined, durationMs }) });
+    await api('/api/admin/wem', { method: 'POST', body: JSON.stringify({ name, wemUrl, previewMp3Url: previewMp3Url || undefined, durationMs, keywords: keywords || undefined }) });
     showMsg(msg, true, 'Đã thêm.');
-    ['wemNameInput','wemUrlInput','wemPreviewInput','wemDurationInput'].forEach(id => document.getElementById(id).value = '');
+    ['wemNameInput','wemUrlInput','wemPreviewInput','wemDurationInput','wemKeywordsInput'].forEach(id => document.getElementById(id).value = '');
     await loadWemList();
   } catch (e) { showMsg(msg, false, e.message); }
 });
@@ -263,7 +268,7 @@ async function loadVidList() {
     <div class="list-item">
       <div class="li-main">
         <div class="li-name">${escapeHtml(v.name)}</div>
-        <div class="li-sub">${v.video_url}</div>
+        <div class="li-sub">${v.video_url}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
       <button class="danger small" data-id="${v.id}" data-kind="video">Xoá</button>
     </div>`).join('');
@@ -274,11 +279,12 @@ document.getElementById('addVidBtn').addEventListener('click', async () => {
   const name = document.getElementById('vidNameInput').value.trim();
   const videoUrl = document.getElementById('vidUrlInput').value.trim();
   const thumbnailUrl = document.getElementById('vidThumbInput').value.trim();
+  const keywords = document.getElementById('vidKeywordsInput').value.trim();
   if (!name || !videoUrl) { showMsg(msg, false, 'Cần tên và link video.'); return; }
   try {
-    await api('/api/admin/video', { method: 'POST', body: JSON.stringify({ name, videoUrl, thumbnailUrl: thumbnailUrl || undefined }) });
+    await api('/api/admin/video', { method: 'POST', body: JSON.stringify({ name, videoUrl, thumbnailUrl: thumbnailUrl || undefined, keywords: keywords || undefined }) });
     showMsg(msg, true, 'Đã thêm.');
-    ['vidNameInput','vidUrlInput','vidThumbInput'].forEach(id => document.getElementById(id).value = '');
+    ['vidNameInput','vidUrlInput','vidThumbInput','vidKeywordsInput'].forEach(id => document.getElementById(id).value = '');
     await loadVidList();
   } catch (e) { showMsg(msg, false, e.message); }
 });

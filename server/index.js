@@ -179,11 +179,18 @@ app.get('/api/admin/wem-list', requireAdmin, async (req, res) => {
   catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
+// "vd A, vd B, vd C" hoặc mảng -> mảng string đã trim, bỏ rỗng
+function parseKeywords(raw) {
+  if (Array.isArray(raw)) return raw.map(s => String(s).trim()).filter(Boolean);
+  if (typeof raw === 'string') return raw.split(',').map(s => s.trim()).filter(Boolean);
+  return [];
+}
+
 app.post('/api/admin/wem', requireAdmin, async (req, res) => {
   try {
-    const { name, wemUrl, previewMp3Url, durationMs } = req.body || {};
+    const { name, wemUrl, previewMp3Url, durationMs, keywords } = req.body || {};
     if (!name || !wemUrl) return res.status(400).json({ ok: false, error: 'Cần name và wemUrl' });
-    const saved = await supabaseStore.addWem({ name, wemUrl, previewMp3Url, durationMs });
+    const saved = await supabaseStore.addWem({ name, wemUrl, previewMp3Url, durationMs, keywords: parseKeywords(keywords) });
     res.json({ ok: true, wem: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
@@ -201,9 +208,9 @@ app.get('/api/admin/video-list', requireAdmin, async (req, res) => {
 
 app.post('/api/admin/video', requireAdmin, async (req, res) => {
   try {
-    const { name, videoUrl, thumbnailUrl } = req.body || {};
+    const { name, videoUrl, thumbnailUrl, keywords } = req.body || {};
     if (!name || !videoUrl) return res.status(400).json({ ok: false, error: 'Cần name và videoUrl' });
-    const saved = await supabaseStore.addVideo({ name, videoUrl, thumbnailUrl });
+    const saved = await supabaseStore.addVideo({ name, videoUrl, thumbnailUrl, keywords: parseKeywords(keywords) });
     res.json({ ok: true, video: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });

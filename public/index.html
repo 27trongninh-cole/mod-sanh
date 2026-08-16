@@ -177,6 +177,7 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
       <div class="section">
         <h2>1. Chọn nhạc</h2>
         <div class="section-desc">Bấm vào bài để chọn, bấm nút tròn để nghe thử.</div>
+        <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
         <div id="wemListBox"><div class="empty">Đang tải...</div></div>
       </div>
       <div class="step-nav">
@@ -189,6 +190,7 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
       <div class="section">
         <h2>2. Chọn video</h2>
         <div class="section-desc">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
+        <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
         <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
         <div class="upload-own" id="uploadOwnBox">
           📤 Hoặc bấm để tự upload video (.mp4)
@@ -473,10 +475,23 @@ function fmtDuration(ms) {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
+// ── tìm kiếm: so khớp tên hoặc từ khoá, không phân biệt hoa/thường/dấu ──
+function normalizeSearch(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+function matchesSearch(item, term) {
+  if (!term) return true;
+  const hay = normalizeSearch(item.name) + ' ' + (item.keywords || []).map(normalizeSearch).join(' ');
+  return hay.includes(term);
+}
+
 function renderWemList() {
   const box = document.getElementById('wemListBox');
   if (!wems.length) { box.innerHTML = '<div class="empty">Thư viện nhạc đang trống.</div>'; return; }
-  box.innerHTML = wems.map(w => `
+  const term = normalizeSearch(document.getElementById('wemSearchInput').value.trim());
+  const filtered = wems.filter(w => matchesSearch(w, term));
+  if (!filtered.length) { box.innerHTML = '<div class="empty">Không tìm thấy bài nào khớp.</div>'; return; }
+  box.innerHTML = filtered.map(w => `
     <div class="wem-item ${w.id === selectedWemId ? 'selected' : ''}" data-wem-id="${w.id}">
       <div class="wem-radio"></div>
       <div class="wem-main">
@@ -486,6 +501,7 @@ function renderWemList() {
       <button class="wem-play-btn" data-play-id="${w.id}">▶</button>
     </div>`).join('');
 }
+document.getElementById('wemSearchInput').addEventListener('input', renderWemList);
 
 // ── cache ogg blob URL đã convert theo từng wem id, tránh convert lại mỗi lần bấm ──
 const oggUrlCache = new Map();
@@ -503,12 +519,16 @@ async function getPreviewOggUrl(id) {
 function renderVideoGrid() {
   const box = document.getElementById('videoGridBox');
   if (!videos.length) { box.innerHTML = '<div class="empty">Thư viện video đang trống.</div>'; return; }
-  box.innerHTML = videos.map(v => `
+  const term = normalizeSearch(document.getElementById('vidSearchInput').value.trim());
+  const filtered = videos.filter(v => matchesSearch(v, term));
+  if (!filtered.length) { box.innerHTML = '<div class="empty">Không tìm thấy video nào khớp.</div>'; return; }
+  box.innerHTML = filtered.map(v => `
     <div class="video-card ${v.id === selectedVideoId ? 'selected' : ''}" data-video-id="${v.id}">
       <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}">` : '🎬'}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>`).join('');
 }
+document.getElementById('vidSearchInput').addEventListener('input', renderVideoGrid);
 
 // ── select wem ──
 document.getElementById('wemListBox').addEventListener('click', (e) => {

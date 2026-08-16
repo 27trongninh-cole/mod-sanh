@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS wem_library (
   wem_url text NOT NULL,                 -- link Catbox file .wem chuẩn
   preview_mp3_url text,                  -- link Catbox mp3 để "nghe thử" (optional)
   duration_ms integer,                   -- đo sẵn lúc thêm, khỏi cần ffprobe lúc build
+  keywords text[] DEFAULT '{}',          -- từ khoá tìm kiếm thêm (admin tự nhập)
   added_at timestamptz DEFAULT now()
 );
 
@@ -20,6 +21,7 @@ CREATE TABLE IF NOT EXISTS video_library (
   name text NOT NULL,
   video_url text NOT NULL,               -- link Catbox
   thumbnail_url text,                    -- ảnh preview trong lưới (optional)
+  keywords text[] DEFAULT '{}',          -- từ khoá tìm kiếm thêm (admin tự nhập)
   added_at timestamptz DEFAULT now()
 );
 
