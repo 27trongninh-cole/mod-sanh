@@ -4,25 +4,44 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mod Sảnh</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.2);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.15);--danger:#e0432a;}
+/* ═══ THEMES (7 bảng màu, dán từ EchoHall) ═══ */
+[data-theme="mondstadt"]{--bg:#e8f4ee;--bg-card:#ffffff;--text:#1e3228;--text-dim:#6a9078;--text-bright:#0e2018;--border:rgba(61,158,120,0.18);--accent:#2db87a;--accent2:#1a8c5a;--accent-glow:rgba(45,184,122,0.18);--danger:#e0432a;--shadow:rgba(0,80,40,0.12);--gradient:linear-gradient(135deg,#2db87a,#1a8c5a);}
+[data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.18);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.18);--danger:#e0432a;--shadow:rgba(20,60,0,0.12);--gradient:linear-gradient(135deg,#72bc2a,#4e8a18);}
+[data-theme="fontaine"]{--bg:#deeef8;--bg-card:#ffffff;--text:#0e2038;--text-dim:#5a82aa;--text-bright:#061228;--border:rgba(46,143,212,0.18);--accent:#2090e0;--accent2:#1068b8;--accent-glow:rgba(32,144,224,0.18);--danger:#e0432a;--shadow:rgba(0,40,100,0.12);--gradient:linear-gradient(135deg,#2090e0,#1068b8);}
+[data-theme="natlan"]{--bg:#faeade;--bg-card:#ffffff;--text:#2e1000;--text-dim:#a05a30;--text-bright:#1e0800;--border:rgba(224,90,26,0.18);--accent:#f06020;--accent2:#c03e00;--accent-glow:rgba(240,96,32,0.18);--danger:#c02020;--shadow:rgba(80,20,0,0.12);--gradient:linear-gradient(135deg,#f06020,#c03e00);}
+[data-theme="liyue"]{--bg:#060810;--bg-card:#0b1020;--text:#c8b880;--text-dim:#7a6d4e;--text-bright:#f0d888;--border:rgba(232,184,109,0.16);--accent:#f0c060;--accent2:#c08830;--accent-glow:rgba(240,192,96,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#f0c060,#c08830);}
+[data-theme="inazuma"]{--bg:#07060e;--bg-card:#0e0b1c;--text:#c0a0e0;--text-dim:#6e5a90;--text-bright:#e8c8ff;--border:rgba(176,112,232,0.16);--accent:#c878f8;--accent2:#8840c8;--accent-glow:rgba(200,120,248,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#c878f8,#8840c8);}
+[data-theme="snezhnaya"]{--bg:#060b12;--bg-card:#0b1422;--text:#a0c8ee;--text-dim:#5a86ac;--text-bright:#d8eeff;--border:rgba(122,188,232,0.16);--accent:#80c8f8;--accent2:#3888c8;--accent-glow:rgba(128,200,248,0.2);--danger:#ff6050;--shadow:rgba(0,0,0,0.5);--gradient:linear-gradient(135deg,#80c8f8,#3888c8);}
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding-bottom:64px}
-nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-weight:900;font-size:1rem;color:var(--accent2);letter-spacing:0.04em}
-.page{max-width:640px;margin:0 auto;padding:20px 16px}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding-bottom:64px;transition:background 0.4s,color 0.4s;overflow-x:hidden}
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s,border-color 0.4s}
+.nav-logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1.05rem;background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:0.02em}
+.nav-right{display:flex;align-items:center;gap:8px}
+.theme-row{display:flex;gap:5px}
+.theme-dot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:var(--gradient-preview);transition:transform 0.15s}
+.theme-dot.active{border-color:var(--text-bright);transform:scale(1.15)}
+.icon-btn{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;cursor:pointer;transition:all 0.15s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent2)}
+.icon-btn.off{opacity:0.4}
+.page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px}
 .tab-switcher{display:flex;gap:6px;border-bottom:1.5px solid var(--border);margin-bottom:20px}
-.tab-btn{flex:1;background:none;border:none;padding:10px 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2.5px solid transparent}
+.tab-btn{flex:1;background:none;border:none;padding:10px 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2.5px solid transparent;transition:color 0.2s,border-color 0.2s}
 .tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-btn:active{transform:scale(0.97)}
 .tab-page{display:none}
 .tab-page.active{display:block}
-h2{font-size:0.95rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
+h2{font-family:'Baloo 2',sans-serif;font-size:1.02rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
 .section-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:12px}
 .section{margin-bottom:26px}
 
 /* wem list */
-.wem-item{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.wem-item{display:flex;align-items:center;gap:10px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s,background 0.15s}
+.wem-item:hover{transform:translateY(-1px)}
+.wem-item:active{transform:scale(0.98)}
 .wem-item.selected{border-color:var(--accent);background:var(--accent-glow)}
 .wem-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
 .wem-item.selected .wem-radio{border-color:var(--accent);background:var(--accent)}
@@ -34,7 +53,9 @@ h2{font-size:0.95rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
 
 /* video grid */
 .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.video-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer}
+.video-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s}
+.video-card:hover{transform:translateY(-2px)}
+.video-card:active{transform:scale(0.97)}
 .video-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
 .video-thumb{aspect-ratio:16/9;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent2);overflow:hidden}
 .video-thumb img{width:100%;height:100%;object-fit:cover}
@@ -44,10 +65,13 @@ h2{font-size:0.95rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
 
 /* wizard steps */
 .step-page{display:none}
-.step-page.active{display:block}
+.step-page.active{display:block;animation:step-in 0.35s cubic-bezier(0.25,0.8,0.4,1) both}
+@keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 .step-nav{display:flex;gap:10px;margin-top:20px}
 .step-nav button{flex:1}
-button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border)}
+button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border);transition:all 0.15s}
+button.ghost:hover{border-color:var(--accent);color:var(--accent2)}
+button.ghost:active{transform:scale(0.97)}
 
 /* preview step */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
@@ -62,18 +86,39 @@ audio{width:100%}
 /* loading modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(14,30,0,0.55);display:none;align-items:center;justify-content:center;z-index:999;padding:20px}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(--bg-card);border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:100%}
-.spinner{width:36px;height:36px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 14px;animation:spin 0.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.modal-title{font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
+.modal-box{background:var(--bg-card);border-radius:16px;padding:28px 24px;text-align:center;max-width:280px;width:100%;animation:modal-in 0.3s cubic-bezier(0.34,1.3,0.64,1)}
+@keyframes modal-in{from{opacity:0;transform:scale(0.9) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.eq{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:32px;margin:0 auto 14px}
+.eq span{width:5px;background:var(--gradient);border-radius:3px;animation:eq-bounce 1s ease-in-out infinite}
+.eq span:nth-child(1){animation-delay:0s;height:40%}
+.eq span:nth-child(2){animation-delay:0.15s;height:70%}
+.eq span:nth-child(3){animation-delay:0.3s;height:100%}
+.eq span:nth-child(4){animation-delay:0.45s;height:60%}
+.eq span:nth-child(5){animation-delay:0.6s;height:85%}
+@keyframes eq-bounce{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
+.modal-title{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
 .modal-sub{font-size:0.76rem;color:var(--text-dim)}
+
+/* mascot */
+.mascot-wrap{position:fixed;bottom:16px;right:14px;z-index:400;display:flex;flex-direction:column;align-items:flex-end;gap:6px;animation:mascot-appear 0.5s 0.4s cubic-bezier(0.34,1.4,0.64,1) both}
+@keyframes mascot-appear{from{opacity:0;transform:translateY(16px) scale(0.7)}to{opacity:1;transform:translateY(0) scale(1)}}
+.mascot-speech{position:relative;background:var(--bg-card);border:1.5px solid var(--accent);color:var(--text);font-size:0.68rem;font-weight:700;padding:7px 11px;border-radius:16px 16px 4px 16px;box-shadow:0 6px 20px var(--shadow);max-width:180px;opacity:0;transform:translateY(6px) scale(0.95);transition:opacity 0.25s,transform 0.25s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none}
+.mascot-speech.visible{opacity:1;transform:translateY(0) scale(1)}
+.mascot-img-btn{position:relative;width:60px;height:60px;cursor:pointer;filter:drop-shadow(0 4px 10px var(--shadow));transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
+.mascot-img-btn:hover{transform:scale(1.08) translateY(-3px)}
+.mascot-img-front,.mascot-img-back{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backface-visibility:hidden;transition:transform 0.15s ease-in,opacity 0.15s ease}
+.mascot-img-back{transform:rotateY(90deg);opacity:0}
+.mascot-img-btn.flipping .mascot-img-front{transform:rotateY(-90deg);opacity:0}
+.mascot-img-btn.flipping .mascot-img-back{transform:rotateY(0deg);opacity:1}
 
 /* form */
 input,textarea{width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
 textarea{resize:vertical;min-height:70px}
 label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin:12px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
-button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--accent);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:18px}
-button.primary:disabled{opacity:0.4;cursor:not-allowed}
+button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:18px;box-shadow:0 4px 16px var(--accent-glow);transition:transform 0.15s,box-shadow 0.15s}
+button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
+button.primary:active:not(:disabled){transform:scale(0.97)}
+button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
 .msg{font-size:0.8rem;border-radius:9px;padding:10px 12px;margin-top:12px;line-height:1.5;display:none;white-space:pre-wrap}
 .msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
 .msg.err{display:block;background:rgba(224,67,42,0.1);border:1px solid var(--danger);color:var(--danger)}
@@ -84,7 +129,15 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed}
 </head>
 <body>
 
-<nav><div class="nav-logo">MOD SẢNH</div></nav>
+<nav>
+  <div class="nav-logo">MOD SẢNH</div>
+  <div class="nav-right">
+    <div class="theme-row" id="themeRow"></div>
+    <button class="icon-btn" id="particleToggleBtn" title="Bật/tắt hiệu ứng nền">✨</button>
+    <button class="icon-btn" id="donateBtn" title="Ủng hộ admin">☕</button>
+  </div>
+</nav>
+<canvas id="particleCanvas"></canvas>
 
 <div class="page">
   <div class="tab-switcher">
@@ -174,12 +227,123 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed}
 
 <div class="modal-overlay" id="loadingModal">
   <div class="modal-box">
-    <div class="spinner"></div>
+    <div class="modal-box">
+    <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="modal-title" id="loadingTitle">Đang tạo file...</div>
     <div class="modal-sub" id="loadingSub">Chờ chút nhé, sắp xong rồi</div>
   </div>
 </div>
 
+<!-- ═══ MASCOT ═══ -->
+<div class="mascot-wrap" id="mascotWrap">
+  <div class="mascot-speech" id="mascotSpeech"></div>
+  <div class="mascot-img-btn" id="mascotBtn" title="Bấm để chào">
+    <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
+    <img class="mascot-img-back" id="mascotImgBack" src="" alt="mascot" draggable="false">
+  </div>
+</div>
+
+<!-- ═══ DONATE MODAL ═══ -->
+<div class="modal-overlay" id="donateModal">
+  <div class="modal-box">
+    <div class="modal-title">☕ Ủng hộ admin</div>
+    <img src="/img/donate-qr.png" alt="QR donate" style="width:160px;height:160px;border-radius:12px;margin:12px 0;object-fit:cover">
+    <div class="modal-sub" style="margin-bottom:14px">MB Bank - NGUYEN TRONG NINH</div>
+    <button class="ghost" id="donateCloseBtn" style="width:100%;padding:9px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer">Đóng</button>
+  </div>
+</div>
+
+<script>
+// ═══ THEME SWITCHER ═══
+const THEMES = ['mondstadt','sumeru','fontaine','natlan','liyue','inazuma','snezhnaya'];
+const THEME_COLORS = {mondstadt:'#2db87a',sumeru:'#72bc2a',fontaine:'#2090e0',natlan:'#f06020',liyue:'#f0c060',inazuma:'#c878f8',snezhnaya:'#80c8f8'};
+let currentTheme = localStorage.getItem('modsanh-theme') || 'sumeru';
+function applyTheme(t) {
+  currentTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('modsanh-theme', t);
+  document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d.dataset.theme === t));
+  updateMascotImages();
+}
+const themeRow = document.getElementById('themeRow');
+THEMES.forEach(t => {
+  const dot = document.createElement('div');
+  dot.className = 'theme-dot';
+  dot.dataset.theme = t;
+  dot.style.background = THEME_COLORS[t];
+  dot.title = t;
+  dot.addEventListener('click', () => applyTheme(t));
+  themeRow.appendChild(dot);
+});
+applyTheme(currentTheme);
+
+// ═══ PARTICLE BACKGROUND (+ toggle) ═══
+const pCanvas = document.getElementById('particleCanvas');
+const pCtx = pCanvas.getContext('2d');
+let particles = [], particlesOn = localStorage.getItem('modsanh-particles') !== 'off';
+function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+function initParticles() {
+  particles = Array.from({ length: 34 }, () => ({
+    x: Math.random() * pCanvas.width, y: Math.random() * pCanvas.height,
+    r: 1 + Math.random() * 2, vy: 0.15 + Math.random() * 0.35, o: 0.2 + Math.random() * 0.5
+  }));
+}
+initParticles();
+function animateParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  if (particlesOn) {
+    const color = THEME_COLORS[currentTheme];
+    particles.forEach(p => {
+      p.y -= p.vy;
+      if (p.y < -4) { p.y = pCanvas.height + 4; p.x = Math.random() * pCanvas.width; }
+      pCtx.beginPath();
+      pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      pCtx.fillStyle = color; pCtx.globalAlpha = p.o;
+      pCtx.fill();
+    });
+    pCtx.globalAlpha = 1;
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+const particleBtn = document.getElementById('particleToggleBtn');
+function syncParticleBtn() { particleBtn.classList.toggle('off', !particlesOn); }
+syncParticleBtn();
+particleBtn.addEventListener('click', () => {
+  particlesOn = !particlesOn;
+  localStorage.setItem('modsanh-particles', particlesOn ? 'on' : 'off');
+  syncParticleBtn();
+});
+
+// ═══ MASCOT ═══
+const MASCOT_LINES = ['Chọn bài nhạc ưng ý nè~', 'Nhớ xem trước trước khi tải nha!', 'Thiếu bài mình thích? Qua tab Yêu Cầu Wem đi!', 'Chúc bồ có sảnh đẹp lung linh ✨'];
+function updateMascotImages() {
+  document.getElementById('mascotImgFront').src = `/img/mascot/${currentTheme}/front.png`;
+  document.getElementById('mascotImgBack').src = `/img/mascot/${currentTheme}/back.png`;
+}
+const mascotBtn = document.getElementById('mascotBtn');
+const mascotSpeech = document.getElementById('mascotSpeech');
+let mascotLineIdx = 0, mascotHideTimer = null;
+mascotBtn.addEventListener('click', () => {
+  mascotBtn.classList.add('flipping');
+  setTimeout(() => mascotBtn.classList.remove('flipping'), 300);
+  mascotSpeech.textContent = MASCOT_LINES[mascotLineIdx % MASCOT_LINES.length];
+  mascotLineIdx++;
+  mascotSpeech.classList.add('visible');
+  clearTimeout(mascotHideTimer);
+  mascotHideTimer = setTimeout(() => mascotSpeech.classList.remove('visible'), 3200);
+});
+
+// ═══ DONATE MODAL ═══
+const donateModal = document.getElementById('donateModal');
+document.getElementById('donateBtn').addEventListener('click', () => donateModal.classList.add('show'));
+document.getElementById('donateCloseBtn').addEventListener('click', () => donateModal.classList.remove('show'));
+donateModal.addEventListener('click', (e) => { if (e.target === donateModal) donateModal.classList.remove('show'); });
+
+// ═══ (phần cũ tiếp tục bên dưới) ═══
+</script>
 <script>
 let wems = [], videos = [];
 let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
