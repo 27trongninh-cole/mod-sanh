@@ -117,27 +117,31 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .home-cta:active{transform:scale(0.96)}
 
 /* BUILDER PAGE: layout dạng flex chiếm trọn chiều cao khung, không cần scroll */
-#builderPage{display:flex;flex-direction:column;height:100%;min-height:0;gap:10px}
-.builder-header{flex:0 0 auto;text-align:center}
+#builderPage{display:flex;flex-direction:column;height:100%;min-height:0;gap:12px}
+.builder-header{flex:0 0 auto;text-align:center;padding-top:2px}
 .builder-header .home-badge{margin-bottom:6px}
-.builder-header h1{font-family:'Cinzel',Georgia,serif;font-size:1.15rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
-.builder-header p{color:var(--text-dim);font-size:0.74rem;max-width:360px;margin:0 auto;line-height:1.4}
-.builder-preview-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:4px;margin:0 -14px}
-.preview-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 4px}
+.builder-header h1{position:relative;display:inline-block;font-family:'Cinzel',Georgia,serif;font-size:1.5rem;font-weight:900;letter-spacing:0.1em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:9px;padding-bottom:9px}
+.builder-header h1::after{content:'';position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:38px;height:3px;border-radius:3px;background:var(--gradient)}
+.builder-header p{color:var(--text-dim);font-size:0.74rem;max-width:340px;margin:0 auto;line-height:1.4}
+
+/* KHỐI THÂN: gộp preview + 2 ô chọn + nút lưu vào chung một "card" để bố cục liền mạch */
+.builder-card{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:10px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:20px;padding:10px 10px 12px;box-shadow:0 4px 20px var(--shadow)}
+.builder-preview-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:4px}
+.preview-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
 /* TOGGLE overlay UI mô phỏng (không dùng icon, dạng pill-switch đồng bộ theme panel) */
-.overlay-toggle-chip{position:absolute;top:10px;right:10px;z-index:6;display:flex;align-items:center;gap:7px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:5px 8px 5px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background 0.2s}
+.overlay-toggle-chip{position:absolute;top:8px;right:8px;z-index:6;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:3px 6px 3px 9px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;transition:background 0.2s}
 .overlay-toggle-chip:hover{background:rgba(0,0,0,0.6)}
-.overlay-toggle-label{font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:0.04em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.6);white-space:nowrap}
-.overlay-toggle-track{width:30px;height:17px;border-radius:20px;background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.3);position:relative;flex-shrink:0;transition:background 0.22s,border-color 0.22s}
+.overlay-toggle-label{font-family:'Nunito',sans-serif;font-size:0.54rem;font-weight:800;letter-spacing:0.03em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.6);white-space:nowrap}
+.overlay-toggle-track{width:24px;height:14px;border-radius:20px;background:rgba(255,255,255,0.25);border:1.5px solid rgba(255,255,255,0.3);position:relative;flex-shrink:0;transition:background 0.22s,border-color 0.22s}
 .overlay-toggle-track.on{background:var(--accent);border-color:var(--accent)}
-.overlay-toggle-thumb{position:absolute;top:1px;left:1px;width:11px;height:11px;border-radius:50%;background:#fff;transition:transform 0.22s cubic-bezier(0.34,1.4,0.64,1);box-shadow:0 1px 3px rgba(0,0,0,0.3)}
-.overlay-toggle-track.on .overlay-toggle-thumb{transform:translateX(13px)}
+.overlay-toggle-thumb{position:absolute;top:1px;left:1px;width:9px;height:9px;border-radius:50%;background:#fff;transition:transform 0.22s cubic-bezier(0.34,1.4,0.64,1);box-shadow:0 1px 3px rgba(0,0,0,0.3)}
+.overlay-toggle-track.on .overlay-toggle-thumb{transform:translateX(10px)}
 .preview-overlay-img.hidden-overlay{opacity:0}
 
 /* PICKER CARDS (chọn nhạc / chọn video ngay trên UI chính) */
-.picker-row{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.picker-card{position:relative;background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:10px 12px;text-align:left;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s;cursor:pointer}
+.picker-row{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.picker-card{position:relative;background:var(--bg-card-hover);border:1.5px solid var(--border);border-radius:14px;padding:10px 12px;text-align:left;transition:transform 0.15s,border-color 0.15s;cursor:pointer}
 .picker-card:hover{transform:translateY(-1px);border-color:var(--accent-border)}
 .picker-card:active{transform:scale(0.98)}
 .picker-card.filled{border-color:var(--accent);background:var(--accent-glow)}
@@ -341,46 +345,48 @@ button.ghost:active{transform:scale(0.97)}
       <p>Chọn nhạc và video bên dưới - preview cập nhật ngay, xong thì lưu về máy.</p>
     </div>
 
-    <div class="builder-preview-section">
-      <div class="preview-stage" id="previewStage">
-        <div class="preview-video-wrap" id="previewVideoWrap">
-          <video id="previewVideo" muted loop autoplay playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false" style="pointer-events:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none"></video>
-          <img class="preview-overlay-img" src="/img/overlay.png" alt="" id="previewOverlayImg">
-          <div class="overlay-toggle-chip" id="overlayToggleChip" role="button" tabindex="0">
-            <span class="overlay-toggle-label">UI mô phỏng</span>
-            <div class="overlay-toggle-track on" id="overlayToggleTrack"><div class="overlay-toggle-thumb"></div></div>
-          </div>
-          <div class="preview-empty-overlay" id="previewEmptyOverlay">
-            <p>Hãy chọn nhạc và video để xem preview tại đây nhé!</p>
-          </div>
-          <div class="preview-scrub">
-            <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
-            <span class="time" id="scrubTime">0:00</span>
+    <div class="builder-card">
+      <div class="builder-preview-section">
+        <div class="preview-stage" id="previewStage">
+          <div class="preview-video-wrap" id="previewVideoWrap">
+            <video id="previewVideo" muted loop autoplay playsinline controlsList="nodownload noremoteplayback" disablePictureInPicture oncontextmenu="return false" style="pointer-events:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none"></video>
+            <img class="preview-overlay-img" src="/img/overlay.png" alt="" id="previewOverlayImg">
+            <div class="overlay-toggle-chip" id="overlayToggleChip" role="button" tabindex="0">
+              <span class="overlay-toggle-label">UI mô phỏng</span>
+              <div class="overlay-toggle-track on" id="overlayToggleTrack"><div class="overlay-toggle-thumb"></div></div>
+            </div>
+            <div class="preview-empty-overlay" id="previewEmptyOverlay">
+              <p>Hãy chọn nhạc và video để xem preview tại đây nhé!</p>
+            </div>
+            <div class="preview-scrub">
+              <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
+              <span class="time" id="scrubTime">0:00</span>
+            </div>
           </div>
         </div>
+        <audio id="previewAudioStep" style="display:none"></audio>
+        <div class="section-desc" id="previewLoadingNote" style="display:none;margin:0;text-align:center">Đang giải mã audio…</div>
+        <div class="section-desc" id="previewWemName" style="margin:0;text-align:center"></div>
       </div>
-      <audio id="previewAudioStep" style="display:none"></audio>
-      <div class="section-desc" id="previewLoadingNote" style="display:none;margin:0;text-align:center">Đang giải mã audio…</div>
-      <div class="section-desc" id="previewWemName" style="margin:0;text-align:center"></div>
-    </div>
 
-    <div class="picker-row">
-      <div class="picker-card" id="openWemPickerBtn" role="button" tabindex="0">
-        <button type="button" class="picker-clear" id="clearWemBtn" title="Bỏ chọn nhạc">✕</button>
-        <div class="picker-icon">🎵</div>
-        <div class="picker-label">Nhạc nền</div>
-        <div class="picker-value" id="pickerWemValue">Chọn nhạc...</div>
+      <div class="picker-row">
+        <div class="picker-card" id="openWemPickerBtn" role="button" tabindex="0">
+          <button type="button" class="picker-clear" id="clearWemBtn" title="Bỏ chọn nhạc">✕</button>
+          <div class="picker-icon">🎵</div>
+          <div class="picker-label">Nhạc nền</div>
+          <div class="picker-value" id="pickerWemValue">Chọn nhạc...</div>
+        </div>
+        <div class="picker-card" id="openVideoPickerBtn" role="button" tabindex="0">
+          <button type="button" class="picker-clear" id="clearVideoBtn" title="Bỏ chọn video">✕</button>
+          <div class="picker-icon">🎬</div>
+          <div class="picker-label">Video</div>
+          <div class="picker-value" id="pickerVideoValue">Chọn video...</div>
+        </div>
       </div>
-      <div class="picker-card" id="openVideoPickerBtn" role="button" tabindex="0">
-        <button type="button" class="picker-clear" id="clearVideoBtn" title="Bỏ chọn video">✕</button>
-        <div class="picker-icon">🎬</div>
-        <div class="picker-label">Video</div>
-        <div class="picker-value" id="pickerVideoValue">Chọn video...</div>
-      </div>
-    </div>
 
-    <button class="primary" id="buildBtn" disabled>💾 Lưu &amp; tải về</button>
-    <div class="msg" id="buildMsg"></div>
+      <button class="primary" id="buildBtn" disabled>💾 Lưu &amp; tải về</button>
+      <div class="msg" id="buildMsg"></div>
+    </div>
   </div>
 </div>
 
