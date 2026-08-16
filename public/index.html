@@ -20,13 +20,17 @@ body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font
 #particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s,border-color 0.4s}
 .nav-logo{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:1.05rem;background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:0.02em}
-.nav-right{display:flex;align-items:center;gap:8px}
-.theme-row{display:flex;gap:5px}
-.theme-dot{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:var(--gradient-preview);transition:transform 0.15s}
+.nav-right{display:flex;align-items:center;gap:8px;position:relative}
+.theme-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+.theme-dot{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform 0.15s}
 .theme-dot.active{border-color:var(--text-bright);transform:scale(1.15)}
 .icon-btn{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text-dim);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;cursor:pointer;transition:all 0.15s}
 .icon-btn:hover{border-color:var(--accent);color:var(--accent2)}
 .icon-btn.off{opacity:0.4}
+.settings-panel{position:absolute;top:38px;right:0;background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:14px;box-shadow:0 8px 28px var(--shadow);width:180px;z-index:150;opacity:0;visibility:hidden;transform:translateY(-6px) scale(0.96);transition:all 0.18s}
+.settings-panel.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+.settings-label{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:2px}
+.settings-donate-btn{width:100%;background:var(--gradient);color:#fff;border:none;padding:8px;border-radius:9px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer}
 .page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px}
 .tab-switcher{display:flex;gap:6px;border-bottom:1.5px solid var(--border);margin-bottom:20px}
 .tab-btn{flex:1;background:none;border:none;padding:10px 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2.5px solid transparent;transition:color 0.2s,border-color 0.2s}
@@ -132,9 +136,13 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
 <nav>
   <div class="nav-logo">MOD SẢNH</div>
   <div class="nav-right">
-    <div class="theme-row" id="themeRow"></div>
     <button class="icon-btn" id="particleToggleBtn" title="Bật/tắt hiệu ứng nền">✨</button>
-    <button class="icon-btn" id="donateBtn" title="Ủng hộ admin">☕</button>
+    <button class="icon-btn" id="settingsBtn" title="Cài đặt">⚙️</button>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-label">Đổi màu giao diện</div>
+      <div class="theme-row" id="themeRow"></div>
+      <button class="settings-donate-btn" id="donateBtn">☕ Ủng hộ admin</button>
+    </div>
   </div>
 </nav>
 <canvas id="particleCanvas"></canvas>
@@ -227,17 +235,16 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
 
 <div class="modal-overlay" id="loadingModal">
   <div class="modal-box">
-    <div class="modal-box">
     <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="modal-title" id="loadingTitle">Đang tạo file...</div>
     <div class="modal-sub" id="loadingSub">Chờ chút nhé, sắp xong rồi</div>
   </div>
 </div>
 
-<!-- ═══ MASCOT ═══ -->
+<!-- ═══ MASCOT (chỉ hiện bong bóng khi đang loading) ═══ -->
 <div class="mascot-wrap" id="mascotWrap">
   <div class="mascot-speech" id="mascotSpeech"></div>
-  <div class="mascot-img-btn" id="mascotBtn" title="Bấm để chào">
+  <div class="mascot-img-btn" id="mascotBtn">
     <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
     <img class="mascot-img-back" id="mascotImgBack" src="" alt="mascot" draggable="false">
   </div>
@@ -252,7 +259,6 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
     <button class="ghost" id="donateCloseBtn" style="width:100%;padding:9px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer">Đóng</button>
   </div>
 </div>
-
 <script>
 // ═══ THEME SWITCHER ═══
 const THEMES = ['mondstadt','sumeru','fontaine','natlan','liyue','inazuma','snezhnaya'];
@@ -264,6 +270,7 @@ function applyTheme(t) {
   localStorage.setItem('modsanh-theme', t);
   document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d.dataset.theme === t));
   updateMascotImages();
+  if (typeof initParticles === 'function') initParticles();
 }
 const themeRow = document.getElementById('themeRow');
 THEMES.forEach(t => {
@@ -277,37 +284,82 @@ THEMES.forEach(t => {
 });
 applyTheme(currentTheme);
 
-// ═══ PARTICLE BACKGROUND (+ toggle) ═══
+// ═══ SETTINGS PANEL (gộp theme + donate) ═══
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); settingsPanel.classList.toggle('open'); });
+document.addEventListener('click', (e) => {
+  if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) settingsPanel.classList.remove('open');
+});
+
+// ═══ PARTICLE BACKGROUND — 7 kiểu riêng theo theme (+ toggle) ═══
 const pCanvas = document.getElementById('particleCanvas');
 const pCtx = pCanvas.getContext('2d');
 let particles = [], particlesOn = localStorage.getItem('modsanh-particles') !== 'off';
-function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+function resizeCanvas() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; initParticles(); }
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+
+// Mỗi theme 1 kiểu hạt đặc trưng: hướng bay, có lắc ngang không, có nhấp nháy không, hình dạng
+const PARTICLE_STYLES = {
+  mondstadt: { count: 26, dir: -1, speed: [0.3, 0.7], size: [2, 4], wobble: 1.2, twinkle: false, shape: 'leaf' },   // lá theo gió
+  sumeru:    { count: 34, dir: -1, speed: [0.15, 0.5], size: [1, 3], wobble: 0.3, twinkle: false, shape: 'dot' },   // bụi rừng bay nhẹ
+  fontaine:  { count: 22, dir: -1, speed: [0.2, 0.45], size: [2, 5], wobble: 0.8, twinkle: false, shape: 'ring' },  // bong bóng nước
+  natlan:    { count: 24, dir: -1, speed: [0.4, 0.9], size: [1, 2.5], wobble: 0.6, twinkle: true, shape: 'dot' },   // tia lửa lập loè
+  liyue:     { count: 20, dir: -1, speed: [0.1, 0.3], size: [1.5, 3], wobble: 0.2, twinkle: true, shape: 'star' },  // ánh vàng lấp lánh
+  inazuma:   { count: 16, dir: -1, speed: [0.05, 0.2], size: [1, 3.5], wobble: 0, twinkle: true, shape: 'spark' },  // tia điện chớp tắt
+  snezhnaya: { count: 30, dir: 1,  speed: [0.25, 0.6], size: [2, 4], wobble: 1.5, twinkle: false, shape: 'dot' }    // tuyết rơi xuống
+};
 function initParticles() {
-  particles = Array.from({ length: 34 }, () => ({
+  const style = PARTICLE_STYLES[currentTheme] || PARTICLE_STYLES.sumeru;
+  particles = Array.from({ length: style.count }, () => ({
     x: Math.random() * pCanvas.width, y: Math.random() * pCanvas.height,
-    r: 1 + Math.random() * 2, vy: 0.15 + Math.random() * 0.35, o: 0.2 + Math.random() * 0.5
+    r: style.size[0] + Math.random() * (style.size[1] - style.size[0]),
+    v: style.speed[0] + Math.random() * (style.speed[1] - style.speed[0]),
+    o: 0.25 + Math.random() * 0.5,
+    phase: Math.random() * Math.PI * 2,
+    twinklePhase: Math.random() * Math.PI * 2
   }));
 }
 initParticles();
-function animateParticles() {
+function drawParticle(p, style, color, t) {
+  let alpha = p.o;
+  if (style.twinkle) alpha *= 0.4 + 0.6 * Math.abs(Math.sin(t * 0.002 + p.twinklePhase));
+  pCtx.globalAlpha = alpha;
+  pCtx.fillStyle = color;
+  if (style.shape === 'ring') {
+    pCtx.beginPath(); pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    pCtx.strokeStyle = color; pCtx.lineWidth = 1; pCtx.stroke();
+  } else if (style.shape === 'star' || style.shape === 'spark') {
+    pCtx.save(); pCtx.translate(p.x, p.y); pCtx.rotate(t * 0.0004);
+    pCtx.fillRect(-p.r, -0.6, p.r * 2, 1.2);
+    pCtx.fillRect(-0.6, -p.r, 1.2, p.r * 2);
+    pCtx.restore();
+  } else if (style.shape === 'leaf') {
+    pCtx.save(); pCtx.translate(p.x, p.y); pCtx.rotate(p.phase);
+    pCtx.beginPath(); pCtx.ellipse(0, 0, p.r, p.r * 0.55, 0, 0, Math.PI * 2); pCtx.fill();
+    pCtx.restore();
+  } else {
+    pCtx.beginPath(); pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2); pCtx.fill();
+  }
+}
+function animateParticles(t) {
   pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
   if (particlesOn) {
+    const style = PARTICLE_STYLES[currentTheme] || PARTICLE_STYLES.sumeru;
     const color = THEME_COLORS[currentTheme];
     particles.forEach(p => {
-      p.y -= p.vy;
-      if (p.y < -4) { p.y = pCanvas.height + 4; p.x = Math.random() * pCanvas.width; }
-      pCtx.beginPath();
-      pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      pCtx.fillStyle = color; pCtx.globalAlpha = p.o;
-      pCtx.fill();
+      p.y -= style.dir * p.v;
+      p.x += Math.sin(t * 0.001 + p.phase) * style.wobble * 0.05;
+      if (style.dir === -1 && p.y < -6) { p.y = pCanvas.height + 6; p.x = Math.random() * pCanvas.width; }
+      if (style.dir === 1 && p.y > pCanvas.height + 6) { p.y = -6; p.x = Math.random() * pCanvas.width; }
+      drawParticle(p, style, color, t || 0);
     });
     pCtx.globalAlpha = 1;
   }
   requestAnimationFrame(animateParticles);
 }
-animateParticles();
+resizeCanvas();
+animateParticles(0);
 const particleBtn = document.getElementById('particleToggleBtn');
 function syncParticleBtn() { particleBtn.classList.toggle('off', !particlesOn); }
 syncParticleBtn();
@@ -317,7 +369,7 @@ particleBtn.addEventListener('click', () => {
   syncParticleBtn();
 });
 
-// ═══ MASCOT ═══
+// ═══ MASCOT (luôn hiện góc màn hình, bấm vào để chào) ═══
 const MASCOT_LINES = ['Chọn bài nhạc ưng ý nè~', 'Nhớ xem trước trước khi tải nha!', 'Thiếu bài mình thích? Qua tab Yêu Cầu Wem đi!', 'Chúc bồ có sảnh đẹp lung linh ✨'];
 function updateMascotImages() {
   document.getElementById('mascotImgFront').src = `/img/mascot/${currentTheme}/front.png`;
@@ -338,7 +390,7 @@ mascotBtn.addEventListener('click', () => {
 
 // ═══ DONATE MODAL ═══
 const donateModal = document.getElementById('donateModal');
-document.getElementById('donateBtn').addEventListener('click', () => donateModal.classList.add('show'));
+document.getElementById('donateBtn').addEventListener('click', () => { settingsPanel.classList.remove('open'); donateModal.classList.add('show'); });
 document.getElementById('donateCloseBtn').addEventListener('click', () => donateModal.classList.remove('show'));
 donateModal.addEventListener('click', (e) => { if (e.target === donateModal) donateModal.classList.remove('show'); });
 
