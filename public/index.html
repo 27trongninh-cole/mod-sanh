@@ -417,7 +417,7 @@ button.ghost:active{transform:scale(0.97)}
   <div class="req-modal" id="reqModal">
     <div class="req-modal-header">
       <div>
-        <div class="req-modal-title">✦ Xin Bài Nhạc</div>
+        <div class="req-modal-title">✦ Yêu Cầu Nhạc</div>
         <div class="req-modal-sub">Chưa có bản nhạc bồ cần? Điền form, admin sẽ liên hệ lại.</div>
       </div>
       <button class="req-modal-close" id="reqCloseBtn">✕</button>
@@ -434,7 +434,7 @@ button.ghost:active{transform:scale(0.97)}
           <input class="req-form-input" id="reqContact" type="text" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
         </div>
         <div class="req-form-row">
-          <label class="req-form-label">Tên bài nhạc muốn xin</label>
+          <label class="req-form-label">Tên bài nhạc muốn yêu cầu</label>
           <input class="req-form-input" id="reqSong" type="text" placeholder="vd: Sảnh Tết 2024">
         </div>
         <div class="req-form-row">
@@ -716,30 +716,30 @@ if(BG_MUSIC_ENABLED) window.addEventListener("pointerdown", unlockMusicOnce, { o
 const MASCOT_DATA = {
   mondstadt: { name:"Venti", emotes:[
     { url:"https://files.catbox.moe/ny158h.png", line:"Cậu đang nghe <em><strong>\"Bard's Adventure\"</strong></em> — chọn nhạc rồi ghép video sảnh của riêng cậu đi!" },
-    { url:"https://files.catbox.moe/jh4zlx.png", line:"Chưa có bài ưng ý? Bấm vào mình, mình chuyển lời <strong>xin nhạc</strong> giúp cho." },
+    { url:"https://files.catbox.moe/jh4zlx.png", line:"Chưa có bài ưng ý? Bấm vào mình, mình chuyển lời <strong>yêu cầu nhạc</strong> giúp cho." },
     { url:"https://files.catbox.moe/8hzg2y.png", line:"Gì chứ! Cậu không biết đến danh tiếng nhà thơ vĩ đại Venti sao?" },
-    { url:"https://files.catbox.moe/079rcq.png", line:"Ở Mod Sảnh giờ có thể tự <strong>xin bài nhạc</strong> chưa có nữa đó!" },
+    { url:"https://files.catbox.moe/079rcq.png", line:"Ở Mod Sảnh giờ có thể tự <strong>yêu cầu nhạc</strong> chưa có nữa đó!" },
   ]},
   liyue: { name:"Zhongli", emotes:[
     { url:"https://files.catbox.moe/ia2a0a.png", line:"Cuộc hành trình nào rồi cũng sẽ kết thúc, không cần phải vội vàng." },
     { url:"https://files.catbox.moe/cn1cuv.png", line:"<em><strong>\"Rex Incognito\"</strong></em> thực sự là một bản nhạc hay, thử ghép vào mod xem." },
-    { url:"https://files.catbox.moe/0lz8wb.png", line:"Chưa tìm được bài ưng ý? Bấm vào mình để <strong>xin bài nhạc</strong> nhé." },
+    { url:"https://files.catbox.moe/0lz8wb.png", line:"Chưa tìm được bài ưng ý? Bấm vào mình để <strong>yêu cầu nhạc</strong> nhé." },
     { url:"https://files.catbox.moe/p0bmw5.png", line:"Muốn ăn thứ gì để giúp tỉnh táo à. Ở Ngật Hổ Nham có một quán không tồi..." },
   ]},
   inazuma: { name:"Raiden Shogun", emotes:[
     { url:"https://files.catbox.moe/mt6a23.png", line:"Đừng bảo tôi đi nấu cơm là được. Tôi cái gì cũng làm được, ngoại trừ nấu cơm." },
     { url:"https://files.catbox.moe/vxastw.png", line:"Chà, cậu sợ sấm sét sao? Hiện thân của sấm chớp kinh hoàng nhất đang nhắm vào cậu rồi đấy." },
-    { url:"https://files.catbox.moe/hqk51g.png", line:"Thử <strong>xin bài nhạc</strong> một lần xem, sấm sét sẽ không nỡ tìm cậu đâu." },
+    { url:"https://files.catbox.moe/hqk51g.png", line:"Thử <strong>yêu cầu nhạc</strong> một lần xem, sấm sét sẽ không nỡ tìm cậu đâu." },
     { url:"https://files.catbox.moe/4vedoy.png", line:"<em><strong>\"Termination of Desires\"</strong></em> mỗi khi vào Nhất Tâm Tịnh Thổ sẽ phát một lần, còn lý do thì không ai biết." },
   ]},
   sumeru: { name:"Nahida", emotes:[
     { url:"https://files.catbox.moe/yfjwz6.png", line:"Nói thật lòng đi, <em><strong>\"Surasthana Fantasia\"</strong></em> thực sự rất hay mà phải không!" },
-    { url:"https://files.catbox.moe/0meb4c.png", line:"Bạn đang loay hoay tìm nơi <strong>xin bài nhạc</strong> sao? Tôi ở ngay đây nè!" },
+    { url:"https://files.catbox.moe/0meb4c.png", line:"Bạn đang loay hoay tìm nơi <strong>yêu cầu nhạc</strong> sao? Tôi ở ngay đây nè!" },
     { url:"https://files.catbox.moe/jlfh1z.png", line:"Nếu không biết chọn bài nào thì có muốn tôi gợi ý không? Tôi muốn nghe lại Surasthana Fantasia." },
     { url:"https://files.catbox.moe/sybylh.png", line:"Mau chọn video và nhạc đi nào, không thôi là trên đầu sẽ mọc nấm đấy nhé!" },
   ]},
   fontaine: { name:"Furina", emotes:[
-    { url:"https://files.catbox.moe/ex251r.png", line:"Cậu còn chưa có lấy một bản nhạc cho riêng mình sao? Hãy <strong>xin bài nhạc</strong> ngay đi!" },
+    { url:"https://files.catbox.moe/ex251r.png", line:"Cậu còn chưa có lấy một bản nhạc cho riêng mình sao? Hãy <strong>yêu cầu nhạc</strong> ngay đi!" },
     { url:"https://files.catbox.moe/0relye.png", line:"Bình thường cậu chỉ ăn mấy thứ này thôi sao? Ôi, để tôi chia một ít nui cho nhé!" },
     { url:"https://files.catbox.moe/zl2ege.png", line:"Bản nhạc <em><strong>\"Se mettre sur son trente-et-un !\"</strong></em> này tức là muốn mời bạn đi xem buổi phán quyết của thần." },
     { url:"https://files.catbox.moe/xl2hlo.png", line:"Haiz, nổi tiếng quá cũng khổ, ai bảo tôi được yêu thích quá làm chi!" },
@@ -748,12 +748,12 @@ const MASCOT_DATA = {
     { url:"https://files.catbox.moe/50ey9r.png", line:"Thần linh thì cũng nên thường xuyên xuống mặt đất đi dạo, chứ cứ mãi ở trên trời cao là không được." },
     { url:"https://files.catbox.moe/wa4blt.png", line:"Thời tiết đẹp rất thích hợp để đi dạo bên ngoài. Nào, chọn nhạc rồi lượn vài vòng thử mod mới nhé!" },
     { url:"https://files.catbox.moe/g4ahyd.png", line:"Ai đến Natlan cũng nhất định phải nghe <em><strong>\"Blazing Heart\"</strong></em> một lần." },
-    { url:"https://files.catbox.moe/67vnli.png", line:"Muốn <strong>xin bài nhạc</strong> sao, bấm vào mình, mình am hiểu âm nhạc ở nhiều thời đại lắm đó!" },
+    { url:"https://files.catbox.moe/67vnli.png", line:"Muốn <strong>yêu cầu nhạc</strong> sao, bấm vào mình, mình am hiểu âm nhạc ở nhiều thời đại lắm đó!" },
   ]},
   snezhnaya: { name:"Columbina", emotes:[
     { url:"https://files.catbox.moe/ronpz3.png", line:"Sau cơn mưa trời lại sáng rồi, tối nay chắc sẽ ngắm được mặt trăng nhỉ!" },
     { url:"https://files.catbox.moe/q5erus.png", line:"<em><strong>\"Song to the Mirrored Moon\"</strong></em> tức là khúc hát gửi về miền Nguyệt Cảnh." },
-    { url:"https://files.catbox.moe/eyla2n.png", line:"Không có ý tưởng chọn bài nào sao? Bấm vào mình để <strong>xin bài nhạc</strong> nhé." },
+    { url:"https://files.catbox.moe/eyla2n.png", line:"Không có ý tưởng chọn bài nào sao? Bấm vào mình để <strong>yêu cầu nhạc</strong> nhé." },
     { url:"https://files.catbox.moe/ronpz3.png", line:"Sau cơn mưa trời lại sáng rồi, tối nay chắc sẽ ngắm được mặt trăng nhỉ!" },
   ]},
 };
@@ -786,7 +786,7 @@ const MASCOT_DATA = {
   if(labelBtn) labelBtn.addEventListener("click", openReqModal);
 })();
 
-/* ═══════════════════════ REQUEST MODAL (xin bài nhạc) ═══════════════════════ */
+/* ═══════════════════════ REQUEST MODAL (yêu cầu nhạc) ═══════════════════════ */
 function openReqModal(){
   document.getElementById("reqForm").style.display = "";
   document.getElementById("reqSuccess").style.display = "none";
