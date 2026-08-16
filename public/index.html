@@ -32,6 +32,17 @@ nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1.5px s
 .settings-label{font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-dim);margin-bottom:2px}
 .settings-donate-btn{width:100%;background:var(--gradient);color:#fff;border:none;padding:8px;border-radius:9px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer}
 .page{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:20px 16px}
+
+/* home / landing */
+.home-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:60vh;gap:18px}
+.home-hero h1{font-size:1.5rem;font-weight:900;letter-spacing:0.02em}
+.home-hero p{color:var(--text-dim);font-size:0.82rem;max-width:280px}
+.home-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.03em;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:16px 42px;cursor:pointer;box-shadow:0 10px 26px var(--shadow);transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
+.home-cta:active{transform:scale(0.96)}
+#homePage{display:block}
+#wizardPage{display:none}
+#wizardPage.show{display:block}
+.wizard-back{background:none;border:none;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;padding:6px 0 12px}
 .tab-switcher{display:flex;gap:6px;border-bottom:1.5px solid var(--border);margin-bottom:20px}
 .tab-btn{flex:1;background:none;border:none;padding:10px 6px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-dim);cursor:pointer;border-bottom:2.5px solid transparent;transition:color 0.2s,border-color 0.2s}
 .tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
@@ -148,13 +159,18 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
 <canvas id="particleCanvas"></canvas>
 
 <div class="page">
-  <div class="tab-switcher">
-    <button class="tab-btn active" data-tab="build">Tạo Mod</button>
-    <button class="tab-btn" data-tab="request">Yêu Cầu Wem</button>
+  <!-- ═══ TRANG CHỦ ═══ -->
+  <div id="homePage">
+    <div class="home-hero">
+      <h1>MOD SẢNH</h1>
+      <p>Ghép nhạc và video sảnh riêng của bồ chỉ trong vài bước.</p>
+      <button class="home-cta" id="startBuildBtn">🎬 Tạo mod ngay</button>
+    </div>
   </div>
 
-  <!-- ═══ TAB: TẠO MOD (wizard 3 bước) ═══ -->
-  <div class="tab-page active" id="tab-build">
+  <!-- ═══ WIZARD: TẠO MOD (3 bước) ═══ -->
+  <div id="wizardPage">
+    <button class="wizard-back" id="wizardBackHomeBtn">← Về trang chủ</button>
 
     <!-- Bước 1: chọn nhạc -->
     <div class="step-page active" id="step-wem">
@@ -210,26 +226,6 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
       <div class="msg" id="buildMsg"></div>
     </div>
   </div>
-
-  <!-- ═══ TAB: YÊU CẦU WEM ═══ -->
-  <div class="tab-page" id="tab-request">
-    <div class="section">
-      <h2>Xin bài nhạc chưa có trong thư viện</h2>
-      <div class="section-desc">Điền thông tin, admin sẽ liên hệ lại khi có wem.</div>
-
-      <label>Tên/nickname của bồ</label>
-      <input type="text" id="reqName" placeholder="vd: Minh">
-      <label>Cách liên hệ lại (Zalo / Discord / FB...)</label>
-      <input type="text" id="reqContact" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
-      <label>Tên bài nhạc muốn xin</label>
-      <input type="text" id="reqSong" placeholder="vd: Sảnh Tết 2024">
-      <label>Ghi chú thêm (tuỳ chọn)</label>
-      <textarea id="reqNote" placeholder="Link nhạc mẫu, mùa nào, v.v."></textarea>
-
-      <button class="primary" id="reqSendBtn">Gửi yêu cầu</button>
-      <div class="msg" id="reqMsg"></div>
-    </div>
-  </div>
 </div>
 
 <audio id="previewAudio" style="display:none"></audio>
@@ -242,12 +238,33 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
   </div>
 </div>
 
-<!-- ═══ MASCOT (chỉ hiện bong bóng khi đang loading) ═══ -->
+<!-- ═══ MASCOT (bong bóng tự đổi luân phiên, bấm vào mở popup yêu cầu wem) ═══ -->
 <div class="mascot-wrap" id="mascotWrap">
   <div class="mascot-speech" id="mascotSpeech"></div>
   <div class="mascot-img-btn" id="mascotBtn">
     <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
     <img class="mascot-img-back" id="mascotImgBack" src="" alt="mascot" draggable="false">
+  </div>
+</div>
+
+<!-- ═══ YÊU CẦU WEM MODAL (mở khi bấm mascot) ═══ -->
+<div class="modal-overlay" id="requestModal">
+  <div class="modal-box" style="max-width:320px;text-align:left">
+    <div class="modal-title" style="text-align:center;margin-bottom:10px">Xin bài nhạc chưa có</div>
+    <div class="modal-sub" style="text-align:center;margin-bottom:14px">Điền thông tin, admin sẽ liên hệ lại khi có wem.</div>
+
+    <label>Tên/nickname của bồ</label>
+    <input type="text" id="reqName" placeholder="vd: Minh">
+    <label>Cách liên hệ lại (Zalo / Discord / FB...)</label>
+    <input type="text" id="reqContact" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
+    <label>Tên bài nhạc muốn xin</label>
+    <input type="text" id="reqSong" placeholder="vd: Sảnh Tết 2024">
+    <label>Ghi chú thêm (tuỳ chọn)</label>
+    <textarea id="reqNote" placeholder="Link nhạc mẫu, mùa nào, v.v."></textarea>
+
+    <button class="primary" id="reqSendBtn" style="width:100%;margin-top:10px">Gửi yêu cầu</button>
+    <div class="msg" id="reqMsg"></div>
+    <button class="ghost" id="reqCloseBtn" style="width:100%;padding:9px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer;margin-top:10px">Đóng</button>
   </div>
 </div>
 
@@ -370,23 +387,51 @@ particleBtn.addEventListener('click', () => {
   syncParticleBtn();
 });
 
-// ═══ MASCOT (luôn hiện góc màn hình, bấm vào để chào) ═══
-const MASCOT_LINES = ['Chọn bài nhạc ưng ý nè~', 'Nhớ xem trước trước khi tải nha!', 'Thiếu bài mình thích? Qua tab Yêu Cầu Wem đi!', 'Chúc bồ có sảnh đẹp lung linh ✨'];
+// ═══ MASCOT (luôn hiện góc màn hình, bong bóng tự đổi luân phiên; bấm vào mở popup yêu cầu wem) ═══
+const MASCOT_LINES = ['Chọn bài nhạc ưng ý nè~', 'Nhớ xem trước trước khi tải nha!', 'Thiếu bài mình thích? Bấm vào mình để xin nha!', 'Chúc bồ có sảnh đẹp lung linh ✨'];
 function updateMascotImages() {
   document.getElementById('mascotImgFront').src = `/img/mascot/${currentTheme}/front.png`;
   document.getElementById('mascotImgBack').src = `/img/mascot/${currentTheme}/back.png`;
 }
 const mascotBtn = document.getElementById('mascotBtn');
 const mascotSpeech = document.getElementById('mascotSpeech');
-let mascotLineIdx = 0, mascotHideTimer = null;
-mascotBtn.addEventListener('click', () => {
-  mascotBtn.classList.add('flipping');
-  setTimeout(() => mascotBtn.classList.remove('flipping'), 300);
+let mascotLineIdx = 0;
+function showNextMascotLine() {
   mascotSpeech.textContent = MASCOT_LINES[mascotLineIdx % MASCOT_LINES.length];
   mascotLineIdx++;
   mascotSpeech.classList.add('visible');
-  clearTimeout(mascotHideTimer);
-  mascotHideTimer = setTimeout(() => mascotSpeech.classList.remove('visible'), 3200);
+}
+function hideMascotLine() { mascotSpeech.classList.remove('visible'); }
+// tự động luân phiên hiện/ẩn từng câu, không cần bấm
+showNextMascotLine();
+setInterval(() => {
+  hideMascotLine();
+  setTimeout(showNextMascotLine, 300);
+}, 4000);
+
+const requestModal = document.getElementById('requestModal');
+mascotBtn.addEventListener('click', () => {
+  mascotBtn.classList.add('flipping');
+  setTimeout(() => mascotBtn.classList.remove('flipping'), 300);
+  requestModal.classList.add('show');
+});
+document.getElementById('reqCloseBtn').addEventListener('click', () => requestModal.classList.remove('show'));
+requestModal.addEventListener('click', (e) => { if (e.target === requestModal) requestModal.classList.remove('show'); });
+
+// ═══ TRANG CHỦ ↔ WIZARD ═══
+const homePage = document.getElementById('homePage');
+const wizardPage = document.getElementById('wizardPage');
+document.getElementById('startBuildBtn').addEventListener('click', () => {
+  homePage.style.display = 'none';
+  wizardPage.classList.add('show');
+});
+document.getElementById('wizardBackHomeBtn').addEventListener('click', () => {
+  wizardPage.classList.remove('show');
+  homePage.style.display = 'block';
+  audio.pause();
+  document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
+  const pv = document.getElementById('previewVideo'), pa = document.getElementById('previewAudioStep');
+  pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src');
 });
 
 // ═══ DONATE MODAL ═══
@@ -405,15 +450,6 @@ let currentPlayingId = null;
 
 const audio = document.getElementById('previewAudio');
 
-// ── tabs ──
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
 
 // ── load libraries ──
 async function loadLibraries() {
