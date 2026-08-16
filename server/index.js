@@ -200,6 +200,20 @@ app.delete('/api/admin/wem/:id', requireAdmin, async (req, res) => {
   catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
+app.patch('/api/admin/wem/:id', requireAdmin, async (req, res) => {
+  try {
+    const { name, wemUrl, previewMp3Url, durationMs, keywords } = req.body || {};
+    const patch = {};
+    if (name !== undefined) patch.name = name;
+    if (wemUrl !== undefined) patch.wemUrl = wemUrl;
+    if (previewMp3Url !== undefined) patch.previewMp3Url = previewMp3Url;
+    if (durationMs !== undefined) patch.durationMs = durationMs;
+    if (keywords !== undefined) patch.keywords = parseKeywords(keywords);
+    const saved = await supabaseStore.updateWem(req.params.id, patch);
+    res.json({ ok: true, wem: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
 // --- video library ---
 app.get('/api/admin/video-list', requireAdmin, async (req, res) => {
   try { res.json({ ok: true, videos: await supabaseStore.listVideos() }); }
@@ -218,6 +232,19 @@ app.post('/api/admin/video', requireAdmin, async (req, res) => {
 app.delete('/api/admin/video/:id', requireAdmin, async (req, res) => {
   try { await supabaseStore.deleteVideo(req.params.id); res.json({ ok: true }); }
   catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.patch('/api/admin/video/:id', requireAdmin, async (req, res) => {
+  try {
+    const { name, videoUrl, thumbnailUrl, keywords } = req.body || {};
+    const patch = {};
+    if (name !== undefined) patch.name = name;
+    if (videoUrl !== undefined) patch.videoUrl = videoUrl;
+    if (thumbnailUrl !== undefined) patch.thumbnailUrl = thumbnailUrl;
+    if (keywords !== undefined) patch.keywords = parseKeywords(keywords);
+    const saved = await supabaseStore.updateVideo(req.params.id, patch);
+    res.json({ ok: true, video: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
 // --- bnk config ---

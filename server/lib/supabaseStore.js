@@ -63,6 +63,19 @@ async function deleteWem(id) {
   if (error) throw new Error('Supabase lỗi khi xoá wem: ' + error.message);
 }
 
+async function updateWem(id, { name, wemUrl, previewMp3Url, durationMs, keywords }) {
+  const db = requireClient();
+  const patch = {};
+  if (name !== undefined) patch.name = name;
+  if (wemUrl !== undefined) patch.wem_url = wemUrl;
+  if (previewMp3Url !== undefined) patch.preview_mp3_url = previewMp3Url || null;
+  if (durationMs !== undefined) patch.duration_ms = durationMs;
+  if (keywords !== undefined) patch.keywords = Array.isArray(keywords) ? keywords : [];
+  const { data, error } = await db.from('wem_library').update(patch).eq('id', id).select().single();
+  if (error) throw new Error('Supabase lỗi khi cập nhật wem: ' + error.message);
+  return data;
+}
+
 // ───────────────────────── video_library ─────────────────────────
 
 async function listVideos() {
@@ -93,6 +106,18 @@ async function deleteVideo(id) {
   const db = requireClient();
   const { error } = await db.from('video_library').delete().eq('id', id);
   if (error) throw new Error('Supabase lỗi khi xoá video: ' + error.message);
+}
+
+async function updateVideo(id, { name, videoUrl, thumbnailUrl, keywords }) {
+  const db = requireClient();
+  const patch = {};
+  if (name !== undefined) patch.name = name;
+  if (videoUrl !== undefined) patch.video_url = videoUrl;
+  if (thumbnailUrl !== undefined) patch.thumbnail_url = thumbnailUrl || null;
+  if (keywords !== undefined) patch.keywords = Array.isArray(keywords) ? keywords : [];
+  const { data, error } = await db.from('video_library').update(patch).eq('id', id).select().single();
+  if (error) throw new Error('Supabase lỗi khi cập nhật video: ' + error.message);
+  return data;
 }
 
 // ───────────────────────── bnk_config ─────────────────────────
@@ -154,8 +179,8 @@ async function updateRequest(id, { status, adminNote }) {
 
 module.exports = {
   isConfigured,
-  listWems, getWemById, addWem, deleteWem,
-  listVideos, getVideoById, addVideo, deleteVideo,
+  listWems, getWemById, addWem, deleteWem, updateWem,
+  listVideos, getVideoById, addVideo, deleteVideo, updateVideo,
   getBnkConfig, setBnkConfig,
   addRequest, listRequests, updateRequest
 };

@@ -65,9 +65,15 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 
 .list-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.8rem}
 .list-item:last-child{border-bottom:none}
+.list-item.editing{border-bottom-color:transparent}
 .li-main{min-width:0}
 .li-name{font-weight:800;color:var(--text-bright)}
 .li-sub{color:var(--text-dim);font-size:0.7rem;margin-top:2px;word-break:break-all}
+.li-actions{flex:0 0 auto;display:flex;gap:6px}
+button.small.edit-btn{background:var(--bg);color:var(--text-dim);border:1.5px solid var(--border);box-shadow:none}
+button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
+.edit-panel{padding:12px 0 16px;border-bottom:1px solid var(--border);background:var(--accent-glow);margin:0 -16px;padding-left:16px;padding-right:16px;border-radius:0}
+.edit-panel:last-child{border-bottom:none}
 .badge{display:inline-block;font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:20px;background:var(--accent-glow);color:var(--accent2);text-transform:uppercase;letter-spacing:0.06em;margin-right:4px}
 .badge.status-new{background:var(--accent-glow);color:var(--accent2)}
 .badge.status-wip{background:rgba(240,180,40,0.15);color:#a87f10}
@@ -440,6 +446,54 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
 
 // ── wem library ──
 let wemData = [];
+// ── sửa (dùng chung cho wem + video) ──
+let editingId = null; // id đang mở panel sửa, null nếu không có
+function editPanelHtml(kind, item) {
+  const kw = (item.keywords || []).join(', ');
+  if (kind === 'wem') {
+    return `
+      <div class="edit-panel" data-edit-for="${item.id}">
+        <label>Tên hiển thị</label>
+        <input type="text" class="ef-name" value="${escapeHtml(item.name)}">
+        <label>Link Catbox (.wem)</label>
+        <input type="text" class="ef-url" value="${escapeHtml(item.wem_url || '')}">
+        <div class="grid2">
+          <div>
+            <label>Link mp3 nghe thử (tuỳ chọn)</label>
+            <input type="text" class="ef-preview" value="${escapeHtml(item.preview_mp3_url || '')}">
+          </div>
+          <div>
+            <label>Duration (ms)</label>
+            <input type="number" class="ef-duration" value="${item.duration_ms ?? ''}">
+          </div>
+        </div>
+        <label>Từ khoá tìm kiếm (cách nhau bằng dấu phẩy)</label>
+        <input type="text" class="ef-keywords" value="${escapeHtml(kw)}">
+        <div class="row" style="margin-top:12px">
+          <button class="small" data-save-edit="${item.id}" data-kind="wem">💾 Lưu</button>
+          <button class="secondary small" data-cancel-edit="${item.id}">Huỷ</button>
+        </div>
+        <div class="msg" id="editMsg-${item.id}"></div>
+      </div>`;
+  }
+  return `
+    <div class="edit-panel" data-edit-for="${item.id}">
+      <label>Tên hiển thị</label>
+      <input type="text" class="ef-name" value="${escapeHtml(item.name)}">
+      <label>Link Catbox (video)</label>
+      <input type="text" class="ef-url" value="${escapeHtml(item.video_url || '')}">
+      <label>Link ảnh thumbnail (tuỳ chọn)</label>
+      <input type="text" class="ef-thumb" value="${escapeHtml(item.thumbnail_url || '')}">
+      <label>Từ khoá tìm kiếm (cách nhau bằng dấu phẩy)</label>
+      <input type="text" class="ef-keywords" value="${escapeHtml(kw)}">
+      <div class="row" style="margin-top:12px">
+        <button class="small" data-save-edit="${item.id}" data-kind="video">💾 Lưu</button>
+        <button class="secondary small" data-cancel-edit="${item.id}">Huỷ</button>
+      </div>
+      <div class="msg" id="editMsg-${item.id}"></div>
+    </div>`;
+}
+
 async function loadWemList() {
   const data = await api('/api/admin/wem-list');
   wemData = data.wems;
@@ -456,13 +510,17 @@ function renderWemList() {
   ) : wemData;
   if (!filtered.length) { box.innerHTML = `<div class="empty-hint">${q ? 'Không tìm thấy.' : 'Chưa có bài nào.'}</div>`; return; }
   box.innerHTML = filtered.map(w => `
-    <div class="list-item">
+    <div class="list-item ${editingId===w.id?'editing':''}">
       <div class="li-main">
         <div class="li-name">${escapeHtml(w.name)}</div>
         <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}${(w.keywords && w.keywords.length) ? ' · từ khoá: ' + w.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
-      <button class="danger small" data-id="${w.id}" data-kind="wem">Xoá</button>
-    </div>`).join('');
+      <div class="li-actions">
+        <button class="small edit-btn" data-edit-id="${w.id}" data-kind="wem">✏️ Sửa</button>
+        <button class="danger small" data-id="${w.id}" data-kind="wem">Xoá</button>
+      </div>
+    </div>
+    ${editingId===w.id ? editPanelHtml('wem', w) : ''}`).join('');
 }
 document.getElementById('wemSearchInput').addEventListener('input', renderWemList);
 
@@ -500,13 +558,17 @@ function renderVidList() {
   ) : vidData;
   if (!filtered.length) { box.innerHTML = `<div class="empty-hint">${q ? 'Không tìm thấy.' : 'Chưa có video nào.'}</div>`; return; }
   box.innerHTML = filtered.map(v => `
-    <div class="list-item">
+    <div class="list-item ${editingId===v.id?'editing':''}">
       <div class="li-main">
         <div class="li-name">${escapeHtml(v.name)}</div>
         <div class="li-sub">${escapeHtml(v.video_url)}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
-      <button class="danger small" data-id="${v.id}" data-kind="video">Xoá</button>
-    </div>`).join('');
+      <div class="li-actions">
+        <button class="small edit-btn" data-edit-id="${v.id}" data-kind="video">✏️ Sửa</button>
+        <button class="danger small" data-id="${v.id}" data-kind="video">Xoá</button>
+      </div>
+    </div>
+    ${editingId===v.id ? editPanelHtml('video', v) : ''}`).join('');
 }
 document.getElementById('vidSearchInput').addEventListener('input', renderVidList);
 
@@ -523,6 +585,49 @@ document.getElementById('addVidBtn').addEventListener('click', async () => {
     ['vidNameInput','vidUrlInput','vidThumbInput','vidKeywordsInput'].forEach(id => document.getElementById(id).value = '');
     await loadVidList();
   } catch (e) { showMsg(msg, false, e.message); }
+});
+
+// ── mở / đóng / lưu panel sửa (dùng chung cho wem + video) ──
+document.body.addEventListener('click', (e) => {
+  const editBtn = e.target.closest('button[data-edit-id]');
+  if (editBtn) {
+    const { editId, kind } = editBtn.dataset;
+    editingId = (editingId === editId) ? null : editId;
+    if (kind === 'wem') renderWemList(); else renderVidList();
+    return;
+  }
+  const cancelBtn = e.target.closest('button[data-cancel-edit]');
+  if (cancelBtn) {
+    editingId = null;
+    renderWemList(); renderVidList();
+  }
+});
+
+document.body.addEventListener('click', async (e) => {
+  const saveBtn = e.target.closest('button[data-save-edit]');
+  if (!saveBtn) return;
+  const { saveEdit: id, kind } = saveBtn.dataset;
+  const panel = saveBtn.closest('.edit-panel');
+  const msg = document.getElementById(`editMsg-${id}`);
+  const name = panel.querySelector('.ef-name').value.trim();
+  const url = panel.querySelector('.ef-url').value.trim();
+  const keywords = panel.querySelector('.ef-keywords').value.trim();
+  if (!name || !url) { showMsg(msg, false, 'Cần tên và link.'); return; }
+  try {
+    if (kind === 'wem') {
+      const previewMp3Url = panel.querySelector('.ef-preview').value.trim();
+      const durationMs = panel.querySelector('.ef-duration').value.trim();
+      if (!durationMs) { showMsg(msg, false, 'Cần duration.'); return; }
+      await api(`/api/admin/wem/${id}`, { method: 'PATCH', body: JSON.stringify({ name, wemUrl: url, previewMp3Url, durationMs, keywords }) });
+      editingId = null;
+      await loadWemList();
+    } else {
+      const thumbnailUrl = panel.querySelector('.ef-thumb').value.trim();
+      await api(`/api/admin/video/${id}`, { method: 'PATCH', body: JSON.stringify({ name, videoUrl: url, thumbnailUrl, keywords }) });
+      editingId = null;
+      await loadVidList();
+    }
+  } catch (e2) { showMsg(msg, false, e2.message); }
 });
 
 // ── delete (dùng chung cho wem + video) ──
