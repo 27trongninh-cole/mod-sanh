@@ -327,7 +327,6 @@ button.ghost:active{transform:scale(0.97)}
   <!-- ═══ UI CHÍNH: PREVIEW + 2 Ô CHỌN NHẠC/VIDEO ═══ -->
   <div id="builderPage">
     <div class="builder-header">
-      <span class="home-badge">🏛 Melodinity</span>
       <h1>MELODINITY</h1>
       <p>Chọn nhạc và video bên dưới - preview cập nhật ngay, xong thì lưu về máy.</p>
     </div>
@@ -665,9 +664,9 @@ if(BG_MUSIC_ENABLED) window.addEventListener("pointerdown", unlockMusicOnce, { o
       update(p,t){const gx=tiltGamma*0.018;p.x+=p.vx+Math.sin(t*0.008+p.phase)*0.6+gx;p.y+=p.vy+Math.sin(t*0.006+p.phase)*0.3;p.rotation+=p.rotSpeed;if(p.x>W+20)p.x=-20;if(p.y<-20)p.y=H+20;if(p.y>H+20)p.y=-20;}
     },
     liyue:{ count:22,
-      factory(){return{x:Math.random()*W,y:H+Math.random()*H*0.3,size:6+Math.random()*10,vy:-(0.25+Math.random()*0.45),vx:(Math.random()-0.5)*0.3,phase:Math.random()*Math.PI*2,alpha:0.3+Math.random()*0.4,color:Math.random()<0.6?'#e8432a':'#f5b942',glow:Math.random()<0.5}},
+      factory(){return{x:Math.random()*W,y:H+Math.random()*H*0.3,size:6+Math.random()*10,vy:-(0.5+Math.random()*0.6),vx:(Math.random()-0.5)*0.12,phase:Math.random()*Math.PI*2,alpha:0.3+Math.random()*0.4,color:Math.random()<0.6?'#e8432a':'#f5b942',glow:Math.random()<0.5}},
       draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;if(p.glow){ctx.shadowColor=p.color;ctx.shadowBlur=p.size*3;}ctx.fillStyle=p.color;ctx.beginPath();ctx.ellipse(p.x,p.y,p.size*0.55,p.size*0.8,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#c4922a';ctx.beginPath();ctx.ellipse(p.x,p.y-p.size*0.7,p.size*0.3,p.size*0.18,0,0,Math.PI*2);ctx.fill();ctx.restore();},
-      update(p,t){const gx=tiltGamma*0.016;p.y+=p.vy;p.x+=p.vx+Math.sin(t*0.005+p.phase)*0.4+gx;if(p.y<-p.size*3){p.y=H+p.size*2;p.x=Math.random()*W;}}
+      update(p,t){const gx=tiltGamma*0.004;p.y+=p.vy;p.x+=p.vx+Math.sin(t*0.005+p.phase)*0.15+gx;if(p.y<-p.size*3){p.y=H+p.size*2;p.x=Math.random()*W;}}
     },
     inazuma:{ count:40, flash:0,
       factory(){return{x:Math.random()*W,y:Math.random()*H*0.8,len:10+Math.random()*18,vx:-(1.8+Math.random()*1.2),vy:4+Math.random()*2.5,alpha:0.25+Math.random()*0.35}},
@@ -680,9 +679,9 @@ if(BG_MUSIC_ENABLED) window.addEventListener("pointerdown", unlockMusicOnce, { o
       update(p,t){const gx=tiltGamma*0.010;const gy=tiltBeta*0.006;p.x+=p.vx+Math.sin(t*0.009+p.phase)*0.5+gx;p.y+=p.vy+Math.cos(t*0.007+p.phase)*0.2+gy;if(p.y<-10){p.y=H+10;p.x=Math.random()*W;}if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;}
     },
     fontaine:{ count:28,
-      factory(){return{x:Math.random()*W,y:H+Math.random()*50,r:3+Math.random()*8,vy:-(0.3+Math.random()*0.5),vx:(Math.random()-0.5)*0.3,alpha:0.12+Math.random()*0.22,wobble:Math.random()*Math.PI*2,wobbleSpeed:0.02+Math.random()*0.02}},
+      factory(){return{x:Math.random()*W,y:H+Math.random()*50,r:3+Math.random()*8,vy:-(0.5+Math.random()*0.6),vx:(Math.random()-0.5)*0.1,alpha:0.12+Math.random()*0.22,wobble:Math.random()*Math.PI*2,wobbleSpeed:0.02+Math.random()*0.02}},
       draw(p){ctx.save();ctx.globalAlpha=p.alpha*globalAlpha;const g=ctx.createRadialGradient(p.x-p.r*0.3,p.y-p.r*0.3,p.r*0.1,p.x,p.y,p.r);g.addColorStop(0,'rgba(200,240,255,0.35)');g.addColorStop(1,'rgba(126,200,227,0.05)');ctx.fillStyle=g;ctx.strokeStyle='#7ec8e3';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();},
-      update(p){const gx=tiltGamma*0.015;const gy=tiltBeta*0.010;p.wobble+=p.wobbleSpeed;p.x+=p.vx+Math.sin(p.wobble)*0.4+gx;p.y+=p.vy+gy;if(p.y<-p.r*2){p.y=H+p.r;p.x=Math.random()*W;}if(p.y>H+p.r*2){p.y=-p.r;p.x=Math.random()*W;}}
+      update(p){const gx=tiltGamma*0.004;const gy=tiltBeta*0.002;p.wobble+=p.wobbleSpeed;p.x+=p.vx+Math.sin(p.wobble)*0.15+gx;p.y+=p.vy+gy;if(p.y<-p.r*2){p.y=H+p.r;p.x=Math.random()*W;}if(p.y>H+p.r*2){p.y=-p.r;p.x=Math.random()*W;}}
     },
     natlan:{ count:35,
       factory(){return{x:Math.random()*W,y:H*0.6+Math.random()*H*0.4,r:1+Math.random()*2.5,vx:(Math.random()-0.5)*0.8,vy:-(1.2+Math.random()*1.8),alpha:0.5+Math.random()*0.4,decay:0.008+Math.random()*0.008,color:Math.random()<0.6?'#ff6b2b':'#ffaa44'}},
