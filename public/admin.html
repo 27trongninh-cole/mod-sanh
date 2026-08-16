@@ -49,6 +49,7 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 .statusRow .v{font-weight:700;text-align:right;word-break:break-all}
 a.back-link{display:inline-block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin-bottom:14px}
 a.back-link:hover{color:var(--accent)}
+.credit-bar{position:fixed;z-index:700;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.02em;color:var(--text-dim);background:var(--bg-card);opacity:0.85;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none;white-space:nowrap;user-select:none;bottom:0;left:0;padding:4px 10px;border-radius:0 6px 0 0}
 </style>
 </head>
 <body>
@@ -350,5 +351,7 @@ function escapeHtml(s) {
 
 if (pw) boot(true); else gate.style.display = 'block';
 </script>
+<div id="credit-bar" class="credit-bar">© 2026 Ninfinity. All Rights Reserved.</div>
+
 </body>
 </html>

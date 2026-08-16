@@ -263,6 +263,12 @@ button.ghost:active{transform:scale(0.97)}
   .theme-grid{grid-template-columns:1fr}
   .req-modal-body{padding:16px 18px 20px}
 }
+/* ═══════════════════════════════════════════
+   CREDIT BAR (cố định, bán trong suốt, đổi theo theme)
+═══════════════════════════════════════════ */
+.credit-bar{position:fixed;z-index:700;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.02em;color:var(--text-dim);background:var(--bg-card);opacity:0.85;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none;white-space:nowrap;user-select:none}
+@media (min-width:769px){.credit-bar{bottom:0;left:0;right:0;padding:5px 0;text-align:center}}
+@media (max-width:768px){.credit-bar{bottom:0;left:0;right:auto;top:auto;transform:none;padding:4px 10px;border-radius:0 6px 0 0;text-align:left}}
 </style>
 </head>
 <body>
@@ -1109,5 +1115,7 @@ loadLibraries();
 fitPreviewBox();
 setTimeout(fitPreviewBox, 50);
 </script>
+<div id="credit-bar" class="credit-bar">© 2026 Ninfinity. All Rights Reserved.</div>
+
 </body>
 </html>
