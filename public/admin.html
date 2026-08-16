@@ -9,15 +9,31 @@
 <style>
 [data-theme="sumeru"]{--bg:#eaf4df;--bg-card:#ffffff;--text:#1e2e10;--text-dim:#6a8848;--text-bright:#0e1e00;--border:rgba(106,170,56,0.2);--accent:#72bc2a;--accent2:#4e8a18;--accent-glow:rgba(114,188,42,0.15);--danger:#e0432a;--danger-glow:rgba(224,67,42,0.12);--gradient:linear-gradient(135deg,#72bc2a,#4e8a18);}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;padding:24px 16px 64px;transition:background 0.3s,color 0.3s}
-.wrap{max-width:720px;margin:0 auto}
-.brand{font-family:'Cinzel',Georgia,serif;font-size:1.1rem;font-weight:900;letter-spacing:0.14em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.9rem;line-height:1.55;min-height:100vh;transition:background 0.3s,color 0.3s}
+
+/* ── layout ── */
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg-card);border-bottom:1.5px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:'Cinzel',Georgia,serif;font-size:1rem;font-weight:900;letter-spacing:0.12em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.tab-btn{position:relative;font-family:'Nunito',sans-serif;background:transparent;border:1.5px solid transparent;color:var(--text-dim);padding:7px 12px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;white-space:nowrap}
+.tab-btn:hover{background:var(--accent-glow);color:var(--accent2)}
+.tab-btn.active{background:var(--gradient);color:#fff}
+.tab-btn .cnt{display:inline-block;margin-left:5px;background:var(--danger);color:#fff;font-size:0.62rem;padding:1px 6px;border-radius:20px;font-weight:800}
+.tab-btn.active .cnt{background:rgba(255,255,255,0.3)}
+a.back-link{font-size:0.72rem;font-weight:700;color:var(--text-dim);white-space:nowrap}
+a.back-link:hover{color:var(--accent)}
+#logoutBtn{font-size:0.7rem;font-weight:700;color:var(--text-dim);background:transparent;border:1px solid var(--border);padding:6px 10px;border-radius:7px;cursor:pointer;margin:0}
+
+.wrap{max-width:760px;margin:0 auto;padding:18px 16px 64px}
+.page{display:none}
+.page.active{display:block}
 .eyebrow{font-size:0.68rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
-h1{font-size:1.25rem;font-weight:900;margin-bottom:20px;color:var(--text-bright)}
-h2{font-size:0.95rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
-.card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 4px 18px rgba(0,0,0,0.04)}
-.desc{color:var(--text-dim);font-size:0.78rem;margin:4px 0 12px;line-height:1.5}
-label{display:block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin:12px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
+h1{font-size:1.15rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
+.page-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:16px}
+h2{font-size:0.92rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
+.card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px rgba(0,0,0,0.04)}
+.desc{color:var(--text-dim);font-size:0.76rem;margin:4px 0 12px;line-height:1.5}
+label{display:block;font-size:0.7rem;font-weight:700;color:var(--text-dim);margin:10px 0 5px;text-transform:uppercase;letter-spacing:0.05em}
 input,textarea,select{width:100%;background:var(--bg);border:1.5px solid var(--border);color:var(--text);padding:9px 11px;border-radius:8px;font-size:0.85rem;font-family:'Nunito',sans-serif}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 textarea{resize:vertical;min-height:60px}
@@ -29,9 +45,20 @@ button.secondary{background:var(--bg);color:var(--text);border:1.5px solid var(-
 button.danger{background:var(--danger);box-shadow:none}
 button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .msg{font-size:0.78rem;border-radius:9px;padding:9px 12px;margin-top:10px;line-height:1.5;display:none;white-space:pre-wrap}
 .msg.ok{display:block;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent2)}
 .msg.err{display:block;background:var(--danger-glow);border:1px solid var(--danger);color:var(--danger)}
+
+.add-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.add-toggle .plus{font-size:1.1rem;font-weight:900;color:var(--accent);transition:transform 0.2s}
+.add-toggle.open .plus{transform:rotate(45deg)}
+.add-form{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.add-form.open{display:block}
+
+.search-row{margin-bottom:10px}
+.search-row input{font-size:0.8rem}
+
 .list-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:0.8rem}
 .list-item:last-child{border-bottom:none}
 .li-main{min-width:0}
@@ -42,14 +69,26 @@ button.small{padding:5px 10px;font-size:0.7rem;margin-top:0}
 .badge.status-wip{background:rgba(240,180,40,0.15);color:#a87f10}
 .badge.status-done{background:rgba(80,80,80,0.1);color:var(--text-dim)}
 .badge.status-rejected{background:var(--danger-glow);color:var(--danger)}
+.empty-hint{color:var(--text-dim);font-size:0.78rem;padding:8px 0}
+
 #gate{max-width:340px;margin:80px auto 0}
 .statusRow{display:flex;justify-content:space-between;gap:10px;font-size:0.78rem;padding:5px 0;border-bottom:1px solid var(--border)}
 .statusRow:last-child{border-bottom:none}
 .statusRow .k{color:var(--text-dim)}
 .statusRow .v{font-weight:700;text-align:right;word-break:break-all}
-a.back-link{display:inline-block;font-size:0.72rem;font-weight:700;color:var(--text-dim);margin-bottom:14px}
-a.back-link:hover{color:var(--accent)}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-box{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;text-align:center}
+.stat-box .num{font-size:1.4rem;font-weight:900;color:var(--text-bright)}
+.stat-box .lbl{font-size:0.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-top:2px}
+
 .credit-bar{position:fixed;z-index:700;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.02em;color:var(--text-dim);background:var(--bg-card);opacity:0.85;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none;white-space:nowrap;user-select:none;bottom:0;left:0;padding:4px 10px;border-radius:0 6px 0 0}
+
+@media (max-width:560px){
+  .grid2{grid-template-columns:1fr}
+  .tabs{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .topbar{gap:8px}
+}
 </style>
 </head>
 <body>
@@ -66,87 +105,184 @@ a.back-link:hover{color:var(--accent)}
   </div>
 </div>
 
-<div class="wrap" id="main" style="display:none">
-  <a class="back-link" href="/">← Về trang chủ</a>
-  <div class="brand">Melodinity</div>
-  <div class="eyebrow">Admin · Melodinity</div>
-  <h1>Quản lý Melodinity</h1>
-
-  <!-- ═══ CẤU HÌNH BNK / VIDEO FILENAME ═══ -->
-  <div class="card">
-    <h2>Cấu hình game (bnk + tên video)</h2>
-    <div class="desc">3 thứ này luôn đi cùng nhau - mỗi khi game update cần đổi cả 3.</div>
-    <div id="bnkStatusBox"></div>
-
-    <label>Link GitHub (raw) file Music_Login.bnk</label>
-    <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
-
-    <label>Source ID (ID slot nhạc gốc trong bnk)</label>
-    <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
-
-    <label>Replacement ID (ID mới gán cho track đã mod)</label>
-    <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
-
-    <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
-    <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
-
-    <div class="desc">Để trống ô nào thì giữ nguyên giá trị đang lưu của ô đó.</div>
-    <button id="saveBnkBtn">💾 Lưu cấu hình</button>
-    <button class="secondary small" id="refreshBnkBtn" style="margin-left:8px">🔄 Refresh</button>
-    <div class="msg" id="bnkMsg"></div>
+<div id="main" style="display:none">
+  <div class="topbar">
+    <div class="brand">Melodinity</div>
+    <div class="tabs">
+      <button class="tab-btn" data-page="overview">Tổng quan</button>
+      <button class="tab-btn" data-page="bnk">Cấu hình bnk</button>
+      <button class="tab-btn" data-page="wem">Nhạc</button>
+      <button class="tab-btn" data-page="video">Video</button>
+      <button class="tab-btn" data-page="requests">Yêu cầu<span class="cnt" id="reqCnt" style="display:none">0</span></button>
+    </div>
+    <a class="back-link" href="/">← Trang chủ</a>
+    <button id="logoutBtn">Đăng xuất</button>
   </div>
 
-  <!-- ═══ THƯ VIỆN NHẠC ═══ -->
-  <div class="card">
-    <h2>Thư viện nhạc (wem)</h2>
-    <div class="desc">Dán link Catbox file .wem chuẩn (đã convert bằng Wwise), kèm duration đo sẵn (ms). Có thể thêm link mp3 để user nghe thử.</div>
+  <div class="wrap">
 
-    <label>Tên hiển thị</label>
-    <input type="text" id="wemNameInput" placeholder="vd: Lo-fi Chill">
-    <label>Link Catbox (.wem)</label>
-    <input type="text" id="wemUrlInput" placeholder="https://files.catbox.moe/xxxxxx.wem">
-    <label>Link Catbox mp3 nghe thử (tuỳ chọn)</label>
-    <input type="text" id="wemPreviewInput" placeholder="https://files.catbox.moe/xxxxxx.mp3">
-    <label>Duration (ms) - đo sẵn, bắt buộc</label>
-    <input type="number" id="wemDurationInput" placeholder="vd: 183500">
-    <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
-    <input type="text" id="wemKeywordsInput" placeholder="vd: buồn, chill, tết, lofi">
-    <button id="addWemBtn">➕ Thêm vào thư viện</button>
-    <div class="msg" id="wemMsg"></div>
+    <!-- ═══ TỔNG QUAN ═══ -->
+    <div class="page" id="page-overview">
+      <div class="eyebrow">Admin · Melodinity</div>
+      <h1>Tổng quan</h1>
+      <div class="page-desc">Trạng thái hệ thống, xem nhanh trước khi chỉnh sửa.</div>
 
-    <div id="wemList" style="margin-top:14px"></div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="num" id="statWem">-</div><div class="lbl">Bài nhạc</div></div>
+        <div class="stat-box"><div class="num" id="statVid">-</div><div class="lbl">Video</div></div>
+        <div class="stat-box"><div class="num" id="statReqNew">-</div><div class="lbl">Yêu cầu mới</div></div>
+        <div class="stat-box"><div class="num" id="statReqTotal">-</div><div class="lbl">Tổng yêu cầu</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Cấu hình bnk hiện tại</h2>
+        <div class="desc">Xem nhanh — bấm tab "Cấu hình bnk" để sửa.</div>
+        <div id="bnkStatusBoxOverview"></div>
+      </div>
+    </div>
+
+    <!-- ═══ CẤU HÌNH BNK ═══ -->
+    <div class="page" id="page-bnk">
+      <div class="eyebrow">Admin · Melodinity</div>
+      <h1>Cấu hình game (bnk + video)</h1>
+      <div class="page-desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
+
+      <div class="card">
+        <h2>Trạng thái hiện tại</h2>
+        <div id="bnkStatusBox" style="margin-top:8px"></div>
+        <button class="secondary small" id="refreshBnkBtn" style="margin-top:12px">🔄 Refresh</button>
+      </div>
+
+      <div class="card">
+        <h2>Cập nhật cấu hình</h2>
+        <div class="desc">Để trống ô nào thì giữ nguyên giá trị đang lưu của ô đó.</div>
+
+        <label>Link GitHub (raw) file Music_Login.bnk</label>
+        <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
+
+        <div class="grid2">
+          <div>
+            <label>Source ID (slot nhạc gốc)</label>
+            <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
+          </div>
+          <div>
+            <label>Replacement ID (track đã mod)</label>
+            <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
+          </div>
+        </div>
+
+        <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
+        <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+
+        <button id="saveBnkBtn">💾 Lưu cấu hình</button>
+        <div class="msg" id="bnkMsg"></div>
+      </div>
+    </div>
+
+    <!-- ═══ THƯ VIỆN NHẠC ═══ -->
+    <div class="page" id="page-wem">
+      <div class="eyebrow">Admin · Melodinity</div>
+      <h1>Thư viện nhạc (wem)</h1>
+      <div class="page-desc">Dán link Catbox file .wem chuẩn (đã convert bằng Wwise), kèm duration đo sẵn.</div>
+
+      <div class="card">
+        <div class="add-toggle" id="wemAddToggle">
+          <h2 style="margin-bottom:0">➕ Thêm bài mới</h2>
+          <span class="plus">+</span>
+        </div>
+        <div class="add-form" id="wemAddForm">
+          <label>Tên hiển thị</label>
+          <input type="text" id="wemNameInput" placeholder="vd: Lo-fi Chill">
+          <label>Link Catbox (.wem)</label>
+          <input type="text" id="wemUrlInput" placeholder="https://files.catbox.moe/xxxxxx.wem">
+          <div class="grid2">
+            <div>
+              <label>Link mp3 nghe thử (tuỳ chọn)</label>
+              <input type="text" id="wemPreviewInput" placeholder="https://files.catbox.moe/xxxxxx.mp3">
+            </div>
+            <div>
+              <label>Duration (ms) - bắt buộc</label>
+              <input type="number" id="wemDurationInput" placeholder="vd: 183500">
+            </div>
+          </div>
+          <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
+          <input type="text" id="wemKeywordsInput" placeholder="vd: buồn, chill, tết, lofi">
+          <button id="addWemBtn">➕ Thêm vào thư viện</button>
+          <div class="msg" id="wemMsg"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Danh sách (<span id="wemCount">0</span>)</h2>
+        <div class="search-row" style="margin-top:10px">
+          <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá...">
+        </div>
+        <div id="wemList"></div>
+      </div>
+    </div>
+
+    <!-- ═══ THƯ VIỆN VIDEO ═══ -->
+    <div class="page" id="page-video">
+      <div class="eyebrow">Admin · Melodinity</div>
+      <h1>Thư viện video</h1>
+      <div class="page-desc">Dán link Catbox file video (.mp4).</div>
+
+      <div class="card">
+        <div class="add-toggle" id="vidAddToggle">
+          <h2 style="margin-bottom:0">➕ Thêm video mới</h2>
+          <span class="plus">+</span>
+        </div>
+        <div class="add-form" id="vidAddForm">
+          <label>Tên hiển thị</label>
+          <input type="text" id="vidNameInput" placeholder="vd: Sảnh Tết 2023">
+          <label>Link Catbox (video)</label>
+          <input type="text" id="vidUrlInput" placeholder="https://files.catbox.moe/xxxxxx.mp4">
+          <label>Link ảnh thumbnail (tuỳ chọn)</label>
+          <input type="text" id="vidThumbInput" placeholder="https://files.catbox.moe/xxxxxx.jpg">
+          <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
+          <input type="text" id="vidKeywordsInput" placeholder="vd: tết, mùa hè, sự kiện">
+          <button id="addVidBtn">➕ Thêm vào thư viện</button>
+          <div class="msg" id="vidMsg"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Danh sách (<span id="vidCount">0</span>)</h2>
+        <div class="search-row" style="margin-top:10px">
+          <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá...">
+        </div>
+        <div id="vidList"></div>
+      </div>
+    </div>
+
+    <!-- ═══ YÊU CẦU NHẠC ═══ -->
+    <div class="page" id="page-requests">
+      <div class="eyebrow">Admin · Melodinity</div>
+      <h1>Yêu cầu xin nhạc từ user</h1>
+      <div class="page-desc">Duyệt và phản hồi các yêu cầu.</div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <div class="row" id="reqFilterRow">
+            <button class="secondary small req-filter active" data-filter="all">Tất cả</button>
+            <button class="secondary small req-filter" data-filter="new">Mới</button>
+            <button class="secondary small req-filter" data-filter="wip">Đang làm</button>
+            <button class="secondary small req-filter" data-filter="done">Xong</button>
+            <button class="secondary small req-filter" data-filter="rejected">Từ chối</button>
+          </div>
+          <button class="secondary small" id="refreshReqBtn">🔄 Refresh</button>
+        </div>
+        <div id="reqList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
   </div>
-
-  <!-- ═══ THƯ VIỆN VIDEO ═══ -->
-  <div class="card">
-    <h2>Thư viện video</h2>
-    <div class="desc">Dán link Catbox file video (.mp4).</div>
-
-    <label>Tên hiển thị</label>
-    <input type="text" id="vidNameInput" placeholder="vd: Sảnh Tết 2023">
-    <label>Link Catbox (video)</label>
-    <input type="text" id="vidUrlInput" placeholder="https://files.catbox.moe/xxxxxx.mp4">
-    <label>Link ảnh thumbnail (tuỳ chọn)</label>
-    <input type="text" id="vidThumbInput" placeholder="https://files.catbox.moe/xxxxxx.jpg">
-    <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
-    <input type="text" id="vidKeywordsInput" placeholder="vd: tết, mùa hè, sự kiện">
-    <button id="addVidBtn">➕ Thêm vào thư viện</button>
-    <div class="msg" id="vidMsg"></div>
-
-    <div id="vidList" style="margin-top:14px"></div>
-  </div>
-
-  <!-- ═══ YÊU CẦU NHẠC ═══ -->
-  <div class="card">
-    <h2>Yêu cầu xin nhạc từ user</h2>
-    <button class="secondary small" id="refreshReqBtn">🔄 Refresh</button>
-    <div id="reqList" style="margin-top:12px"></div>
-  </div>
-
 </div>
 
 <script>
 let pw = sessionStorage.getItem('admin_pw') || '';
+let allRequests = [];
+let currentReqFilter = 'all';
 
 const gate = document.getElementById('gate');
 const main = document.getElementById('main');
@@ -163,6 +299,34 @@ function showMsg(el, ok, text) {
   el.className = 'msg ' + (ok ? 'ok' : 'err');
   el.textContent = (ok ? '✅ ' : '⚠ ') + text;
 }
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ── tab navigation ──
+function goToPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelector(`.tab-btn[data-page="${name}"]`).classList.add('active');
+  window.scrollTo(0, 0);
+  location.hash = name;
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => goToPage(btn.dataset.page));
+});
+
+// ── collapsible add-forms ──
+function setupToggle(toggleId, formId) {
+  const toggle = document.getElementById(toggleId);
+  const form = document.getElementById(formId);
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('open');
+    form.classList.toggle('open');
+  });
+}
+setupToggle('wemAddToggle', 'wemAddForm');
+setupToggle('vidAddToggle', 'vidAddForm');
 
 // ── login ──
 document.getElementById('loginBtn').addEventListener('click', () => {
@@ -171,12 +335,21 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   boot();
 });
 pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('admin_pw');
+  pw = '';
+  main.style.display = 'none';
+  gate.style.display = 'block';
+  pwInput.value = '';
+});
 
 async function boot(silent = false) {
   try {
     await api('/api/admin/status');
     gate.style.display = 'none';
     main.style.display = 'block';
+    const startPage = (location.hash || '#overview').slice(1);
+    goToPage(['overview','bnk','wem','video','requests'].includes(startPage) ? startPage : 'overview');
     await Promise.all([loadBnkStatus(), loadWemList(), loadVidList(), loadRequests()]);
   } catch (e) {
     if (!silent) showMsg(document.getElementById('loginMsg'), false, e.message);
@@ -185,10 +358,7 @@ async function boot(silent = false) {
 }
 
 // ── bnk config ──
-async function loadBnkStatus() {
-  const data = await api('/api/admin/status');
-  const c = data.bnkConfig;
-  const box = document.getElementById('bnkStatusBox');
+function renderBnkStatus(c, box) {
   if (!c) {
     box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào - cần điền đủ cả 4 ô bên dưới.</div>';
     return;
@@ -201,7 +371,13 @@ async function loadBnkStatus() {
     ['Cập nhật lúc', c.updated_at ? new Date(c.updated_at).toLocaleString('vi-VN') : '-'],
     ['Người cập nhật', c.updated_by || '-']
   ];
-  box.innerHTML = rows.map(([k, v]) => `<div class="statusRow"><span class="k">${k}</span><span class="v">${v ?? '-'}</span></div>`).join('');
+  box.innerHTML = rows.map(([k, v]) => `<div class="statusRow"><span class="k">${k}</span><span class="v">${escapeHtml(v ?? '-')}</span></div>`).join('');
+}
+
+async function loadBnkStatus() {
+  const data = await api('/api/admin/status');
+  renderBnkStatus(data.bnkConfig, document.getElementById('bnkStatusBox'));
+  renderBnkStatus(data.bnkConfig, document.getElementById('bnkStatusBoxOverview'));
 }
 
 document.getElementById('refreshBnkBtn').addEventListener('click', loadBnkStatus);
@@ -236,11 +412,23 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
 });
 
 // ── wem library ──
+let wemData = [];
 async function loadWemList() {
   const data = await api('/api/admin/wem-list');
+  wemData = data.wems;
+  document.getElementById('wemCount').textContent = wemData.length;
+  document.getElementById('statWem').textContent = wemData.length;
+  renderWemList();
+}
+function renderWemList() {
+  const q = document.getElementById('wemSearchInput').value.trim().toLowerCase();
   const box = document.getElementById('wemList');
-  if (!data.wems.length) { box.innerHTML = '<div class="desc">Chưa có bài nào.</div>'; return; }
-  box.innerHTML = data.wems.map(w => `
+  const filtered = q ? wemData.filter(w =>
+    w.name.toLowerCase().includes(q) ||
+    (w.keywords || []).some(k => k.toLowerCase().includes(q))
+  ) : wemData;
+  if (!filtered.length) { box.innerHTML = `<div class="empty-hint">${q ? 'Không tìm thấy.' : 'Chưa có bài nào.'}</div>`; return; }
+  box.innerHTML = filtered.map(w => `
     <div class="list-item">
       <div class="li-main">
         <div class="li-name">${escapeHtml(w.name)}</div>
@@ -249,6 +437,7 @@ async function loadWemList() {
       <button class="danger small" data-id="${w.id}" data-kind="wem">Xoá</button>
     </div>`).join('');
 }
+document.getElementById('wemSearchInput').addEventListener('input', renderWemList);
 
 document.getElementById('addWemBtn').addEventListener('click', async () => {
   const msg = document.getElementById('wemMsg');
@@ -267,19 +456,32 @@ document.getElementById('addWemBtn').addEventListener('click', async () => {
 });
 
 // ── video library ──
+let vidData = [];
 async function loadVidList() {
   const data = await api('/api/admin/video-list');
+  vidData = data.videos;
+  document.getElementById('vidCount').textContent = vidData.length;
+  document.getElementById('statVid').textContent = vidData.length;
+  renderVidList();
+}
+function renderVidList() {
+  const q = document.getElementById('vidSearchInput').value.trim().toLowerCase();
   const box = document.getElementById('vidList');
-  if (!data.videos.length) { box.innerHTML = '<div class="desc">Chưa có video nào.</div>'; return; }
-  box.innerHTML = data.videos.map(v => `
+  const filtered = q ? vidData.filter(v =>
+    v.name.toLowerCase().includes(q) ||
+    (v.keywords || []).some(k => k.toLowerCase().includes(q))
+  ) : vidData;
+  if (!filtered.length) { box.innerHTML = `<div class="empty-hint">${q ? 'Không tìm thấy.' : 'Chưa có video nào.'}</div>`; return; }
+  box.innerHTML = filtered.map(v => `
     <div class="list-item">
       <div class="li-main">
         <div class="li-name">${escapeHtml(v.name)}</div>
-        <div class="li-sub">${v.video_url}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
+        <div class="li-sub">${escapeHtml(v.video_url)}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
       <button class="danger small" data-id="${v.id}" data-kind="video">Xoá</button>
     </div>`).join('');
 }
+document.getElementById('vidSearchInput').addEventListener('input', renderVidList);
 
 document.getElementById('addVidBtn').addEventListener('click', async () => {
   const msg = document.getElementById('vidMsg');
@@ -310,12 +512,31 @@ document.body.addEventListener('click', async (e) => {
 
 // ── requests ──
 document.getElementById('refreshReqBtn').addEventListener('click', loadRequests);
+document.querySelectorAll('.req-filter').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentReqFilter = btn.dataset.filter;
+    document.querySelectorAll('.req-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderRequests();
+  });
+});
 
 async function loadRequests() {
   const data = await api('/api/admin/requests');
+  allRequests = data.requests;
+  const newCount = allRequests.filter(r => r.status === 'new').length;
+  document.getElementById('statReqNew').textContent = newCount;
+  document.getElementById('statReqTotal').textContent = allRequests.length;
+  const cntBadge = document.getElementById('reqCnt');
+  if (newCount > 0) { cntBadge.textContent = newCount; cntBadge.style.display = 'inline-block'; }
+  else { cntBadge.style.display = 'none'; }
+  renderRequests();
+}
+function renderRequests() {
   const box = document.getElementById('reqList');
-  if (!data.requests.length) { box.innerHTML = '<div class="desc">Chưa có yêu cầu nào.</div>'; return; }
-  box.innerHTML = data.requests.map(r => `
+  const filtered = currentReqFilter === 'all' ? allRequests : allRequests.filter(r => r.status === currentReqFilter);
+  if (!filtered.length) { box.innerHTML = '<div class="empty-hint">Không có yêu cầu nào.</div>'; return; }
+  box.innerHTML = filtered.map(r => `
     <div class="list-item" style="align-items:flex-start;flex-direction:column">
       <div class="li-main" style="width:100%">
         <span class="badge status-${r.status}">${r.status}</span>
@@ -344,10 +565,6 @@ document.body.addEventListener('click', async (e) => {
     await loadRequests();
   } catch (e2) { alert(e2.message); }
 });
-
-function escapeHtml(s) {
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
 
 if (pw) boot(true); else gate.style.display = 'block';
 </script>
