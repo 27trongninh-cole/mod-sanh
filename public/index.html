@@ -50,10 +50,13 @@ h2{font-size:0.95rem;font-weight:900;margin-bottom:4px;color:var(--text-bright)}
 button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(--border)}
 
 /* preview step */
-.preview-video-wrap{background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
-.preview-video-wrap video{width:100%;height:100%;object-fit:contain}
-.preview-audio-box{background:var(--bg-card);border:1.5px solid var(--border);border-radius:12px;padding:12px}
-.preview-audio-box .wem-name{margin-bottom:8px}
+.preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
+.preview-video-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
+.preview-scrub button{background:rgba(255,255,255,0.18);border:none;color:#fff;width:26px;height:26px;border-radius:50%;font-size:0.7rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px}
+.preview-scrub .time{color:#fff;font-size:0.65rem;font-variant-numeric:tabular-nums;flex-shrink:0}
 audio{width:100%}
 
 /* loading modal */
@@ -128,11 +131,15 @@ button.primary:disabled{opacity:0.4;cursor:not-allowed}
         <div class="section-desc">Video phát lặp lại, nhạc phát kèm bên dưới (có thanh tua).</div>
         <div class="preview-video-wrap">
           <video id="previewVideo" muted loop autoplay playsinline></video>
+          <img class="preview-overlay-img" src="/img/overlay.png" alt="">
+          <div class="preview-scrub">
+            <button id="scrubPlayBtn">⏸</button>
+            <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
+            <span class="time" id="scrubTime">0:00</span>
+          </div>
         </div>
-        <div class="preview-audio-box">
-          <div class="wem-name" id="previewWemName"></div>
-          <audio id="previewAudioStep" controls autoplay></audio>
-        </div>
+        <audio id="previewAudioStep" style="display:none"></audio>
+        <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
       </div>
       <div class="step-nav">
         <button class="ghost" id="backTo2Btn">← Đổi video</button>
@@ -303,7 +310,11 @@ function goToStep(name) {
   audio.pause();
   document.querySelectorAll('.wem-play-btn.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
   const pv = document.getElementById('previewVideo'), pa = document.getElementById('previewAudioStep');
-  if (name !== 'preview') { pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src'); }
+  if (name !== 'preview') {
+    pv.pause(); pa.pause(); pv.removeAttribute('src'); pa.removeAttribute('src');
+    document.getElementById('scrubRange').value = 0;
+    document.getElementById('scrubTime').textContent = '0:00';
+  }
 }
 
 document.getElementById('toStep2Btn').addEventListener('click', () => goToStep('video'));
@@ -328,6 +339,33 @@ document.getElementById('toStep3Btn').addEventListener('click', () => {
   }
   if (pv.src) pv.play().catch(() => {});
 });
+
+// ── thanh tua custom lồng trong khung preview (điều khiển audio) ──
+const scrubBtn = document.getElementById('scrubPlayBtn');
+const scrubRange = document.getElementById('scrubRange');
+const scrubTime = document.getElementById('scrubTime');
+const pa2 = document.getElementById('previewAudioStep');
+let scrubDragging = false;
+
+function fmtTime(s) {
+  if (!isFinite(s)) return '0:00';
+  s = Math.max(0, Math.round(s));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+scrubBtn.addEventListener('click', () => {
+  if (!pa2.src) return;
+  if (pa2.paused) { pa2.play(); } else { pa2.pause(); }
+});
+pa2.addEventListener('play', () => scrubBtn.textContent = '⏸');
+pa2.addEventListener('pause', () => scrubBtn.textContent = '▶');
+pa2.addEventListener('loadedmetadata', () => { scrubRange.max = pa2.duration || 100; });
+pa2.addEventListener('timeupdate', () => {
+  if (scrubDragging) return;
+  scrubRange.value = pa2.currentTime;
+  scrubTime.textContent = fmtTime(pa2.currentTime);
+});
+scrubRange.addEventListener('input', () => { scrubDragging = true; scrubTime.textContent = fmtTime(scrubRange.value); });
+scrubRange.addEventListener('change', () => { pa2.currentTime = scrubRange.value; scrubDragging = false; });
 
 // ── build ──
 function showLoadingModal(show, title, sub) {
