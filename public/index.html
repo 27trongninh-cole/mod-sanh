@@ -51,7 +51,7 @@ button.ghost{background:var(--bg-card);color:var(--text);border:1.5px solid var(
 
 /* preview step */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px}
-.preview-video-wrap video{width:100%;height:100%;object-fit:cover;display:block}
+.preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
 .preview-scrub button{background:rgba(255,255,255,0.18);border:none;color:#fff;width:26px;height:26px;border-radius:50%;font-size:0.7rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
