@@ -908,3 +908,12 @@ function base64ToUint8Array(b64) {
   return arr;
 }
 const CODEBOOK_BYTES = base64ToUint8Array(CODEBOOK_B64);
+
+// Expose ra global để các trang (vd. index.html) gọi trực tiếp window.wemToOgg(...)
+if (typeof window !== 'undefined') {
+  window.WemOgg = WemOgg;
+  window.wemToOgg = function(wemBytes, codebookLibBytes, opts) {
+    return WemOgg.wemToOgg(wemBytes, codebookLibBytes || CODEBOOK_BYTES, opts);
+  };
+  window.WEMOGG_CODEBOOK = CODEBOOK_BYTES;
+}

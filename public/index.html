@@ -873,7 +873,7 @@ async function getPreviewOggUrl(id){
   if(previewOggCache[id]) return previewOggCache[id];
   const resp = await fetch('/api/wem-preview/' + id);
   if(!resp.ok) throw new Error('Không tải được file nhạc');
-  const wemBytes = await resp.arrayBuffer();
+  const wemBytes = new Uint8Array(await resp.arrayBuffer());
   const oggBytes = await window.wemToOgg(wemBytes);
   const blob = new Blob([oggBytes], { type: 'audio/ogg' });
   const url = URL.createObjectURL(blob);
