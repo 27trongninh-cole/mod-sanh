@@ -114,11 +114,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .home-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.03em;background:var(--gradient);color:#fff;border:none;border-radius:50px;padding:16px 42px;cursor:pointer;box-shadow:0 10px 30px var(--accent-glow);transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
 .home-cta:hover{transform:translateY(-2px)}
 .home-cta:active{transform:scale(0.96)}
-#homePage{display:block}
-#wizardPage{display:none}
-#wizardPage.show{display:block}
-.wizard-back{background:none;border:none;color:var(--text-dim);font-family:'Nunito',sans-serif;font-weight:800;font-size:0.75rem;cursor:pointer;padding:6px 0 16px}
-.wizard-back:hover{color:var(--accent)}
+.builder-header{text-align:center;margin-bottom:22px}
+.builder-header .home-badge{margin-bottom:8px}
+.builder-header h1{font-family:'Cinzel',Georgia,serif;font-size:1.4rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.builder-header p{color:var(--text-dim);font-size:0.8rem;max-width:360px;margin:0 auto;line-height:1.5}
+
+/* PICKER CARDS (chọn nhạc / chọn video ngay trên UI chính) */
+.picker-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.picker-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:14px 12px;text-align:left;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s}
+.picker-card:hover{transform:translateY(-1px);border-color:var(--accent-border)}
+.picker-card:active{transform:scale(0.98)}
+.picker-card.filled{border-color:var(--accent);background:var(--accent-glow)}
+.picker-icon{font-size:1.2rem;margin-bottom:6px}
+.picker-label{font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px}
+.picker-value{font-size:0.82rem;font-weight:700;color:var(--text-bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 h2{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
 .section-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:12px}
 .section{margin-bottom:26px}
@@ -169,14 +178,7 @@ button.ghost:active{transform:scale(0.97)}
 .video-card.upload-card .video-name{color:var(--text-dim)}
 .video-card.upload-card.has-file .video-name{color:var(--text-bright)}
 
-/* WIZARD STEPS */
-.step-page{display:none}
-.step-page.active{display:block;animation:step-in 0.35s cubic-bezier(0.25,0.8,0.4,1) both}
-@keyframes step-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
-.step-nav{display:flex;gap:10px;margin-top:20px}
-.step-nav button{flex:1;margin-top:0}
-
-/* PREVIEW STEP */
+/* PREVIEW (UI chính) */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px;box-shadow:0 10px 30px var(--shadow)}
 .preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
@@ -260,7 +262,8 @@ button.ghost:active{transform:scale(0.97)}
     <div class="track-progress"><div class="track-progress-bar" id="trackProgressBar"></div></div>
   </div>
   <div style="display:flex;gap:6px;align-items:center;margin-left:8px">
-    <button class="settings-btn" id="musicBtn" title="Tạm dừng nhạc">♪</button>
+    <!-- Nhạc nền web tạm ẩn (chỉ ẩn, không xoá tính năng) — âm thanh duy nhất trên web giờ là lúc xem trước (preview) -->
+    <button class="settings-btn" id="musicBtn" title="Tạm dừng nhạc" style="display:none">♪</button>
     <button class="settings-btn" id="togglePanelBtn">⚙</button>
   </div>
 </nav>
@@ -302,71 +305,78 @@ button.ghost:active{transform:scale(0.97)}
 </div>
 
 <div class="page">
-  <!-- ═══ TRANG CHỦ ═══ -->
-  <div id="homePage">
-    <div class="home-hero">
+  <!-- ═══ UI CHÍNH: PREVIEW + 2 Ô CHỌN NHẠC/VIDEO ═══ -->
+  <div id="builderPage">
+    <div class="builder-header">
       <span class="home-badge">🏛 EchoHall</span>
       <h1>MOD SẢNH</h1>
-      <p>Ghép nhạc và video sảnh chờ riêng của bồ chỉ trong vài bước — nhấn nút bên dưới để bắt đầu.</p>
-      <button class="home-cta" id="startBuildBtn">🎬 Tạo mod ngay</button>
+      <p>Chọn nhạc và video bên dưới — preview cập nhật ngay, xong thì lưu về máy.</p>
+    </div>
+
+    <div class="section">
+      <div class="preview-video-wrap">
+        <video id="previewVideo" muted loop autoplay playsinline></video>
+        <img class="preview-overlay-img" src="/img/overlay.png" alt="">
+        <div class="preview-scrub">
+          <button id="scrubPlayBtn">⏸</button>
+          <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
+          <span class="time" id="scrubTime">0:00</span>
+        </div>
+      </div>
+      <audio id="previewAudioStep" style="display:none"></audio>
+      <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
+      <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
+    </div>
+
+    <div class="picker-row">
+      <button class="picker-card" id="openWemPickerBtn" type="button">
+        <div class="picker-icon">🎵</div>
+        <div class="picker-label">Nhạc nền</div>
+        <div class="picker-value" id="pickerWemValue">Chọn nhạc...</div>
+      </button>
+      <button class="picker-card" id="openVideoPickerBtn" type="button">
+        <div class="picker-icon">🎬</div>
+        <div class="picker-label">Video</div>
+        <div class="picker-value" id="pickerVideoValue">Chọn video...</div>
+      </button>
+    </div>
+
+    <button class="primary" id="buildBtn" disabled>💾 Lưu &amp; tải về</button>
+    <div class="msg" id="buildMsg"></div>
+  </div>
+</div>
+
+<!-- POPUP: CHỌN NHẠC -->
+<div class="req-modal-backdrop" id="wemPickerBackdrop">
+  <div class="req-modal" id="wemPickerModal">
+    <div class="req-modal-header">
+      <div>
+        <div class="req-modal-title">🎵 Chọn nhạc</div>
+        <div class="req-modal-sub">Bấm vào bài để chọn, bấm nút tròn để nghe thử.</div>
+      </div>
+      <button class="req-modal-close" id="wemPickerCloseBtn">✕</button>
+    </div>
+    <div class="req-modal-body">
+      <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
+      <div id="wemListBox"><div class="empty">Đang tải...</div></div>
     </div>
   </div>
+</div>
 
-  <!-- ═══ WIZARD: TẠO MOD (3 bước) ═══ -->
-  <div id="wizardPage">
-    <button class="wizard-back" id="wizardBackHomeBtn">← Về trang chủ</button>
-
-    <!-- Bước 1: chọn nhạc -->
-    <div class="step-page active" id="step-wem">
-      <div class="section">
-        <h2>1. Chọn nhạc</h2>
-        <div class="section-desc">Bấm vào bài để chọn, bấm nút tròn để nghe thử.</div>
-        <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
-        <div id="wemListBox"><div class="empty">Đang tải...</div></div>
+<!-- POPUP: CHỌN VIDEO -->
+<div class="req-modal-backdrop" id="videoPickerBackdrop">
+  <div class="req-modal" id="videoPickerModal">
+    <div class="req-modal-header">
+      <div>
+        <div class="req-modal-title">🎬 Chọn video</div>
+        <div class="req-modal-sub">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
       </div>
-      <div class="step-nav">
-        <button class="primary" id="toStep2Btn" disabled>Tiếp theo →</button>
-      </div>
+      <button class="req-modal-close" id="videoPickerCloseBtn">✕</button>
     </div>
-
-    <!-- Bước 2: chọn video -->
-    <div class="step-page" id="step-video">
-      <div class="section">
-        <h2>2. Chọn video</h2>
-        <div class="section-desc">Chọn từ thư viện, hoặc tự upload video của bồ.</div>
-        <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
-        <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
-        <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
-      </div>
-      <div class="step-nav">
-        <button class="ghost" id="backTo1Btn">← Quay lại</button>
-        <button class="primary" id="toStep3Btn" disabled>Xem trước →</button>
-      </div>
-    </div>
-
-    <!-- Bước 3: preview + lưu -->
-    <div class="step-page" id="step-preview">
-      <div class="section">
-        <h2>3. Xem trước</h2>
-        <div class="section-desc">Video phát lặp lại, nhạc phát kèm bên dưới (có thanh tua).</div>
-        <div class="preview-video-wrap">
-          <video id="previewVideo" muted loop autoplay playsinline></video>
-          <img class="preview-overlay-img" src="/img/overlay.png" alt="">
-          <div class="preview-scrub">
-            <button id="scrubPlayBtn">⏸</button>
-            <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
-            <span class="time" id="scrubTime">0:00</span>
-          </div>
-        </div>
-        <audio id="previewAudioStep" style="display:none"></audio>
-        <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
-        <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
-      </div>
-      <div class="step-nav">
-        <button class="ghost" id="backTo2Btn">← Đổi video</button>
-        <button class="primary" id="buildBtn">💾 Lưu &amp; tải về</button>
-      </div>
-      <div class="msg" id="buildMsg"></div>
+    <div class="req-modal-body">
+      <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
+      <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
+      <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
     </div>
   </div>
 </div>
@@ -446,7 +456,7 @@ function applyTheme(name){
   document.querySelectorAll('.theme-opt').forEach(btn=>{
     btn.classList.toggle('active', btn.dataset.themeOpt === name);
   });
-  playThemeMusic(name);
+  if(BG_MUSIC_ENABLED) playThemeMusic(name);
   if(window.particleSetTheme) window.particleSetTheme(name);
   if(window.setMascotTheme) window.setMascotTheme(name);
 }
@@ -489,9 +499,12 @@ document.getElementById('donateCloseBtn').addEventListener('click', ()=> documen
 document.getElementById('donateBackdrop').addEventListener('click', e=>{
   if(e.target === document.getElementById('donateBackdrop')) e.currentTarget.classList.remove('open');
 });
-document.getElementById('navLogo').addEventListener('click', ()=> goHome());
+document.getElementById('navLogo').addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
 
 /* ═══════════════════════ NHẠC NỀN THEO THEME ═══════════════════════ */
+/* Tạm ẩn tính năng nhạc nền web (chỉ ẩn, không xoá) — set true để bật lại.
+   Khi tắt, web chỉ phát âm thanh lúc người dùng xem trước (preview) nhạc/mod. */
+const BG_MUSIC_ENABLED = false;
 const themeMusic = {
   mondstadt: "https://files.catbox.moe/0ccjp7.mp3",
   liyue:     "https://files.catbox.moe/l0xjbw.mp3",
@@ -593,7 +606,7 @@ function unlockMusicOnce(){
   if(musicEnabled) playThemeMusic(document.documentElement.getAttribute("data-theme") || "sumeru");
   window.removeEventListener("pointerdown", unlockMusicOnce);
 }
-window.addEventListener("pointerdown", unlockMusicOnce, { once:true });
+if(BG_MUSIC_ENABLED) window.addEventListener("pointerdown", unlockMusicOnce, { once:true });
 
 /* ═══════════════════════ PARTICLE ENGINE (giữ nguyên EchoHall) ═══════════════════════ */
 (function(){
@@ -811,16 +824,17 @@ document.getElementById("reqSendBtn").addEventListener("click", async ()=>{
   }
 });
 
-/* ═══════════════════════ WIZARD: TẠO MOD ═══════════════════════ */
-function goHome(){
-  document.getElementById('homePage').style.display = 'block';
-  document.getElementById('wizardPage').classList.remove('show');
-}
-document.getElementById('startBuildBtn').addEventListener('click', ()=>{
-  document.getElementById('homePage').style.display = 'none';
-  document.getElementById('wizardPage').classList.add('show');
-});
-document.getElementById('wizardBackHomeBtn').addEventListener('click', goHome);
+/* ═══════════════════════ TẠO MOD: PREVIEW NGAY TRÊN UI CHÍNH ═══════════════════════ */
+function openWemPicker(){ document.getElementById('wemPickerBackdrop').classList.add('open'); }
+function closeWemPicker(){ document.getElementById('wemPickerBackdrop').classList.remove('open'); }
+function openVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.add('open'); }
+function closeVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.remove('open'); }
+document.getElementById('openWemPickerBtn').addEventListener('click', openWemPicker);
+document.getElementById('openVideoPickerBtn').addEventListener('click', openVideoPicker);
+document.getElementById('wemPickerCloseBtn').addEventListener('click', closeWemPicker);
+document.getElementById('videoPickerCloseBtn').addEventListener('click', closeVideoPicker);
+document.getElementById('wemPickerBackdrop').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeWemPicker(); });
+document.getElementById('videoPickerBackdrop').addEventListener('click', e=>{ if(e.target===e.currentTarget) closeVideoPicker(); });
 
 let wemLibrary = {}, videoLibrary = {};
 let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
@@ -901,7 +915,9 @@ document.getElementById('wemListBox').addEventListener('click', (e)=>{
   if(item){
     selectedWemId = item.dataset.id;
     renderWemList();
-    document.getElementById('toStep2Btn').disabled = false;
+    audio.pause(); playingBtn = null;
+    closeWemPicker();
+    updatePreviewAudio();
   }
 });
 
@@ -932,30 +948,42 @@ document.getElementById('videoGridBox').addEventListener('click', (e)=>{
     selectedVideoId = card.dataset.id; ownVideoFile = null;
     document.getElementById('ownVideoInput').value = '';
     renderVideoGrid();
-    document.getElementById('toStep3Btn').disabled = false;
+    closeVideoPicker();
+    updatePreviewVideo();
   }
 });
 document.getElementById('ownVideoInput').addEventListener('change', (e)=>{
   const f = e.target.files[0];
-  if(f){ ownVideoFile = f; selectedVideoId = null; renderVideoGrid(); document.getElementById('toStep3Btn').disabled = false; }
+  if(f){
+    ownVideoFile = f; selectedVideoId = null;
+    renderVideoGrid();
+    closeVideoPicker();
+    updatePreviewVideo();
+  }
 });
 
-function goToStep(name){
-  document.querySelectorAll('.step-page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('step-' + name).classList.add('active');
-}
-document.getElementById('toStep2Btn').addEventListener('click', ()=>goToStep('video'));
-document.getElementById('backTo1Btn').addEventListener('click', ()=>goToStep('wem'));
-document.getElementById('backTo2Btn').addEventListener('click', ()=>goToStep('video'));
-
-document.getElementById('toStep3Btn').addEventListener('click', async ()=>{
-  goToStep('preview');
-  const wem = wemLibrary[selectedWemId];
-  document.getElementById('previewWemName').textContent = wem ? '🎵 ' + wem.name : '';
+/* Cập nhật preview ngay khi chọn nhạc / video, không cần quay lại bước đầu */
+function updatePreviewVideo(){
   const video = document.getElementById('previewVideo');
   if(ownVideoFile){ video.src = URL.createObjectURL(ownVideoFile); }
   else{ const v = videoLibrary[selectedVideoId]; video.src = v ? v.video_url : ''; }
-  video.play().catch(()=>{});
+  if(video.src) video.play().catch(()=>{});
+  const pickerVal = document.getElementById('pickerVideoValue');
+  const picker = document.getElementById('openVideoPickerBtn');
+  const name = ownVideoFile ? ownVideoFile.name : (videoLibrary[selectedVideoId] ? videoLibrary[selectedVideoId].name : '');
+  pickerVal.textContent = name || 'Chọn video...';
+  picker.classList.toggle('filled', !!name);
+  updateBuildBtnState();
+}
+async function updatePreviewAudio(){
+  const wem = wemLibrary[selectedWemId];
+  const pickerVal = document.getElementById('pickerWemValue');
+  const picker = document.getElementById('openWemPickerBtn');
+  pickerVal.textContent = wem ? wem.name : 'Chọn nhạc...';
+  picker.classList.toggle('filled', !!wem);
+  document.getElementById('previewWemName').textContent = wem ? '🎵 ' + wem.name : '';
+  updateBuildBtnState();
+  if(!wem) return;
   const note = document.getElementById('previewLoadingNote');
   const pa2 = document.getElementById('previewAudioStep');
   try{
@@ -964,7 +992,10 @@ document.getElementById('toStep3Btn').addEventListener('click', async ()=>{
     pa2.src = url; note.style.display = 'none';
     pa2.play().catch(()=>{});
   }catch(e){ note.style.display='none'; alert('Không tải được nhạc xem trước: ' + e.message); }
-});
+}
+function updateBuildBtnState(){
+  document.getElementById('buildBtn').disabled = !(selectedWemId && (selectedVideoId || ownVideoFile));
+}
 
 const scrubBtn = document.getElementById('scrubPlayBtn');
 const scrubRange = document.getElementById('scrubRange');
