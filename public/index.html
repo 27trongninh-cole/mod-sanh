@@ -107,7 +107,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .donate-close:hover{border-color:var(--accent-border);color:var(--text)}
 
 /* PAGE / HOME HERO */
-.page{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1;max-width:640px;margin:0 auto;padding:24px 20px calc(150px + env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.page{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1;max-width:640px;margin:0 auto;padding:14px 20px calc(84px + env(safe-area-inset-bottom));overflow:hidden}
 .home-hero{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:62vh;gap:18px}
 .home-badge{display:inline-flex;align-items:center;gap:6px;font-size:0.66rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:2px;background:var(--accent-glow);padding:4px 12px;border-radius:20px;border:1px solid var(--accent-border)}
 .home-hero h1{font-family:'Cinzel',Georgia,serif;font-size:1.7rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -115,20 +115,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .home-cta{font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.03em;background:var(--gradient);color:#fff;border:none;border-radius:50px;padding:16px 42px;cursor:pointer;box-shadow:0 10px 30px var(--accent-glow);transition:transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
 .home-cta:hover{transform:translateY(-2px)}
 .home-cta:active{transform:scale(0.96)}
-.builder-header{text-align:center;margin-bottom:22px}
-.builder-header .home-badge{margin-bottom:8px}
-.builder-header h1{font-family:'Cinzel',Georgia,serif;font-size:1.4rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
-.builder-header p{color:var(--text-dim);font-size:0.8rem;max-width:360px;margin:0 auto;line-height:1.5}
+
+/* BUILDER PAGE: layout dạng flex chiếm trọn chiều cao khung, không cần scroll */
+#builderPage{display:flex;flex-direction:column;height:100%;min-height:0;gap:10px}
+.builder-header{flex:0 0 auto;text-align:center}
+.builder-header .home-badge{margin-bottom:6px}
+.builder-header h1{font-family:'Cinzel',Georgia,serif;font-size:1.15rem;font-weight:900;letter-spacing:0.05em;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.builder-header p{color:var(--text-dim);font-size:0.74rem;max-width:360px;margin:0 auto;line-height:1.4}
+.builder-preview-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:4px}
+.preview-stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
 /* PICKER CARDS (chọn nhạc / chọn video ngay trên UI chính) */
-.picker-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.picker-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:14px 12px;text-align:left;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s}
+.picker-row{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.picker-card{background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:10px 12px;text-align:left;box-shadow:0 2px 10px var(--shadow);transition:transform 0.15s,border-color 0.15s}
 .picker-card:hover{transform:translateY(-1px);border-color:var(--accent-border)}
 .picker-card:active{transform:scale(0.98)}
 .picker-card.filled{border-color:var(--accent);background:var(--accent-glow)}
-.picker-icon{font-size:1.2rem;margin-bottom:6px}
-.picker-label{font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px}
-.picker-value{font-size:0.82rem;font-weight:700;color:var(--text-bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.picker-icon{font-size:1.1rem;margin-bottom:3px}
+.picker-label{font-size:0.6rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:2px}
+.picker-value{font-size:0.8rem;font-weight:700;color:var(--text-bright);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 h2{font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:4px;color:var(--text-bright)}
 .section-desc{color:var(--text-dim);font-size:0.78rem;margin-bottom:12px}
 .section{margin-bottom:26px}
@@ -140,7 +145,7 @@ input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(-
 input::placeholder,textarea::placeholder{color:var(--text-dim)}
 textarea{resize:vertical;min-height:80px}
 label{display:block;font-size:0.68rem;font-weight:800;color:var(--text-dim);margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.1em}
-button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;margin-top:18px;box-shadow:0 4px 16px var(--accent-glow);transition:transform 0.15s,box-shadow 0.15s}
+button.primary{width:100%;font-family:'Nunito',sans-serif;background:var(--gradient);color:#fff;border:none;padding:13px 16px;border-radius:10px;font-weight:800;font-size:0.9rem;cursor:pointer;flex:0 0 auto;box-shadow:0 4px 16px var(--accent-glow);transition:transform 0.15s,box-shadow 0.15s}
 button.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px var(--accent-glow)}
 button.primary:active:not(:disabled){transform:scale(0.97)}
 button.primary:disabled{opacity:0.4;cursor:not-allowed;box-shadow:none}
@@ -180,7 +185,7 @@ button.ghost:active{transform:scale(0.97)}
 .video-card.upload-card.has-file .video-name{color:var(--text-bright)}
 
 /* PREVIEW (UI chính) */
-.preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9;margin-bottom:14px;box-shadow:0 10px 30px var(--shadow)}
+.preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
 .preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
@@ -204,10 +209,12 @@ button.ghost:active{transform:scale(0.97)}
 .modal-sub{font-size:0.76rem;color:var(--text-dim)}
 
 /* MASCOT (giữ nguyên EchoHall) */
-.mascot-wrap{position:fixed;bottom:14px;right:14px;z-index:150;display:flex;flex-direction:column;align-items:flex-end;gap:6px;transform:scale(0.42);transform-origin:bottom right;animation:mascot-appear 0.5s 0.6s cubic-bezier(0.34,1.4,0.64,1) both;pointer-events:none}
-.mascot-speech{position:relative;background:var(--bg-card);border:1.5px solid var(--accent-border);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;padding:7px 11px;border-radius:16px 16px 4px 16px;box-shadow:0 6px 24px var(--shadow);max-width:180px;opacity:0;transform:translateY(6px) scale(0.95);transition:opacity 0.3s,transform 0.3s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none;line-height:1.4}
-.mascot-speech.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:none}
-.mascot-speech::after{content:'';position:absolute;bottom:-7px;right:18px;width:12px;height:7px;background:var(--bg-card);clip-path:polygon(0 0,100% 0,50% 100%)}
+.mascot-wrap{position:fixed;bottom:14px;right:14px;z-index:150;display:flex;flex-direction:row;align-items:center;gap:8px;transform:scale(0.42);transform-origin:bottom right;animation:mascot-appear 0.5s 0.6s cubic-bezier(0.34,1.4,0.64,1) both;pointer-events:none}
+.mascot-col{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0}
+.mascot-label{font-family:'Nunito',sans-serif;font-size:0.66rem;font-weight:800;color:var(--text-dim);background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:2px 0;width:80px;text-align:center;white-space:nowrap;box-shadow:0 2px 8px var(--shadow);pointer-events:all;cursor:pointer}
+.mascot-speech{position:relative;background:var(--bg-card);border:1.5px solid var(--accent-border);color:var(--text);font-family:'Nunito',sans-serif;font-size:0.62rem;font-weight:700;padding:7px 11px;border-radius:16px 4px 16px 16px;box-shadow:0 6px 24px var(--shadow);max-width:170px;opacity:0;transform:translateX(6px) scale(0.95);transform-origin:right center;transition:opacity 0.3s,transform 0.3s cubic-bezier(0.34,1.4,0.64,1);pointer-events:none;line-height:1.4}
+.mascot-speech.visible{opacity:1;transform:translateX(0) scale(1)}
+.mascot-speech::after{content:'';position:absolute;top:50%;right:-7px;transform:translateY(-50%);width:7px;height:12px;background:var(--bg-card);clip-path:polygon(0 0,0 100%,100% 50%)}
 .mascot-img-btn{position:relative;width:80px;height:80px;cursor:pointer;pointer-events:all;flex-shrink:0;filter:drop-shadow(0 0 6px var(--accent));transition:filter 0.3s,transform 0.2s cubic-bezier(0.34,1.4,0.64,1)}
 .mascot-img-btn:hover{transform:scale(1.1) translateY(-4px)}
 .mascot-img-front,.mascot-img-back{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backface-visibility:hidden;transition:transform 0.15s ease-in,opacity 0.15s ease}
@@ -246,7 +253,7 @@ button.ghost:active{transform:scale(0.97)}
 
 @media(max-width:600px){
   nav{padding:0 16px}
-  .page{padding:20px 16px calc(140px + env(safe-area-inset-bottom))}
+  .page{padding:10px 16px calc(78px + env(safe-area-inset-bottom))}
   .theme-panel{right:16px}
   .theme-grid{grid-template-columns:1fr}
   .req-modal-body{padding:16px 18px 20px}
@@ -314,19 +321,21 @@ button.ghost:active{transform:scale(0.97)}
       <p>Chọn nhạc và video bên dưới — preview cập nhật ngay, xong thì lưu về máy.</p>
     </div>
 
-    <div class="section">
-      <div class="preview-video-wrap">
-        <video id="previewVideo" muted loop autoplay playsinline></video>
-        <img class="preview-overlay-img" src="/img/overlay.png" alt="">
-        <div class="preview-scrub">
-          <button id="scrubPlayBtn">⏸</button>
-          <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
-          <span class="time" id="scrubTime">0:00</span>
+    <div class="builder-preview-section">
+      <div class="preview-stage" id="previewStage">
+        <div class="preview-video-wrap" id="previewVideoWrap">
+          <video id="previewVideo" muted loop autoplay playsinline></video>
+          <img class="preview-overlay-img" src="/img/overlay.png" alt="">
+          <div class="preview-scrub">
+            <button id="scrubPlayBtn">⏸</button>
+            <input type="range" id="scrubRange" min="0" max="100" value="0" step="0.1">
+            <span class="time" id="scrubTime">0:00</span>
+          </div>
         </div>
       </div>
       <audio id="previewAudioStep" style="display:none"></audio>
-      <div class="section-desc" id="previewLoadingNote" style="display:none;margin-top:6px;text-align:center">Đang giải mã audio…</div>
-      <div class="section-desc" id="previewWemName" style="margin-top:6px;text-align:center"></div>
+      <div class="section-desc" id="previewLoadingNote" style="display:none;margin:0;text-align:center">Đang giải mã audio…</div>
+      <div class="section-desc" id="previewWemName" style="margin:0;text-align:center"></div>
     </div>
 
     <div class="picker-row">
@@ -396,9 +405,12 @@ button.ghost:active{transform:scale(0.97)}
 <!-- MASCOT -->
 <div class="mascot-wrap" id="mascotWrap">
   <div class="mascot-speech" id="mascotSpeech"></div>
-  <div class="mascot-img-btn" id="mascotBtn" title="Yêu cầu nhạc">
-    <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
-    <img class="mascot-img-back"  id="mascotImgBack"  src="" alt="mascot" draggable="false">
+  <div class="mascot-col">
+    <div class="mascot-img-btn" id="mascotBtn" title="Yêu cầu nhạc">
+      <img class="mascot-img-front" id="mascotImgFront" src="" alt="mascot" draggable="false">
+      <img class="mascot-img-back"  id="mascotImgBack"  src="" alt="mascot" draggable="false">
+    </div>
+    <div class="mascot-label" id="mascotLabelBtn">Yêu cầu nhạc</div>
   </div>
 </div>
 
@@ -772,6 +784,8 @@ const MASCOT_DATA = {
   window.setMascotTheme(mascotTheme);
   setTimeout(()=>{ const mascot=getMascot(mascotTheme); showSpeech(mascot.emotes[0].line); }, 1400);
   btn.addEventListener("click", openReqModal);
+  const labelBtn = document.getElementById("mascotLabelBtn");
+  if(labelBtn) labelBtn.addEventListener("click", openReqModal);
 })();
 
 /* ═══════════════════════ REQUEST MODAL (xin bài nhạc) ═══════════════════════ */
@@ -1051,8 +1065,25 @@ document.getElementById('buildBtn').addEventListener('click', async ()=>{
 
 function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* Khoá cứng tỉ lệ 16:9 cho khung preview, tự co theo khoảng trống còn lại (không tràn, không scroll) */
+function fitPreviewBox(){
+  const stage = document.getElementById('previewStage');
+  const box = document.getElementById('previewVideoWrap');
+  if(!stage || !box) return;
+  const w = stage.clientWidth, h = stage.clientHeight;
+  if(w <= 0 || h <= 0) return;
+  let boxW = w, boxH = boxW * 9 / 16;
+  if(boxH > h){ boxH = h; boxW = boxH * 16 / 9; }
+  box.style.width = boxW + 'px';
+  box.style.height = boxH + 'px';
+}
+window.addEventListener('resize', fitPreviewBox);
+window.addEventListener('orientationchange', ()=> setTimeout(fitPreviewBox, 50));
+
 applyTheme(currentTheme);
 loadLibraries();
+fitPreviewBox();
+setTimeout(fitPreviewBox, 50);
 </script>
 </body>
 </html>
