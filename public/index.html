@@ -242,6 +242,12 @@ button.ghost:active{transform:scale(0.97)}
 @keyframes eq-bounce{0%,100%{transform:scaleY(0.35)}50%{transform:scaleY(1)}}
 .modal-title{font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;color:var(--text-bright);margin-bottom:4px}
 .modal-sub{font-size:0.76rem;color:var(--text-dim)}
+.modal-progress-wrap{width:100%;height:6px;background:var(--border);border-radius:6px;overflow:hidden;margin-top:12px;display:none}
+.modal-progress-wrap.show{display:block}
+.modal-progress-bar{height:100%;width:0%;background:var(--gradient,var(--accent));border-radius:6px;transition:width 0.15s linear}
+.edit-icon-btn{flex:0 0 auto;background:transparent;border:1.5px solid var(--border);color:var(--text-dim);padding:0 12px;border-radius:8px;font-size:0.85rem;font-weight:800;cursor:pointer;transition:all 0.15s}
+.edit-icon-btn:hover{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent-border)}
+.edit-icon-btn:disabled{opacity:0.5;cursor:default}
 
 /* MASCOT (giữ nguyên EchoHall) */
 .mascot-wrap{position:fixed;bottom:14px;right:14px;z-index:150;display:flex;flex-direction:row;align-items:center;gap:8px;transform:scale(0.42);transform-origin:bottom right;animation:mascot-appear 0.5s 0.6s cubic-bezier(0.34,1.4,0.64,1) both;pointer-events:none}
@@ -299,6 +305,12 @@ button.ghost:active{transform:scale(0.97)}
 .credit-bar{position:fixed;z-index:700;font-family:'Nunito',sans-serif;font-weight:600;font-size:0.7rem;letter-spacing:0.02em;color:var(--text-dim);background:var(--bg-card);opacity:0.85;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none;white-space:nowrap;user-select:none}
 @media (min-width:769px){.credit-bar{bottom:0;left:0;right:0;padding:5px 0;text-align:center}}
 @media (max-width:768px){.credit-bar{bottom:0;left:0;right:auto;top:auto;transform:none;padding:4px 10px;border-radius:0 6px 0 0;text-align:left}}
+/* TOAST (thay cho alert()) */
+#toastHost{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:900;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 16px}
+.toast{max-width:420px;width:100%;background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);font-size:0.78rem;font-weight:700;padding:10px 14px;border-radius:12px;box-shadow:0 8px 24px var(--shadow);opacity:0;transform:translateY(10px);transition:opacity 0.22s,transform 0.22s;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+.toast.ok{border-color:var(--accent);color:var(--accent2)}
 </style>
 </head>
 <body>
@@ -418,7 +430,10 @@ button.ghost:active{transform:scale(0.97)}
       <button class="req-modal-close" id="wemPickerCloseBtn">✕</button>
     </div>
     <div class="req-modal-body">
-      <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+        <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+      </div>
       <div id="wemListBox"><div class="empty">Đang tải...</div></div>
     </div>
   </div>
@@ -435,7 +450,10 @@ button.ghost:active{transform:scale(0.97)}
       <button class="req-modal-close" id="videoPickerCloseBtn">✕</button>
     </div>
     <div class="req-modal-body">
-      <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:12px">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+        <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+      </div>
       <div class="upload-row" id="uploadRow" role="button" tabindex="0">
         <div class="upload-row-icon">📤</div>
         <div class="upload-row-text">
@@ -453,12 +471,15 @@ button.ghost:active{transform:scale(0.97)}
 
 <audio id="previewAudio" style="display:none"></audio>
 
+<div id="toastHost"></div>
+
 <!-- LOADING MODAL -->
 <div class="modal-overlay" id="loadingModal">
   <div class="modal-box">
     <div class="eq"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="modal-title" id="loadingTitle">Đang tạo file...</div>
     <div class="modal-sub" id="loadingSub">Chờ chút nhé, sắp xong rồi</div>
+    <div class="modal-progress-wrap" id="loadingProgressWrap"><div class="modal-progress-bar" id="loadingProgressBar"></div></div>
   </div>
 </div>
 
@@ -928,6 +949,7 @@ document.getElementById('clearVideoBtn').addEventListener('click', (e)=>{
 
 let wemLibrary = {}, videoLibrary = {};
 let selectedWemId = null, selectedVideoId = null, ownVideoFile = null;
+const MAX_UPLOAD_MB = 200;
 const LIB_CACHE_KEY = 'melodinity_lib_cache_v1';
 
 // Hiện tạm dữ liệu lần trước (nếu có) ngay lập tức trong lúc chờ mạng, để picker
@@ -977,6 +999,30 @@ async function loadLibraries(hadCache){
     document.getElementById('retryVideoBtn') && document.getElementById('retryVideoBtn').addEventListener('click', retry);
   }
 }
+function showToast(text, kind){
+  const host = document.getElementById('toastHost');
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = text;
+  host.appendChild(el);
+  requestAnimationFrame(()=> el.classList.add('show'));
+  setTimeout(()=>{ el.classList.remove('show'); setTimeout(()=> el.remove(), 250); }, 3200);
+}
+async function refreshLibraryFromPicker(btn){
+  btn.disabled = true;
+  const original = btn.textContent;
+  btn.textContent = '…';
+  try{
+    await loadLibraries(true);
+    showToast('Đã làm mới thư viện.', 'ok');
+  }catch(e){
+    showToast('Không làm mới được: ' + e.message, 'err');
+  }finally{
+    btn.disabled = false; btn.textContent = original;
+  }
+}
+document.getElementById('wemLibRefreshBtn').addEventListener('click', (e)=> refreshLibraryFromPicker(e.currentTarget));
+document.getElementById('vidLibRefreshBtn').addEventListener('click', (e)=> refreshLibraryFromPicker(e.currentTarget));
 function fmtDuration(ms){
   if(!ms) return '';
   const s = Math.round(ms/1000);
@@ -992,7 +1038,14 @@ function renderWemList(){
   const term = document.getElementById('wemSearchInput').value;
   const box = document.getElementById('wemListBox');
   const items = Object.values(wemLibrary).filter(w=>matchesSearch(w, term));
-  if(!items.length){ box.innerHTML = '<div class="empty">Không tìm thấy bài nào.</div>'; return; }
+  if(!items.length){
+    box.innerHTML = term
+      ? `<div class="empty">Không tìm thấy bài nào khớp "${escapeHtml(term)}".<br><button type="button" class="edit-icon-btn" id="wemEmptyReqBtn" style="margin-top:8px">✉️ Yêu cầu bài này</button></div>`
+      : '<div class="empty">Thư viện đang trống.</div>';
+    const reqBtn = document.getElementById('wemEmptyReqBtn');
+    if(reqBtn) reqBtn.addEventListener('click', ()=>{ closeWemPicker(); openReqModal(); const s=document.getElementById('reqSong'); if(s) s.value = term; });
+    return;
+  }
   box.innerHTML = items.map(w => `
     <div class="wem-item ${w.id===selectedWemId?'selected':''}" data-id="${w.id}">
       <span class="wem-radio"></span>
@@ -1028,7 +1081,7 @@ async function togglePreview(id, btn){
     const url = await getPreviewOggUrl(id);
     audio.src = url; await audio.play();
     btn.textContent='⏸'; btn.classList.add('playing'); playingBtn = btn;
-  }catch(e){ btn.textContent='▶'; alert('Không phát được: ' + e.message); }
+  }catch(e){ btn.textContent='▶'; showToast('Không phát được: ' + e.message, 'err'); }
 }
 audio.addEventListener('ended', ()=>{ if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; } });
 
@@ -1090,6 +1143,11 @@ document.getElementById('videoGridBox').addEventListener('click', (e)=>{
 document.getElementById('ownVideoInput').addEventListener('change', (e)=>{
   const f = e.target.files[0];
   if(f){
+    if(f.size > MAX_UPLOAD_MB * 1024 * 1024){
+      showToast(`File video (${(f.size/1024/1024).toFixed(0)}MB) vượt quá giới hạn ${MAX_UPLOAD_MB}MB, chọn file nhỏ hơn nhé.`, 'err');
+      e.target.value = '';
+      return;
+    }
     ownVideoFile = f; selectedVideoId = null;
     renderVideoGrid();
     closeVideoPicker();
@@ -1129,13 +1187,14 @@ async function updatePreviewAudio(){
     const url = await getPreviewOggUrl(selectedWemId);
     pa2.src = url; note.classList.remove('show');
     pa2.play().catch(()=>{});
-  }catch(e){ note.classList.remove('show'); alert('Không tải được nhạc xem trước: ' + e.message); }
+  }catch(e){ note.classList.remove('show'); showToast('Không tải được nhạc xem trước: ' + e.message, 'err'); }
 }
 function updateBuildBtnState(){
-  const hasBoth = selectedWemId && (selectedVideoId || ownVideoFile);
-  document.getElementById('buildBtn').disabled = !hasBoth;
+  const hasWem = !!selectedWemId;
+  const hasVideo = !!(selectedVideoId || ownVideoFile);
+  document.getElementById('buildBtn').disabled = !(hasWem && hasVideo);
   const overlay = document.getElementById('previewEmptyOverlay');
-  if(overlay) overlay.classList.toggle('hidden', hasBoth);
+  if(overlay) overlay.classList.toggle('hidden', hasWem || hasVideo);
 }
 
 const scrubRange = document.getElementById('scrubRange');
@@ -1151,38 +1210,70 @@ pa2.addEventListener('play', duckBgMusic);
 pa2.addEventListener('pause', restoreBgMusic);
 pa2.addEventListener('ended', restoreBgMusic);
 
-function showLoadingModal(show, title, sub){
+function showLoadingModal(show, title, sub, percent){
   const modal = document.getElementById('loadingModal');
   if(title) document.getElementById('loadingTitle').textContent = title;
   if(sub) document.getElementById('loadingSub').textContent = sub;
+  const wrap = document.getElementById('loadingProgressWrap');
+  const bar = document.getElementById('loadingProgressBar');
+  if(percent == null){ wrap.classList.remove('show'); bar.style.width='0%'; }
+  else { wrap.classList.add('show'); bar.style.width = Math.max(0,Math.min(100,percent)) + '%'; }
   modal.classList.toggle('show', show);
 }
-document.getElementById('buildBtn').addEventListener('click', async ()=>{
+document.getElementById('buildBtn').addEventListener('click', ()=>{
   const msg = document.getElementById('buildMsg');
   msg.className='msg'; msg.style.display='none';
   const btn = document.getElementById('buildBtn');
+
+  if(ownVideoFile && ownVideoFile.size > MAX_UPLOAD_MB * 1024 * 1024){
+    showToast(`File video (${(ownVideoFile.size/1024/1024).toFixed(0)}MB) vượt quá giới hạn ${MAX_UPLOAD_MB}MB, chọn file nhỏ hơn nhé.`, 'err');
+    return;
+  }
+
   btn.disabled = true;
-  showLoadingModal(true, 'Đang tạo file...', 'Chờ chút nhé, sắp xong rồi');
-  try{
-    const fd = new FormData();
-    fd.append('wemId', selectedWemId);
-    if(ownVideoFile) fd.append('video', ownVideoFile);
-    else fd.append('videoId', selectedVideoId);
-    const resp = await fetch('/api/build', { method:'POST', body: fd });
-    if(!resp.ok){ const data = await resp.json().catch(()=>({})); throw new Error(data.error || 'Lỗi build không xác định'); }
-    showLoadingModal(true, 'Đang tải về máy...', 'Gần xong rồi');
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href=url; a.download='Nhac_sanh.zip';
-    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  showLoadingModal(true, 'Đang tải lên...', 'Chờ chút nhé, sắp xong rồi', 0);
+
+  const fd = new FormData();
+  fd.append('wemId', selectedWemId);
+  if(ownVideoFile) fd.append('video', ownVideoFile);
+  else fd.append('videoId', selectedVideoId);
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/build');
+  xhr.responseType = 'blob';
+
+  xhr.upload.addEventListener('progress', (e)=>{
+    if(!e.lengthComputable) return;
+    const pct = (e.loaded / e.total) * 100;
+    showLoadingModal(true, 'Đang tải lên...', `${(e.loaded/1024/1024).toFixed(1)}MB / ${(e.total/1024/1024).toFixed(1)}MB`, pct);
+  });
+  xhr.addEventListener('load', async ()=>{
+    if(xhr.status < 200 || xhr.status >= 300){
+      let errMsg = 'Lỗi build không xác định';
+      try{ const text = await xhr.response.text(); errMsg = JSON.parse(text).error || errMsg; }catch(_){}
+      showLoadingModal(false);
+      msg.className='msg err'; msg.style.display='block'; msg.textContent='⚠ ' + errMsg;
+      btn.disabled = false;
+      return;
+    }
+    showLoadingModal(true, 'Đang tạo file...', 'Server đang gói zip, gần xong rồi', null);
+    setTimeout(()=>{
+      const blob = xhr.response;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='Nhac_sanh.zip';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      showLoadingModal(false);
+      msg.className='msg ok'; msg.style.display='block';
+      msg.textContent='✅ Đã tạo xong, file đang tải về.';
+      btn.disabled = false;
+    }, 300);
+  });
+  xhr.addEventListener('error', ()=>{
     showLoadingModal(false);
-    msg.className='msg ok'; msg.style.display='block';
-    msg.textContent='✅ Đã tạo xong, file đang tải về.';
-  }catch(e){
-    showLoadingModal(false);
-    msg.className='msg err'; msg.style.display='block';
-    msg.textContent='⚠ ' + e.message;
-  }finally{ btn.disabled=false; }
+    msg.className='msg err'; msg.style.display='block'; msg.textContent='⚠ Mất kết nối, thử lại nhé.';
+    btn.disabled = false;
+  });
+  xhr.send(fd);
 });
 
 function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
