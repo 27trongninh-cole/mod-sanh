@@ -934,7 +934,12 @@ document.getElementById("reqSendBtn").addEventListener("click", async ()=>{
 
 /* ═══════════════════════ TẠO MOD: PREVIEW NGAY TRÊN UI CHÍNH ═══════════════════════ */
 function openWemPicker(){ document.getElementById('wemPickerBackdrop').classList.add('open'); }
-function closeWemPicker(){ document.getElementById('wemPickerBackdrop').classList.remove('open'); }
+function closeWemPicker(){
+  document.getElementById('wemPickerBackdrop').classList.remove('open');
+  audio.pause();
+  if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; }
+  previewReqToken++;
+}
 function openVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.add('open'); }
 function closeVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.remove('open'); }
 document.getElementById('openWemPickerBtn').addEventListener('click', openWemPicker);
@@ -1085,15 +1090,22 @@ async function getPreviewOggUrl(id){
 }
 const audio = document.getElementById('previewAudio');
 let playingBtn = null;
+let previewReqToken = 0;
 async function togglePreview(id, btn){
-  if(playingBtn === btn){ audio.pause(); playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; return; }
+  if(playingBtn === btn){ audio.pause(); playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; previewReqToken++; return; }
   if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); }
+  const myToken = ++previewReqToken;
   btn.textContent='…';
   try{
     const url = await getPreviewOggUrl(id);
+    if(myToken !== previewReqToken) return; // đã có yêu cầu mới hơn (đổi bài / đóng popup) trong lúc chờ tải
     audio.src = url; await audio.play();
+    if(myToken !== previewReqToken){ audio.pause(); return; } // phòng trường hợp lệch trong lúc await play()
     btn.textContent='⏸️'; btn.classList.add('playing'); playingBtn = btn;
-  }catch(e){ btn.textContent='▶️'; showToast('Không phát được: ' + e.message, 'err'); }
+  }catch(e){
+    if(myToken !== previewReqToken) return;
+    btn.textContent='▶️'; showToast('Không phát được: ' + e.message, 'err');
+  }
 }
 audio.addEventListener('ended', ()=>{ if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; } });
 
@@ -1104,7 +1116,7 @@ document.getElementById('wemListBox').addEventListener('click', (e)=>{
   if(item){
     selectedWemId = item.dataset.id;
     renderWemList();
-    audio.pause(); playingBtn = null;
+    audio.pause(); playingBtn = null; previewReqToken++;
     closeWemPicker();
     updatePreviewAudio();
   }
