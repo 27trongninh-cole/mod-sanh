@@ -223,7 +223,7 @@ button.ghost:active{transform:scale(0.97)}
 
 /* PREVIEW (UI chính) */
 .preview-video-wrap{position:relative;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
-.preview-video-wrap video{width:100%;height:100%;object-fit:contain;display:block}
+.preview-video-wrap video{width:100%;height:100%;object-fit:cover;display:block}
 .preview-overlay-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity 0.25s}
 .preview-scrub{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(to top, rgba(0,0,0,0.65), transparent)}
 .preview-scrub input[type=range]{flex:1;accent-color:#fff;height:3px;padding:0;margin:0;border:none;background:transparent;border-radius:0;width:auto;min-width:0}
@@ -1361,6 +1361,15 @@ function fitPreviewBox(){
 }
 window.addEventListener('resize', fitPreviewBox);
 window.addEventListener('orientationchange', ()=> setTimeout(fitPreviewBox, 50));
+// window 'resize' chỉ bắn khi kích thước cửa sổ đổi — không bắt được lúc
+// .msg/.toast/modal xuất hiện làm layout trong trang bị đẩy (document reflow,
+// kích thước cửa sổ không đổi). Theo dõi trực tiếp kích thước của stage bằng
+// ResizeObserver để khung preview luôn tự co lại đúng 16:9 trong mọi trường hợp.
+(function watchPreviewStageSize(){
+  const stage = document.getElementById('previewStage');
+  if(!stage || typeof ResizeObserver === 'undefined') return;
+  new ResizeObserver(() => fitPreviewBox()).observe(stage);
+})();
 
 applyTheme(currentTheme);
 const hadCache = loadCachedLibraries();
