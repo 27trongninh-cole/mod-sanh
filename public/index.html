@@ -370,7 +370,7 @@ button.ghost:active{transform:scale(0.97)}
   <div id="builderPage">
     <div class="builder-header">
       <h1>MELODINITY</h1>
-      <p>Công cụ tạo Mod nhạc sảnh theo phong cách của bồ.</p>
+      <p>Công cụ tạo Mod nhạc sảnh theo phong cách của bồ.<br/>Muốn cống hiến cho web không? Có mã QR ở bánh răng góc phải đó nha!</p>
     </div>
 
     <div class="builder-card">
@@ -1080,8 +1080,8 @@ async function togglePreview(id, btn){
   try{
     const url = await getPreviewOggUrl(id);
     audio.src = url; await audio.play();
-    btn.textContent='⏸'; btn.classList.add('playing'); playingBtn = btn;
-  }catch(e){ btn.textContent='▶'; showToast('Không phát được: ' + e.message, 'err'); }
+    btn.textContent='⏸️'; btn.classList.add('playing'); playingBtn = btn;
+  }catch(e){ btn.textContent='▶️'; showToast('Không phát được: ' + e.message, 'err'); }
 }
 audio.addEventListener('ended', ()=>{ if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; } });
 
