@@ -200,7 +200,8 @@ button.ghost:active{transform:scale(0.97)}
 .video-card:hover{transform:translateY(-2px)}
 .video-card:active{transform:scale(0.97)}
 .video-card.selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
-.video-thumb{aspect-ratio:16/9;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent2);overflow:hidden}
+.video-thumb{position:relative;aspect-ratio:16/9;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent2);overflow:hidden}
+.video-thumb .thumb-vid{width:100%;height:100%;object-fit:cover;pointer-events:none;background:var(--accent-glow)}
 .video-thumb img{width:100%;height:100%;object-fit:cover}
 .video-name{padding:6px 8px;font-size:0.72rem;font-weight:700;color:var(--text-bright)}
 /* Hàng upload ghim cố định, tách khỏi lưới thư viện (không phải card, không bị xáo trộn khi tìm kiếm) */
@@ -1104,12 +1105,34 @@ function renderVideoGrid(){
   const items = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
   const html = items.map(v => `
     <div class="video-card ${v.id===selectedVideoId && !ownVideoFile ?'selected':''}" data-id="${v.id}">
-      <div class="video-thumb">${v.thumbnail_url ? `<img src="${v.thumbnail_url}" alt="" loading="lazy" decoding="async" onerror="this.remove()">` : '🎬'}</div>
+      <div class="video-thumb">${v.thumbnail_url
+        ? `<img src="${v.thumbnail_url}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`
+        : `<video class="thumb-vid" data-src="${v.video_url}" muted playsinline preload="none"></video>`}</div>
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>
   `).join('');
   box.innerHTML = items.length ? html : '<div class="empty">Không tìm thấy video nào.</div>';
   renderUploadRow();
+  lazyLoadVideoThumbs();
+}
+let thumbObserver = null;
+function lazyLoadVideoThumbs(){
+  if(thumbObserver) thumbObserver.disconnect();
+  const vids = document.querySelectorAll('.thumb-vid[data-src]');
+  if(!vids.length) return;
+  thumbObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      thumbObserver.unobserve(el);
+      el.preload = 'metadata';
+      el.src = el.dataset.src;
+      el.removeAttribute('data-src');
+      // 1 số trình duyệt (Safari) cần seek nhẹ mới chịu vẽ khung hình đầu
+      el.addEventListener('loadedmetadata', ()=>{ try{ el.currentTime = 0.05; }catch(_){} }, { once:true });
+    });
+  }, { root: document.getElementById('videoPickerModal') || null, rootMargin: '200px' });
+  vids.forEach(v=> thumbObserver.observe(v));
 }
 function renderUploadRow(){
   const row = document.getElementById('uploadRow');
