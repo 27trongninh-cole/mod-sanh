@@ -1293,7 +1293,10 @@ document.getElementById('buildBtn').addEventListener('click', ()=>{
   xhr.responseType = 'blob';
 
   xhr.upload.addEventListener('progress', (e)=>{
-    if(!e.lengthComputable) return;
+    // Chỉ có ý nghĩa khi user tự upload video (body request lúc đó mới đủ lớn
+    // để tính %). Khi chọn video từ thư viện, body gửi đi chỉ vài byte ID nên
+    // e.total ~ 0 — hiển thị "0/0MB" gây hiểu lầm, nên bỏ qua trường hợp đó.
+    if(!e.lengthComputable || !ownVideoFile || e.total < 1024) return;
     const pct = (e.loaded / e.total) * 100;
     showLoadingModal(true, 'Đang tải lên...', `${(e.loaded/1024/1024).toFixed(1)}MB / ${(e.total/1024/1024).toFixed(1)}MB`, pct);
   });
