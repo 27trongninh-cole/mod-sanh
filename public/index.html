@@ -330,7 +330,7 @@ button.ghost:active{transform:scale(0.97)}
 </nav>
 
 <div class="theme-panel" id="themePanel">
-  <div class="panel-title">Chọn Vương Quốc</div>
+  <div class="panel-title">Chọn chủ đề</div>
   <div class="theme-grid">
     <button class="theme-opt" data-theme-opt="mondstadt"><span class="theme-dot" style="background:#2db87a"></span>Mondstadt</button>
     <button class="theme-opt" data-theme-opt="liyue"><span class="theme-dot" style="background:#f0c060"></span>Liyue</button>
@@ -370,7 +370,7 @@ button.ghost:active{transform:scale(0.97)}
   <div id="builderPage">
     <div class="builder-header">
       <h1>MELODINITY</h1>
-      <p>Chọn nhạc và video bên dưới - preview cập nhật ngay, xong thì lưu về máy.</p>
+      <p>Công cụ tạo Mod nhạc sảnh theo phong cách của bồ.</p>
     </div>
 
     <div class="builder-card">
@@ -393,7 +393,7 @@ button.ghost:active{transform:scale(0.97)}
           </div>
         </div>
         <audio id="previewAudioStep" style="display:none"></audio>
-        <div class="preview-caption">UI mô phỏng cho thấy các vị trí sẽ bị tính năng của game che mất.</div>
+        <div class="preview-caption">UI mô phỏng cho thấy các vùng video sẽ bị tính năng của game che mất.</div>
         <div class="section-desc preview-note" id="previewLoadingNote">Đang tải nhạc từ máy chủ...</div>
         <div class="section-desc preview-note" id="previewWemName"></div>
       </div>
@@ -413,7 +413,7 @@ button.ghost:active{transform:scale(0.97)}
         </div>
       </div>
 
-      <button class="primary" id="buildBtn" disabled>💾 Lưu &amp; tải về</button>
+      <button class="primary" id="buildBtn" disabled>💾 Tạo file Mod &amp; tải về</button>
       <div class="msg" id="buildMsg"></div>
     </div>
   </div>
@@ -501,24 +501,24 @@ button.ghost:active{transform:scale(0.97)}
     <div class="req-modal-header">
       <div>
         <div class="req-modal-title">✦ Yêu Cầu Nhạc</div>
-        <div class="req-modal-sub">Chưa có bản nhạc bồ cần? Điền form, admin sẽ liên hệ lại.</div>
+        <div class="req-modal-sub">Chưa có bản nhạc bồ cần? Điền form, admin sẽ cập nhật ngay cho bồ.</div>
       </div>
       <button class="req-modal-close" id="reqCloseBtn">✕</button>
     </div>
     <div class="req-modal-body">
       <div id="reqForm">
-        <p class="req-modal-note">Không có hẹn giờ cụ thể - admin sẽ liên hệ lại qua cách bồ để lại bên dưới khi có bài nhạc.</p>
+        <p class="req-modal-note">Không có hẹn giờ cụ thể - admin sẽ thông báo qua cách bồ để lại bên dưới khi có bài nhạc.</p>
         <div class="req-form-row">
           <label class="req-form-label">Tên / nickname</label>
-          <input class="req-form-input" id="reqName" type="text" placeholder="vd: Minh">
+          <input class="req-form-input" id="reqName" type="text" placeholder="vd: Billow">
         </div>
         <div class="req-form-row">
-          <label class="req-form-label">Cách liên hệ (Zalo / Discord / FB...)</label>
-          <input class="req-form-input" id="reqContact" type="text" placeholder="vd: Zalo 09xxxxxxxx hoặc Discord@abc">
+          <label class="req-form-label">Link Facebook</label>
+          <input class="req-form-input" id="reqContact" type="text" placeholder="vd: https://www.facebook.com/123456">
         </div>
         <div class="req-form-row">
           <label class="req-form-label">Tên bài nhạc muốn yêu cầu</label>
-          <input class="req-form-input" id="reqSong" type="text" placeholder="vd: Sảnh Tết 2024">
+          <input class="req-form-input" id="reqSong" type="text" placeholder="vd: Đừng làm trái tim anh đau">
         </div>
         <div class="req-form-row">
           <label class="req-form-label">Ghi chú thêm (tuỳ chọn)</label>
@@ -533,7 +533,7 @@ button.ghost:active{transform:scale(0.97)}
       <div class="req-success" id="reqSuccess">
         <div class="req-success-icon">✨</div>
         <div class="req-success-text">Đã nhận yêu cầu!</div>
-        <div class="req-success-sub">Admin sẽ liên hệ bồ khi có bài nhạc nhé.</div>
+        <div class="req-success-sub">Admin sẽ thông báo với bồ khi có bài nhạc nhé.</div>
       </div>
     </div>
   </div>
@@ -807,7 +807,7 @@ const MASCOT_DATA = {
     { url:"https://files.catbox.moe/ia2a0a.png", line:"Cuộc hành trình nào rồi cũng sẽ kết thúc, không cần phải vội vàng." },
     { url:"https://files.catbox.moe/cn1cuv.png", line:"<em><strong>\"Rex Incognito\"</strong></em> thực sự là một bản nhạc hay, thử ghép vào mod xem." },
     { url:"https://files.catbox.moe/0lz8wb.png", line:"Chưa tìm được bài ưng ý? Bấm vào mình để <strong>yêu cầu nhạc</strong> nhé." },
-    { url:"https://files.catbox.moe/p0bmw5.png", line:"Muốn ăn thứ gì để giúp tỉnh táo à. Ở Ngật Hổ Nham có một quán không tồi..." },
+    { url:"https://files.catbox.moe/p0bmw5.png", line:"Muốn ăn thứ gì để giúp tỉnh táo à? Ở Ngật Hổ Nham có một quán không tồi..." },
   ]},
   inazuma: { name:"Raiden Shogun", emotes:[
     { url:"https://files.catbox.moe/mt6a23.png", line:"Đừng bảo tôi đi nấu cơm là được. Tôi cái gì cũng làm được, ngoại trừ nấu cơm." },
