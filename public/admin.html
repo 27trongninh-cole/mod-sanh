@@ -215,6 +215,8 @@ button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
           </div>
           <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
           <input type="text" id="wemKeywordsInput" placeholder="vd: buồn, chill, tết, lofi">
+          <label>Từ khoá chính (dùng làm bộ lọc nhóm, chỉ 1 từ)</label>
+          <input type="text" id="wemCategoryInput" placeholder="vd: Lofi, Sôi động, 2024...">
           <button id="addWemBtn">➕ Thêm vào thư viện</button>
           <div class="msg" id="wemMsg"></div>
         </div>
@@ -249,6 +251,8 @@ button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
           <input type="text" id="vidThumbInput" placeholder="https://files.catbox.moe/xxxxxx.jpg">
           <label>Từ khoá tìm kiếm (tuỳ chọn, cách nhau bằng dấu phẩy)</label>
           <input type="text" id="vidKeywordsInput" placeholder="vd: tết, mùa hè, sự kiện">
+          <label>Từ khoá chính (dùng làm bộ lọc nhóm, chỉ 1 từ)</label>
+          <input type="text" id="vidCategoryInput" placeholder="vd: Sự kiện, Phong cảnh, 2024...">
           <button id="addVidBtn">➕ Thêm vào thư viện</button>
           <div class="msg" id="vidMsg"></div>
         </div>
@@ -469,6 +473,8 @@ function editPanelHtml(kind, item) {
         </div>
         <label>Từ khoá tìm kiếm (cách nhau bằng dấu phẩy)</label>
         <input type="text" class="ef-keywords" value="${escapeHtml(kw)}">
+        <label>Từ khoá chính (bộ lọc nhóm)</label>
+        <input type="text" class="ef-category" value="${escapeHtml(item.category || '')}">
         <div class="row" style="margin-top:12px">
           <button class="small" data-save-edit="${item.id}" data-kind="wem">💾 Lưu</button>
           <button class="secondary small" data-cancel-edit="${item.id}">Huỷ</button>
@@ -486,6 +492,8 @@ function editPanelHtml(kind, item) {
       <input type="text" class="ef-thumb" value="${escapeHtml(item.thumbnail_url || '')}">
       <label>Từ khoá tìm kiếm (cách nhau bằng dấu phẩy)</label>
       <input type="text" class="ef-keywords" value="${escapeHtml(kw)}">
+      <label>Từ khoá chính (bộ lọc nhóm)</label>
+      <input type="text" class="ef-category" value="${escapeHtml(item.category || '')}">
       <div class="row" style="margin-top:12px">
         <button class="small" data-save-edit="${item.id}" data-kind="video">💾 Lưu</button>
         <button class="secondary small" data-cancel-edit="${item.id}">Huỷ</button>
@@ -513,7 +521,7 @@ function renderWemList() {
     <div class="list-item ${editingId===w.id?'editing':''}">
       <div class="li-main">
         <div class="li-name">${escapeHtml(w.name)}</div>
-        <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}${(w.keywords && w.keywords.length) ? ' · từ khoá: ' + w.keywords.map(escapeHtml).join(', ') : ''}</div>
+        <div class="li-sub">${w.duration_ms ?? '?'} ms ${w.preview_mp3_url ? '· có mp3 nghe thử' : ''}${w.category ? ' · <b>' + escapeHtml(w.category) + '</b>' : ''}${(w.keywords && w.keywords.length) ? ' · từ khoá: ' + w.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
       <div class="li-actions">
         <button class="small edit-btn" data-edit-id="${w.id}" data-kind="wem">✏️ Sửa</button>
@@ -531,11 +539,12 @@ document.getElementById('addWemBtn').addEventListener('click', async () => {
   const previewMp3Url = document.getElementById('wemPreviewInput').value.trim();
   const durationMs = document.getElementById('wemDurationInput').value.trim();
   const keywords = document.getElementById('wemKeywordsInput').value.trim();
+  const category = document.getElementById('wemCategoryInput').value.trim();
   if (!name || !wemUrl || !durationMs) { showMsg(msg, false, 'Cần tên, link wem, và duration.'); return; }
   try {
-    await api('/api/admin/wem', { method: 'POST', body: JSON.stringify({ name, wemUrl, previewMp3Url: previewMp3Url || undefined, durationMs, keywords: keywords || undefined }) });
+    await api('/api/admin/wem', { method: 'POST', body: JSON.stringify({ name, wemUrl, previewMp3Url: previewMp3Url || undefined, durationMs, keywords: keywords || undefined, category: category || undefined }) });
     showMsg(msg, true, 'Đã thêm.');
-    ['wemNameInput','wemUrlInput','wemPreviewInput','wemDurationInput','wemKeywordsInput'].forEach(id => document.getElementById(id).value = '');
+    ['wemNameInput','wemUrlInput','wemPreviewInput','wemDurationInput','wemKeywordsInput','wemCategoryInput'].forEach(id => document.getElementById(id).value = '');
     await loadWemList();
   } catch (e) { showMsg(msg, false, e.message); }
 });
@@ -561,7 +570,7 @@ function renderVidList() {
     <div class="list-item ${editingId===v.id?'editing':''}">
       <div class="li-main">
         <div class="li-name">${escapeHtml(v.name)}</div>
-        <div class="li-sub">${escapeHtml(v.video_url)}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
+        <div class="li-sub">${escapeHtml(v.video_url)}${v.category ? ' · <b>' + escapeHtml(v.category) + '</b>' : ''}${(v.keywords && v.keywords.length) ? ' · từ khoá: ' + v.keywords.map(escapeHtml).join(', ') : ''}</div>
       </div>
       <div class="li-actions">
         <button class="small edit-btn" data-edit-id="${v.id}" data-kind="video">✏️ Sửa</button>
@@ -578,11 +587,12 @@ document.getElementById('addVidBtn').addEventListener('click', async () => {
   const videoUrl = document.getElementById('vidUrlInput').value.trim();
   const thumbnailUrl = document.getElementById('vidThumbInput').value.trim();
   const keywords = document.getElementById('vidKeywordsInput').value.trim();
+  const category = document.getElementById('vidCategoryInput').value.trim();
   if (!name || !videoUrl) { showMsg(msg, false, 'Cần tên và link video.'); return; }
   try {
-    await api('/api/admin/video', { method: 'POST', body: JSON.stringify({ name, videoUrl, thumbnailUrl: thumbnailUrl || undefined, keywords: keywords || undefined }) });
+    await api('/api/admin/video', { method: 'POST', body: JSON.stringify({ name, videoUrl, thumbnailUrl: thumbnailUrl || undefined, keywords: keywords || undefined, category: category || undefined }) });
     showMsg(msg, true, 'Đã thêm.');
-    ['vidNameInput','vidUrlInput','vidThumbInput','vidKeywordsInput'].forEach(id => document.getElementById(id).value = '');
+    ['vidNameInput','vidUrlInput','vidThumbInput','vidKeywordsInput','vidCategoryInput'].forEach(id => document.getElementById(id).value = '');
     await loadVidList();
   } catch (e) { showMsg(msg, false, e.message); }
 });
@@ -612,18 +622,19 @@ document.body.addEventListener('click', async (e) => {
   const name = panel.querySelector('.ef-name').value.trim();
   const url = panel.querySelector('.ef-url').value.trim();
   const keywords = panel.querySelector('.ef-keywords').value.trim();
+  const category = panel.querySelector('.ef-category').value.trim();
   if (!name || !url) { showMsg(msg, false, 'Cần tên và link.'); return; }
   try {
     if (kind === 'wem') {
       const previewMp3Url = panel.querySelector('.ef-preview').value.trim();
       const durationMs = panel.querySelector('.ef-duration').value.trim();
       if (!durationMs) { showMsg(msg, false, 'Cần duration.'); return; }
-      await api(`/api/admin/wem/${id}`, { method: 'PATCH', body: JSON.stringify({ name, wemUrl: url, previewMp3Url, durationMs, keywords }) });
+      await api(`/api/admin/wem/${id}`, { method: 'PATCH', body: JSON.stringify({ name, wemUrl: url, previewMp3Url, durationMs, keywords, category }) });
       editingId = null;
       await loadWemList();
     } else {
       const thumbnailUrl = panel.querySelector('.ef-thumb').value.trim();
-      await api(`/api/admin/video/${id}`, { method: 'PATCH', body: JSON.stringify({ name, videoUrl: url, thumbnailUrl, keywords }) });
+      await api(`/api/admin/video/${id}`, { method: 'PATCH', body: JSON.stringify({ name, videoUrl: url, thumbnailUrl, keywords, category }) });
       editingId = null;
       await loadVidList();
     }

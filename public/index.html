@@ -252,6 +252,16 @@ button.ghost:active{transform:scale(0.97)}
 .edit-icon-btn{flex:0 0 auto;background:transparent;border:1.5px solid var(--border);color:var(--text-dim);padding:0 12px;border-radius:8px;font-size:0.85rem;font-weight:800;cursor:pointer;transition:all 0.15s}
 .edit-icon-btn:hover{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent-border)}
 .edit-icon-btn:disabled{opacity:0.5;cursor:default}
+.edit-icon-btn.active-filter{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent)}
+.filter-wrap{position:relative}
+.filter-panel{position:absolute;top:calc(100% + 6px);right:0;z-index:60;background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:12px;width:220px;max-height:280px;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-6px) scale(0.97);transition:all 0.18s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 12px 36px var(--shadow)}
+.filter-panel.open{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.filter-panel input{margin-bottom:8px;flex:0 0 auto}
+.filter-panel-list{overflow-y:auto;flex:1 1 auto;display:flex;flex-direction:column;gap:4px}
+.filter-chip{text-align:left;background:transparent;border:none;color:var(--text);font-size:0.78rem;font-weight:700;padding:7px 10px;border-radius:8px;cursor:pointer;transition:all 0.15s}
+.filter-chip:hover{background:var(--accent-glow)}
+.filter-chip.active{background:var(--accent);color:#fff}
+.filter-panel-empty{font-size:0.74rem;color:var(--text-dim);padding:6px 10px}
 
 /* MASCOT (giữ nguyên EchoHall) */
 .mascot-wrap{position:fixed;bottom:14px;right:14px;z-index:150;display:flex;flex-direction:row;align-items:center;gap:8px;transform:scale(0.42);transform-origin:bottom right;animation:mascot-appear 0.5s 0.6s cubic-bezier(0.34,1.4,0.64,1) both;pointer-events:none}
@@ -443,6 +453,13 @@ button.ghost:active{transform:scale(0.97)}
       <div class="req-modal-fixed">
         <div style="display:flex;gap:8px;margin-bottom:12px">
           <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+          <div class="filter-wrap">
+            <button type="button" class="edit-icon-btn" id="wemFilterBtn" title="Lọc theo nhóm">🔽</button>
+            <div class="filter-panel" id="wemFilterPanel">
+              <input type="text" id="wemFilterSearchInput" placeholder="Tìm nhóm...">
+              <div class="filter-panel-list" id="wemFilterList"></div>
+            </div>
+          </div>
           <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">🔄</button>
         </div>
       </div>
@@ -468,6 +485,13 @@ button.ghost:active{transform:scale(0.97)}
       <div class="req-modal-fixed">
         <div style="display:flex;gap:8px;margin-bottom:12px">
           <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+          <div class="filter-wrap">
+            <button type="button" class="edit-icon-btn" id="vidFilterBtn" title="Lọc theo nhóm">🔽</button>
+            <div class="filter-panel" id="vidFilterPanel">
+              <input type="text" id="vidFilterSearchInput" placeholder="Tìm nhóm...">
+              <div class="filter-panel-list" id="vidFilterList"></div>
+            </div>
+          </div>
           <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">🔄</button>
         </div>
         <div class="upload-row" id="uploadRow" role="button" tabindex="0">
@@ -949,14 +973,24 @@ document.getElementById("reqSendBtn").addEventListener("click", async ()=>{
 });
 
 /* ═══════════════════════ TẠO MOD: PREVIEW NGAY TRÊN UI CHÍNH ═══════════════════════ */
-function openWemPicker(){ document.getElementById('wemPickerBackdrop').classList.add('open'); }
+async function autoRefreshIfEmpty(library){
+  if(Object.keys(library).length > 0) return false;
+  try{ await loadLibraries(true); return true; }catch(_){ return false; }
+}
+function openWemPicker(){
+  document.getElementById('wemPickerBackdrop').classList.add('open');
+  autoRefreshIfEmpty(wemLibrary).then(refreshed=>{ if(refreshed) renderWemList(); });
+}
 function closeWemPicker(){
   document.getElementById('wemPickerBackdrop').classList.remove('open');
   audio.pause();
   if(playingBtn){ playingBtn.textContent='▶'; playingBtn.classList.remove('playing'); playingBtn=null; }
   previewReqToken++;
 }
-function openVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.add('open'); }
+function openVideoPicker(){
+  document.getElementById('videoPickerBackdrop').classList.add('open');
+  autoRefreshIfEmpty(videoLibrary).then(refreshed=>{ if(refreshed) renderVideoGrid(); });
+}
 function closeVideoPicker(){ document.getElementById('videoPickerBackdrop').classList.remove('open'); }
 document.getElementById('openWemPickerBtn').addEventListener('click', openWemPicker);
 document.getElementById('openVideoPickerBtn').addEventListener('click', openVideoPicker);
@@ -1067,6 +1101,52 @@ function matchesSearch(item, term){
   const hay = normalizeSearch(item.name + ' ' + (item.keywords||[]).join(' '));
   return hay.includes(normalizeSearch(term));
 }
+
+// ═══ BỘ LỌC THEO TỪ KHOÁ CHÍNH (category) ═══
+let wemActiveCategory = null, vidActiveCategory = null;
+function getCategories(library){
+  const set = new Set();
+  Object.values(library).forEach(it => { if(it.category) set.add(it.category); });
+  return [...set].sort((a,b)=> a.localeCompare(b, 'vi'));
+}
+function renderFilterList(kind){
+  const library = kind === 'wem' ? wemLibrary : videoLibrary;
+  const active = kind === 'wem' ? wemActiveCategory : vidActiveCategory;
+  const listEl = document.getElementById(kind+'FilterList');
+  const searchTerm = document.getElementById(kind+'FilterSearchInput').value;
+  const cats = getCategories(library).filter(c => normalizeSearch(c).includes(normalizeSearch(searchTerm)));
+  let html = `<button type="button" class="filter-chip ${!active?'active':''}" data-cat="">Tất cả</button>`;
+  if(!cats.length && searchTerm) html += `<div class="filter-panel-empty">Không có nhóm khớp.</div>`;
+  else if(!cats.length) html += `<div class="filter-panel-empty">Chưa có nhóm nào.</div>`;
+  html += cats.map(c => `<button type="button" class="filter-chip ${active===c?'active':''}" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
+  listEl.innerHTML = html;
+}
+function setupFilterDropdown(kind, onChange){
+  const btn = document.getElementById(kind+'FilterBtn');
+  const panel = document.getElementById(kind+'FilterPanel');
+  const searchInput = document.getElementById(kind+'FilterSearchInput');
+  btn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    const willOpen = !panel.classList.contains('open');
+    panel.classList.toggle('open', willOpen);
+    if(willOpen){ searchInput.value=''; renderFilterList(kind); searchInput.focus(); }
+  });
+  searchInput.addEventListener('input', ()=> renderFilterList(kind));
+  panel.addEventListener('click', (e)=>{
+    const chip = e.target.closest('.filter-chip');
+    if(!chip) return;
+    const cat = chip.dataset.cat || null;
+    if(kind==='wem') wemActiveCategory = cat; else vidActiveCategory = cat;
+    btn.classList.toggle('active-filter', !!cat);
+    panel.classList.remove('open');
+    onChange();
+  });
+  document.addEventListener('click', (e)=>{
+    if(!panel.contains(e.target) && e.target !== btn) panel.classList.remove('open');
+  });
+}
+setupFilterDropdown('wem', ()=>{ wemPage = 1; renderWemList(); });
+setupFilterDropdown('vid', ()=>{ vidPage = 1; renderVideoGrid(); });
 const PICKER_PAGE_SIZE = 24;
 let wemPage = 1, vidPage = 1;
 function paginate(items, page, pagerEl, onPageChange){
@@ -1088,7 +1168,7 @@ function renderWemList(){
   const term = document.getElementById('wemSearchInput').value;
   const box = document.getElementById('wemListBox');
   const pagerEl = document.getElementById('wemPager');
-  const allItems = Object.values(wemLibrary).filter(w=>matchesSearch(w, term));
+  const allItems = Object.values(wemLibrary).filter(w=> (!wemActiveCategory || w.category===wemActiveCategory) && matchesSearch(w, term));
   if(!allItems.length){
     pagerEl.style.display='none'; pagerEl.innerHTML='';
     box.innerHTML = term
@@ -1163,7 +1243,7 @@ function renderVideoGrid(){
   const term = document.getElementById('vidSearchInput').value;
   const box = document.getElementById('videoGridBox');
   const pagerEl = document.getElementById('vidPager');
-  const allItems = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
+  const allItems = Object.values(videoLibrary).filter(v=> (!vidActiveCategory || v.category===vidActiveCategory) && matchesSearch(v, term));
   const { pageItems, page } = paginate(allItems, vidPage, pagerEl, (p)=>{ vidPage = p; renderVideoGrid(); document.getElementById('videoGridBox').scrollTop = 0; });
   vidPage = page;
   const html = pageItems.map(v => `

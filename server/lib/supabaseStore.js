@@ -31,7 +31,7 @@ function requireClient() {
 async function listWems({ publicFields = false } = {}) {
   const db = requireClient();
   const cols = publicFields
-    ? 'id, name, preview_mp3_url, duration_ms, keywords, added_at'
+    ? 'id, name, preview_mp3_url, duration_ms, keywords, category, added_at'
     : '*';
   const { data, error } = await db.from('wem_library').select(cols).order('added_at', { ascending: false });
   if (error) throw new Error('Supabase lỗi khi đọc wem_library: ' + error.message);
@@ -45,13 +45,14 @@ async function getWemById(id) {
   return data;
 }
 
-async function addWem({ name, wemUrl, previewMp3Url, sourceId, durationMs, keywords }) {
+async function addWem({ name, wemUrl, previewMp3Url, sourceId, durationMs, keywords, category }) {
   const db = requireClient();
   const { data, error } = await db.from('wem_library').insert({
     name, wem_url: wemUrl, preview_mp3_url: previewMp3Url || null,
     source_id: sourceId != null ? sourceId : null,
     duration_ms: durationMs != null ? durationMs : null,
-    keywords: Array.isArray(keywords) ? keywords : []
+    keywords: Array.isArray(keywords) ? keywords : [],
+    category: category || null
   }).select().single();
   if (error) throw new Error('Supabase lỗi khi thêm wem: ' + error.message);
   return data;
@@ -63,7 +64,7 @@ async function deleteWem(id) {
   if (error) throw new Error('Supabase lỗi khi xoá wem: ' + error.message);
 }
 
-async function updateWem(id, { name, wemUrl, previewMp3Url, durationMs, keywords }) {
+async function updateWem(id, { name, wemUrl, previewMp3Url, durationMs, keywords, category }) {
   const db = requireClient();
   const patch = {};
   if (name !== undefined) patch.name = name;
@@ -71,6 +72,7 @@ async function updateWem(id, { name, wemUrl, previewMp3Url, durationMs, keywords
   if (previewMp3Url !== undefined) patch.preview_mp3_url = previewMp3Url || null;
   if (durationMs !== undefined) patch.duration_ms = durationMs;
   if (keywords !== undefined) patch.keywords = Array.isArray(keywords) ? keywords : [];
+  if (category !== undefined) patch.category = category || null;
   const { data, error } = await db.from('wem_library').update(patch).eq('id', id).select().single();
   if (error) throw new Error('Supabase lỗi khi cập nhật wem: ' + error.message);
   return data;
@@ -92,11 +94,12 @@ async function getVideoById(id) {
   return data;
 }
 
-async function addVideo({ name, videoUrl, thumbnailUrl, keywords }) {
+async function addVideo({ name, videoUrl, thumbnailUrl, keywords, category }) {
   const db = requireClient();
   const { data, error } = await db.from('video_library').insert({
     name, video_url: videoUrl, thumbnail_url: thumbnailUrl || null,
-    keywords: Array.isArray(keywords) ? keywords : []
+    keywords: Array.isArray(keywords) ? keywords : [],
+    category: category || null
   }).select().single();
   if (error) throw new Error('Supabase lỗi khi thêm video: ' + error.message);
   return data;
@@ -108,13 +111,14 @@ async function deleteVideo(id) {
   if (error) throw new Error('Supabase lỗi khi xoá video: ' + error.message);
 }
 
-async function updateVideo(id, { name, videoUrl, thumbnailUrl, keywords }) {
+async function updateVideo(id, { name, videoUrl, thumbnailUrl, keywords, category }) {
   const db = requireClient();
   const patch = {};
   if (name !== undefined) patch.name = name;
   if (videoUrl !== undefined) patch.video_url = videoUrl;
   if (thumbnailUrl !== undefined) patch.thumbnail_url = thumbnailUrl || null;
   if (keywords !== undefined) patch.keywords = Array.isArray(keywords) ? keywords : [];
+  if (category !== undefined) patch.category = category || null;
   const { data, error } = await db.from('video_library').update(patch).eq('id', id).select().single();
   if (error) throw new Error('Supabase lỗi khi cập nhật video: ' + error.message);
   return data;

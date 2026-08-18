@@ -188,9 +188,9 @@ function parseKeywords(raw) {
 
 app.post('/api/admin/wem', requireAdmin, async (req, res) => {
   try {
-    const { name, wemUrl, previewMp3Url, durationMs, keywords } = req.body || {};
+    const { name, wemUrl, previewMp3Url, durationMs, keywords, category } = req.body || {};
     if (!name || !wemUrl) return res.status(400).json({ ok: false, error: 'Cần name và wemUrl' });
-    const saved = await supabaseStore.addWem({ name, wemUrl, previewMp3Url, durationMs, keywords: parseKeywords(keywords) });
+    const saved = await supabaseStore.addWem({ name, wemUrl, previewMp3Url, durationMs, keywords: parseKeywords(keywords), category: category ? String(category).trim() : null });
     res.json({ ok: true, wem: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
@@ -202,13 +202,14 @@ app.delete('/api/admin/wem/:id', requireAdmin, async (req, res) => {
 
 app.patch('/api/admin/wem/:id', requireAdmin, async (req, res) => {
   try {
-    const { name, wemUrl, previewMp3Url, durationMs, keywords } = req.body || {};
+    const { name, wemUrl, previewMp3Url, durationMs, keywords, category } = req.body || {};
     const patch = {};
     if (name !== undefined) patch.name = name;
     if (wemUrl !== undefined) patch.wemUrl = wemUrl;
     if (previewMp3Url !== undefined) patch.previewMp3Url = previewMp3Url;
     if (durationMs !== undefined) patch.durationMs = durationMs;
     if (keywords !== undefined) patch.keywords = parseKeywords(keywords);
+    if (category !== undefined) patch.category = category ? String(category).trim() : null;
     const saved = await supabaseStore.updateWem(req.params.id, patch);
     res.json({ ok: true, wem: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
@@ -222,9 +223,9 @@ app.get('/api/admin/video-list', requireAdmin, async (req, res) => {
 
 app.post('/api/admin/video', requireAdmin, async (req, res) => {
   try {
-    const { name, videoUrl, thumbnailUrl, keywords } = req.body || {};
+    const { name, videoUrl, thumbnailUrl, keywords, category } = req.body || {};
     if (!name || !videoUrl) return res.status(400).json({ ok: false, error: 'Cần name và videoUrl' });
-    const saved = await supabaseStore.addVideo({ name, videoUrl, thumbnailUrl, keywords: parseKeywords(keywords) });
+    const saved = await supabaseStore.addVideo({ name, videoUrl, thumbnailUrl, keywords: parseKeywords(keywords), category: category ? String(category).trim() : null });
     res.json({ ok: true, video: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
@@ -236,12 +237,13 @@ app.delete('/api/admin/video/:id', requireAdmin, async (req, res) => {
 
 app.patch('/api/admin/video/:id', requireAdmin, async (req, res) => {
   try {
-    const { name, videoUrl, thumbnailUrl, keywords } = req.body || {};
+    const { name, videoUrl, thumbnailUrl, keywords, category } = req.body || {};
     const patch = {};
     if (name !== undefined) patch.name = name;
     if (videoUrl !== undefined) patch.videoUrl = videoUrl;
     if (thumbnailUrl !== undefined) patch.thumbnailUrl = thumbnailUrl;
     if (keywords !== undefined) patch.keywords = parseKeywords(keywords);
+    if (category !== undefined) patch.category = category ? String(category).trim() : null;
     const saved = await supabaseStore.updateVideo(req.params.id, patch);
     res.json({ ok: true, video: saved });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
