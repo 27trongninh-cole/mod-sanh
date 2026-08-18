@@ -271,14 +271,20 @@ button.ghost:active{transform:scale(0.97)}
 /* REQUEST MODAL (giữ nguyên EchoHall, đổi field) */
 .req-modal-backdrop{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.25s}
 .req-modal-backdrop.open{opacity:1;pointer-events:all}
-.req-modal{background:var(--bg-modal);border:1.5px solid var(--border);border-radius:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(0.97);transition:transform 0.28s cubic-bezier(0.34,1.3,0.64,1);box-shadow:0 30px 80px var(--shadow)}
+.req-modal{background:var(--bg-modal);border:1.5px solid var(--border);border-radius:20px;width:100%;max-width:480px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;transform:translateY(20px) scale(0.97);transition:transform 0.28s cubic-bezier(0.34,1.3,0.64,1);box-shadow:0 30px 80px var(--shadow)}
 .req-modal-backdrop.open .req-modal{transform:translateY(0) scale(1)}
-.req-modal-header{padding:22px 26px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.req-modal-header{flex:0 0 auto;padding:22px 26px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .req-modal-title{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-bright);line-height:1.3}
 .req-modal-sub{font-size:0.78rem;color:var(--text-dim);margin-top:4px}
 .req-modal-close{background:none;border:1.5px solid var(--border);color:var(--text-dim);width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;transition:all 0.2s}
 .req-modal-close:hover{border-color:var(--accent-border);color:var(--text)}
-.req-modal-body{padding:18px 26px 26px}
+.req-modal-body{padding:18px 26px 26px;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow-y:auto}
+.req-modal-fixed{flex:0 0 auto}
+.req-modal-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;padding-bottom:18px}
+.picker-pager{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 0 22px;font-size:0.75rem;font-weight:700;color:var(--text-dim)}
+.picker-pager button{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.picker-pager button:hover:not(:disabled){border-color:var(--accent-border);color:var(--accent2)}
+.picker-pager button:disabled{opacity:0.35;cursor:default}
 .req-modal-note{font-size:0.78rem;color:var(--text-dim);line-height:1.6;padding:10px 14px;border-left:3px solid var(--accent);background:var(--chip-bg);border-radius:0 10px 10px 0;margin-bottom:20px}
 .req-form-row{margin-bottom:14px}
 .req-form-label{display:block;font-size:0.65rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px}
@@ -434,11 +440,16 @@ button.ghost:active{transform:scale(0.97)}
       <button class="req-modal-close" id="wemPickerCloseBtn">✕</button>
     </div>
     <div class="req-modal-body">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
-        <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+      <div class="req-modal-fixed">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="wemSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+          <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+        </div>
       </div>
-      <div id="wemListBox"><div class="empty">Đang tải...</div></div>
+      <div class="req-modal-scroll">
+        <div id="wemListBox"><div class="empty">Đang tải...</div></div>
+      </div>
+      <div class="picker-pager" id="wemPager" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -454,20 +465,25 @@ button.ghost:active{transform:scale(0.97)}
       <button class="req-modal-close" id="videoPickerCloseBtn">✕</button>
     </div>
     <div class="req-modal-body">
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
-        <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">🔄</button>
-      </div>
-      <div class="upload-row" id="uploadRow" role="button" tabindex="0">
-        <div class="upload-row-icon">📤</div>
-        <div class="upload-row-text">
-          <div class="upload-row-title" id="uploadRowTitle">Tự upload video...</div>
-          <div class="upload-row-sub">MP4 từ máy của bồ</div>
+      <div class="req-modal-fixed">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="text" id="vidSearchInput" placeholder="🔍 Tìm theo tên hoặc từ khoá..." style="margin-bottom:0;flex:1">
+          <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">🔄</button>
         </div>
-        <button type="button" class="upload-row-clear" id="uploadRowClear" title="Bỏ chọn">✕</button>
+        <div class="upload-row" id="uploadRow" role="button" tabindex="0">
+          <div class="upload-row-icon">📤</div>
+          <div class="upload-row-text">
+            <div class="upload-row-title" id="uploadRowTitle">Tự upload video...</div>
+            <div class="upload-row-sub">MP4 từ máy của bồ</div>
+          </div>
+          <button type="button" class="upload-row-clear" id="uploadRowClear" title="Bỏ chọn">✕</button>
+        </div>
+        <div class="video-grid-label">Thư viện</div>
       </div>
-      <div class="video-grid-label">Thư viện</div>
-      <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
+      <div class="req-modal-scroll">
+        <div class="video-grid" id="videoGridBox"><div class="empty">Đang tải...</div></div>
+      </div>
+      <div class="picker-pager" id="vidPager" style="display:none"></div>
       <input type="file" id="ownVideoInput" accept="video/mp4" style="display:none">
     </div>
   </div>
@@ -1051,11 +1067,30 @@ function matchesSearch(item, term){
   const hay = normalizeSearch(item.name + ' ' + (item.keywords||[]).join(' '));
   return hay.includes(normalizeSearch(term));
 }
+const PICKER_PAGE_SIZE = 24;
+let wemPage = 1, vidPage = 1;
+function paginate(items, page, pagerEl, onPageChange){
+  const totalPages = Math.max(1, Math.ceil(items.length / PICKER_PAGE_SIZE));
+  page = Math.min(Math.max(1, page), totalPages);
+  const start = (page - 1) * PICKER_PAGE_SIZE;
+  const pageItems = items.slice(start, start + PICKER_PAGE_SIZE);
+  if(totalPages <= 1){ pagerEl.style.display = 'none'; pagerEl.innerHTML=''; }
+  else{
+    pagerEl.style.display = 'flex';
+    pagerEl.innerHTML = `<button type="button" id="${pagerEl.id}Prev" ${page<=1?'disabled':''}>‹</button><span>${page}/${totalPages}</span><button type="button" id="${pagerEl.id}Next" ${page>=totalPages?'disabled':''}>›</button>`;
+    const prevBtn = document.getElementById(pagerEl.id+'Prev'), nextBtn = document.getElementById(pagerEl.id+'Next');
+    if(prevBtn) prevBtn.addEventListener('click', ()=> onPageChange(page-1));
+    if(nextBtn) nextBtn.addEventListener('click', ()=> onPageChange(page+1));
+  }
+  return { pageItems, page, totalPages };
+}
 function renderWemList(){
   const term = document.getElementById('wemSearchInput').value;
   const box = document.getElementById('wemListBox');
-  const items = Object.values(wemLibrary).filter(w=>matchesSearch(w, term));
-  if(!items.length){
+  const pagerEl = document.getElementById('wemPager');
+  const allItems = Object.values(wemLibrary).filter(w=>matchesSearch(w, term));
+  if(!allItems.length){
+    pagerEl.style.display='none'; pagerEl.innerHTML='';
     box.innerHTML = term
       ? `<div class="empty">Không tìm thấy bài nào khớp "${escapeHtml(term)}".<br><button type="button" class="edit-icon-btn" id="wemEmptyReqBtn" style="margin-top:8px">✉️ Yêu cầu bài này</button></div>`
       : '<div class="empty">Thư viện đang trống.</div>';
@@ -1063,7 +1098,9 @@ function renderWemList(){
     if(reqBtn) reqBtn.addEventListener('click', ()=>{ closeWemPicker(); openReqModal(); const s=document.getElementById('reqSong'); if(s) s.value = term; });
     return;
   }
-  box.innerHTML = items.map(w => `
+  const { pageItems, page } = paginate(allItems, wemPage, pagerEl, (p)=>{ wemPage = p; renderWemList(); document.getElementById('wemListBox').scrollTop = 0; });
+  wemPage = page;
+  box.innerHTML = pageItems.map(w => `
     <div class="wem-item ${w.id===selectedWemId?'selected':''}" data-id="${w.id}">
       <span class="wem-radio"></span>
       <div class="wem-main">
@@ -1074,7 +1111,7 @@ function renderWemList(){
     </div>
   `).join('');
 }
-document.getElementById('wemSearchInput').addEventListener('input', renderWemList);
+document.getElementById('wemSearchInput').addEventListener('input', ()=>{ wemPage = 1; renderWemList(); });
 
 let previewOggCache = {};
 async function getPreviewOggUrl(id){
@@ -1125,8 +1162,11 @@ document.getElementById('wemListBox').addEventListener('click', (e)=>{
 function renderVideoGrid(){
   const term = document.getElementById('vidSearchInput').value;
   const box = document.getElementById('videoGridBox');
-  const items = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
-  const html = items.map(v => `
+  const pagerEl = document.getElementById('vidPager');
+  const allItems = Object.values(videoLibrary).filter(v=>matchesSearch(v, term));
+  const { pageItems, page } = paginate(allItems, vidPage, pagerEl, (p)=>{ vidPage = p; renderVideoGrid(); document.getElementById('videoGridBox').scrollTop = 0; });
+  vidPage = page;
+  const html = pageItems.map(v => `
     <div class="video-card ${v.id===selectedVideoId && !ownVideoFile ?'selected':''}" data-id="${v.id}">
       <div class="video-thumb">${v.thumbnail_url
         ? `<img src="${v.thumbnail_url}" alt="" loading="lazy" decoding="async" onerror="this.remove()">`
@@ -1134,7 +1174,7 @@ function renderVideoGrid(){
       <div class="video-name">${escapeHtml(v.name)}</div>
     </div>
   `).join('');
-  box.innerHTML = items.length ? html : '<div class="empty">Không tìm thấy video nào.</div>';
+  box.innerHTML = allItems.length ? html : '<div class="empty">Không tìm thấy video nào.</div>';
   renderUploadRow();
   lazyLoadVideoThumbs();
 }
@@ -1158,7 +1198,7 @@ function lazyLoadVideoThumbs(){
       // 1 số trình duyệt (Safari) cần seek nhẹ mới chịu vẽ khung hình đầu
       el.addEventListener('loadedmetadata', ()=>{ try{ el.currentTime = 0.05; }catch(_){} }, { once:true });
     });
-  }, { root: document.getElementById('videoPickerModal') || null, rootMargin: '200px' });
+  }, { root: document.querySelector('#videoPickerModal .req-modal-scroll') || null, rootMargin: '200px' });
   vids.forEach(v=> thumbObserver.observe(v));
 }
 function renderUploadRow(){
@@ -1166,7 +1206,7 @@ function renderUploadRow(){
   row.classList.toggle('has-file', !!ownVideoFile);
   document.getElementById('uploadRowTitle').textContent = ownVideoFile ? ownVideoFile.name : 'Tự upload video...';
 }
-document.getElementById('vidSearchInput').addEventListener('input', renderVideoGrid);
+document.getElementById('vidSearchInput').addEventListener('input', ()=>{ vidPage = 1; renderVideoGrid(); });
 document.getElementById('uploadRow').addEventListener('click', (e)=>{
   if(e.target.closest('#uploadRowClear')){
     ownVideoFile = null;
