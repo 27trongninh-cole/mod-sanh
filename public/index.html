@@ -249,7 +249,7 @@ button.ghost:active{transform:scale(0.97)}
 .modal-progress-wrap{width:100%;height:6px;background:var(--border);border-radius:6px;overflow:hidden;margin-top:12px;display:none}
 .modal-progress-wrap.show{display:block}
 .modal-progress-bar{height:100%;width:0%;background:var(--gradient,var(--accent));border-radius:6px;transition:width 0.15s linear}
-.edit-icon-btn{flex:0 0 auto;width:38px;height:38px;padding:0;background:transparent;border:1.5px solid var(--border);color:var(--text-dim);border-radius:8px;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;line-height:1}
+.edit-icon-btn{flex:0 0 auto;width:38px;height:38px;padding:0;background:transparent;border:1.5px solid var(--border);color:var(--text-dim);border-radius:8px;font-size:1.15rem;font-weight:800;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;line-height:1}
 .edit-icon-btn:hover{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent-border)}
 .edit-icon-btn:disabled{opacity:0.5;cursor:default}
 .edit-icon-btn.active-filter{background:var(--accent-glow);color:var(--accent2);border-color:var(--accent)}
@@ -460,7 +460,7 @@ button.ghost:active{transform:scale(0.97)}
               <div class="filter-panel-list" id="wemFilterList"></div>
             </div>
           </div>
-          <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+          <button type="button" class="edit-icon-btn" id="wemLibRefreshBtn" title="Làm mới thư viện">↻</button>
         </div>
       </div>
       <div class="req-modal-scroll">
@@ -492,7 +492,7 @@ button.ghost:active{transform:scale(0.97)}
               <div class="filter-panel-list" id="vidFilterList"></div>
             </div>
           </div>
-          <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">🔄</button>
+          <button type="button" class="edit-icon-btn" id="vidLibRefreshBtn" title="Làm mới thư viện">↻</button>
         </div>
         <div class="upload-row" id="uploadRow" role="button" tabindex="0">
           <div class="upload-row-icon">📤</div>
@@ -1146,7 +1146,7 @@ function setupFilterDropdown(kind, onChange){
 }
 setupFilterDropdown('wem', ()=>{ wemPage = 1; renderWemList(); });
 setupFilterDropdown('vid', ()=>{ vidPage = 1; renderVideoGrid(); });
-const PICKER_PAGE_SIZE = 8;
+const PICKER_PAGE_SIZE = 6;
 let wemPage = 1, vidPage = 1;
 function paginate(items, page, pagerEl, onPageChange){
   const totalPages = Math.max(1, Math.ceil(items.length / PICKER_PAGE_SIZE));
