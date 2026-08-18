@@ -291,6 +291,8 @@ button.ghost:active{transform:scale(0.97)}
 .req-modal-body{padding:18px 26px 26px;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow-y:auto}
 .req-modal-fixed{flex:0 0 auto}
 .req-modal-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;padding-bottom:18px}
+#wemPickerModal .req-modal-scroll{height:min(56vh,400px)}
+#videoPickerModal .req-modal-scroll{height:min(56vh,460px)}
 .picker-pager{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 0 22px;font-size:0.75rem;font-weight:700;color:var(--text-dim)}
 .picker-pager button{background:var(--bg-card);border:1.5px solid var(--border);color:var(--text);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:0.75rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
 .picker-pager button:hover:not(:disabled){border-color:var(--accent-border);color:var(--accent2)}
@@ -1167,7 +1169,7 @@ function renderWemList(){
   const term = document.getElementById('wemSearchInput').value;
   const box = document.getElementById('wemListBox');
   const pagerEl = document.getElementById('wemPager');
-  const allItems = Object.values(wemLibrary).filter(w=> (!wemActiveCategory || w.category===wemActiveCategory) && matchesSearch(w, term));
+  const allItems = Object.values(wemLibrary).filter(w=> (!wemActiveCategory || w.category===wemActiveCategory) && matchesSearch(w, term)).sort((a,b)=> a.name.localeCompare(b.name, 'vi', {sensitivity:'base'}));
   if(!allItems.length){
     pagerEl.style.display='none'; pagerEl.innerHTML='';
     box.innerHTML = term
@@ -1242,7 +1244,7 @@ function renderVideoGrid(){
   const term = document.getElementById('vidSearchInput').value;
   const box = document.getElementById('videoGridBox');
   const pagerEl = document.getElementById('vidPager');
-  const allItems = Object.values(videoLibrary).filter(v=> (!vidActiveCategory || v.category===vidActiveCategory) && matchesSearch(v, term));
+  const allItems = Object.values(videoLibrary).filter(v=> (!vidActiveCategory || v.category===vidActiveCategory) && matchesSearch(v, term)).sort((a,b)=> a.name.localeCompare(b.name, 'vi', {sensitivity:'base'}));
   const { pageItems, page } = paginate(allItems, vidPage, pagerEl, (p)=>{ vidPage = p; renderVideoGrid(); document.getElementById('videoGridBox').scrollTop = 0; });
   vidPage = page;
   const html = pageItems.map(v => `
