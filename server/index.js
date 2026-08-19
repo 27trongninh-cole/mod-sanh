@@ -10,6 +10,7 @@ const archiver = require('archiver');
 const supabaseStore = require('./lib/supabaseStore');
 const bnkCache = require('./lib/bnkCache');
 const { patchIdAndDuration } = require('./lib/bnkPatcher');
+const { stripAudio } = require('./lib/stripAudio');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -117,6 +118,11 @@ app.post('/api/build', upload.fields([{ name: 'video', maxCount: 1 }]), async (r
 
     const wemBytes = await bnkCache.fetchBuffer(wem.wem_url);
 
+    const audioStripResult = await stripAudio(videoBytes);
+    videoBytes = audioStripResult.buffer; // dùng bản đã xoá âm thanh; nếu ffmpeg lỗi thì fallback về bản gốc (log lại lý do)
+    const audioStripped = audioStripResult.ok;
+    if (!audioStripResult.ok) console.warn('[stripAudio] fallback về video gốc:', audioStripResult.reason);
+
     const { bnkBuffer, config } = await bnkCache.getActive();
     const patchResult = patchIdAndDuration(bnkBuffer, config.source_id, config.replacement_id, wem.duration_ms);
     if (!patchResult.ok) {
@@ -130,7 +136,8 @@ app.post('/api/build', upload.fields([{ name: 'video', maxCount: 1 }]), async (r
     res.setHeader('Content-Disposition', 'attachment; filename="Nhac_sanh.zip"');
     res.setHeader('X-Build-Report', encodeURIComponent(JSON.stringify({
       wemName: wem.name, durationMs: wem.duration_ms, videoSource: videoSourceLabel,
-      sourceId: config.source_id, replacementId: config.replacement_id, videoFilename: config.video_filename
+      sourceId: config.source_id, replacementId: config.replacement_id, videoFilename: config.video_filename,
+      audioStripped
     })));
 
     const archive = archiver('zip', { zlib: { level: 6 } });
