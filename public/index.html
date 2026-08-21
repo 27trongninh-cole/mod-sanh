@@ -1433,6 +1433,41 @@ document.getElementById('buildBtn').addEventListener('click', ()=>{
     showLoadingModal(true, 'Đang tạo file...', 'Server đang gói zip, gần xong rồi', null);
     setTimeout(()=>{
       const blob = xhr.response;
+
+      // Nếu đang chạy trong app Melo Ninstaller (WebView có cầu nối
+      // AndroidBridge), đưa THẲNG bytes file mod cho native thay vì tự tải
+      // qua cơ chế trình duyệt (blob: URL + click ẩn) — cách đó KHÔNG hoạt
+      // động trong WebView (WebView không tự bắt được download từ blob:
+      // URL, khác với trình duyệt đầy đủ). Native sẽ tự lưu file đúng chỗ
+      // và hỏi "Cài ngay?" — không cần người dùng tự tìm file trong Download.
+      if (window.AndroidBridge && typeof window.AndroidBridge.onModBuilt === 'function') {
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const base64 = reader.result.split(',')[1];
+            window.AndroidBridge.onModBuilt(base64);
+            showLoadingModal(false);
+            msg.className='msg ok'; msg.style.display='block';
+            msg.textContent='✅ Đã tạo xong — mở app để cài mod.';
+          } catch(err) {
+            showLoadingModal(false);
+            msg.className='msg err'; msg.style.display='block';
+            msg.textContent='⚠ Không gửi được file cho app: ' + err;
+          } finally {
+            btn.disabled = false;
+          }
+        };
+        reader.onerror = () => {
+          showLoadingModal(false);
+          msg.className='msg err'; msg.style.display='block';
+          msg.textContent='⚠ Không đọc được file mod vừa tạo.';
+          btn.disabled = false;
+        };
+        reader.readAsDataURL(blob);
+        return; // KHÔNG chạy tiếp xuống nhánh tải bằng trình duyệt bên dưới
+      }
+
+      // Mở bằng trình duyệt thường (không phải app) — giữ nguyên hành vi cũ.
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href=url; a.download='Nhac_sanh.zip';
       document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
