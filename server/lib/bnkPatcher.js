@@ -59,7 +59,38 @@ function locateFields(buf, targetSourceId) {
     for (const off of m.idOffsets) idFields.push({ hircId: m.hirc.id, offset: off });
   }
 
-  return { ok: true, trackIds: [...trackIds], durationFields, idFields };
+  // Tự phát hiện "AkBankSourceData" thật (pluginID + streamType + sourceID +
+  // mediaSize + sourceBits) trong số các idFields ở trên, để biết sourceId
+  // này hiện đang NHÚNG SẴN trong bank (streamType=0, mediaSize khớp DIDX)
+  // hay đã STREAMED (phát từ file rời, streamType=2, mediaSize=0).
+  //
+  // Nếu game "bất ngờ" chuyển 1 track từ streamed sang embedded (như đợt
+  // update mới), việc chỉ đổi sourceId+duration sẽ vô tác dụng — track vẫn
+  // tìm dữ liệu media NGAY TRONG BANK theo DIDX, không tìm file rời theo tên.
+  // Nên ở đây tự phát hiện case này và tự chuyển streamType về streamed
+  // (=2), để cách patch "trỏ ra file .wem rời" hiện tại tiếp tục hoạt động
+  // — không cần biết trước hay phải sửa code mỗi lần game update.
+  const didxSizeById = new Map(result.didx.map(d => [d.mediaId, d.size]));
+  const streamTypeFields = []; // { streamTypeOffset, mediaSizeOffset }
+  const embeddedSize = didxSizeById.get(targetSourceId);
+  if (embeddedSize != null) {
+    for (const idf of idFields) {
+      const off = idf.offset;
+      if (off - 1 < 0 || off + 8 > buf.length) continue;
+      const streamTypeOffset = off - 1;
+      const mediaSizeOffset = off + 4;
+      const streamType = buf.readUInt8(streamTypeOffset);
+      const mediaSize = buf.readUInt32LE(mediaSizeOffset);
+      // Chỉ đúng là 1 AkBankSourceData thật khi mediaSize khớp CHÍNH XÁC kích
+      // thước media trong bảng DIDX của sourceId này — loại trừ hết các chỗ
+      // chỉ là tham chiếu ID trần trong Playlist/clip (không có struct thật).
+      if (streamType === 0 && mediaSize === embeddedSize) {
+        streamTypeFields.push({ streamTypeOffset, mediaSizeOffset });
+      }
+    }
+  }
+
+  return { ok: true, trackIds: [...trackIds], durationFields, idFields, streamTypeFields };
 }
 
 // Kept for backward compatibility (used by /api/admin/update to validate a
@@ -84,6 +115,16 @@ function patchIdAndDuration(buf, targetSourceId, replacementSourceId, newDuratio
   if (!located.ok) return { ok: false, reason: located.reason };
 
   const patched = Buffer.from(buf); // copy, never mutate the original
+
+  // Nhúng -> streamed PHẢI ghi trước khi đổi sourceId, vì logic phát hiện
+  // (mediaSize khớp DIDX của targetSourceId gốc) cần đọc đúng trạng thái cũ.
+  // Chỉ đổi ĐÚNG 1 byte streamType — không đụng vào mediaSize (giá trị này ở
+  // các track streamed thật KHÔNG phải luôn = 0, nên để nguyên an toàn hơn).
+  let streamTypeConvertedCount = 0;
+  for (const stf of located.streamTypeFields) {
+    patched.writeUInt8(2, stf.streamTypeOffset); // 2 = streamed (phát từ file rời)
+    streamTypeConvertedCount++;
+  }
 
   let idPatchCount = 0;
   for (const idf of located.idFields) {
@@ -110,7 +151,8 @@ function patchIdAndDuration(buf, targetSourceId, replacementSourceId, newDuratio
       oldValueMs: f.currentValueMs, newValueMs: newDurationMs,
       offsetCount: f.offsets.length
     })),
-    durationPatchCount
+    durationPatchCount,
+    streamTypeConvertedCount
   };
 }
 

@@ -131,12 +131,17 @@ app.post('/api/build', upload.fields([{ name: 'video', maxCount: 1 }]), async (r
     // Patch lần lượt TỪNG sảnh đang bật vào cùng 1 buffer bnk — tất cả đều
     // trỏ chung về 1 Replacement ID (chỉ có 1 file .wem duy nhất trong zip).
     let patchedBuffer = bnkBuffer;
+    let totalStreamTypeConverted = 0;
     for (const profile of profiles) {
       const patchResult = patchIdAndDuration(patchedBuffer, profile.source_id, config.replacement_id, wem.duration_ms);
       if (!patchResult.ok) {
         throw new Error(`Patch bnk thất bại ở sảnh "${profile.name}" (Source ID ${profile.source_id}): ` + patchResult.reason);
       }
       patchedBuffer = patchResult.buffer;
+      totalStreamTypeConverted += patchResult.streamTypeConvertedCount || 0;
+    }
+    if (totalStreamTypeConverted > 0) {
+      console.log(`[build] Đã tự chuyển ${totalStreamTypeConverted} track từ embedded sang streamed (game vừa nhúng thẳng wem vào bnk).`);
     }
 
     const zipWemName = `${config.replacement_id}.wem`;
@@ -145,7 +150,8 @@ app.post('/api/build', upload.fields([{ name: 'video', maxCount: 1 }]), async (r
     res.setHeader('X-Build-Report', encodeURIComponent(JSON.stringify({
       wemName: wem.name, durationMs: wem.duration_ms, videoSource: videoSourceLabel,
       replacementId: config.replacement_id, audioStripped,
-      lobbies: profiles.map(p => ({ name: p.name, sourceId: p.source_id, videoFilename: p.video_filename }))
+      lobbies: profiles.map(p => ({ name: p.name, sourceId: p.source_id, videoFilename: p.video_filename })),
+      streamTypeConverted: totalStreamTypeConverted
     })));
 
     const archive = archiver('zip', { zlib: { level: 6 } });
