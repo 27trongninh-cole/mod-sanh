@@ -124,33 +124,70 @@ async function updateVideo(id, { name, videoUrl, thumbnailUrl, keywords, categor
   return data;
 }
 
-// ───────────────────────── bnk_config ─────────────────────────
+// ───────────────────────── bnk_settings (chung: link bnk + Replacement ID) ─────────────────────────
 
-async function getBnkConfig() {
+async function getBnkSettings() {
   const db = requireClient();
-  const { data, error } = await db.from('bnk_config').select('*').eq('id', 1).maybeSingle();
-  if (error) throw new Error('Supabase lỗi khi đọc bnk_config: ' + error.message);
+  const { data, error } = await db.from('bnk_settings').select('*').eq('id', 1).maybeSingle();
+  if (error) throw new Error('Supabase lỗi khi đọc bnk_settings: ' + error.message);
   return data; // null nếu chưa từng set
 }
 
-async function setBnkConfig({ bnkUrl, sourceId, replacementId, videoFilename, updatedBy }) {
+async function setBnkSettings({ bnkUrl, replacementId, updatedBy }) {
   const db = requireClient();
-  const current = await getBnkConfig();
+  const current = await getBnkSettings();
   const payload = {
     id: 1,
     bnk_url: bnkUrl != null ? bnkUrl : (current && current.bnk_url),
-    source_id: sourceId != null ? sourceId : (current && current.source_id),
     replacement_id: replacementId != null ? replacementId : (current && current.replacement_id),
-    video_filename: videoFilename != null ? videoFilename : (current && current.video_filename),
     updated_by: updatedBy || null,
     updated_at: new Date().toISOString()
   };
-  if (!payload.bnk_url || payload.source_id == null || payload.replacement_id == null || !payload.video_filename) {
-    throw new Error('Thiếu bnkUrl / sourceId / replacementId / videoFilename (lần đầu set phải điền đủ)');
+  if (!payload.bnk_url || payload.replacement_id == null) {
+    throw new Error('Thiếu bnkUrl / replacementId (lần đầu set phải điền đủ)');
   }
-  const { data, error } = await db.from('bnk_config').upsert(payload).select().single();
-  if (error) throw new Error('Supabase lỗi khi lưu bnk_config: ' + error.message);
+  const { data, error } = await db.from('bnk_settings').upsert(payload).select().single();
+  if (error) throw new Error('Supabase lỗi khi lưu bnk_settings: ' + error.message);
   return data;
+}
+
+// ───────────────────────── lobby_profiles (nhiều sảnh) ─────────────────────────
+
+async function listLobbyProfiles({ activeOnly = false } = {}) {
+  const db = requireClient();
+  let query = db.from('lobby_profiles').select('*').order('created_at', { ascending: true });
+  if (activeOnly) query = query.eq('active', true);
+  const { data, error } = await query;
+  if (error) throw new Error('Supabase lỗi khi đọc lobby_profiles: ' + error.message);
+  return data;
+}
+
+async function addLobbyProfile({ name, sourceId, videoFilename, active }) {
+  const db = requireClient();
+  const { data, error } = await db.from('lobby_profiles').insert({
+    name, source_id: sourceId, video_filename: videoFilename,
+    active: active != null ? active : true
+  }).select().single();
+  if (error) throw new Error('Supabase lỗi khi thêm sảnh: ' + error.message);
+  return data;
+}
+
+async function updateLobbyProfile(id, { name, sourceId, videoFilename, active }) {
+  const db = requireClient();
+  const patch = {};
+  if (name !== undefined) patch.name = name;
+  if (sourceId !== undefined) patch.source_id = sourceId;
+  if (videoFilename !== undefined) patch.video_filename = videoFilename;
+  if (active !== undefined) patch.active = active;
+  const { data, error } = await db.from('lobby_profiles').update(patch).eq('id', id).select().single();
+  if (error) throw new Error('Supabase lỗi khi cập nhật sảnh: ' + error.message);
+  return data;
+}
+
+async function deleteLobbyProfile(id) {
+  const db = requireClient();
+  const { error } = await db.from('lobby_profiles').delete().eq('id', id);
+  if (error) throw new Error('Supabase lỗi khi xoá sảnh: ' + error.message);
 }
 
 // ───────────────────────── wem_requests ─────────────────────────
@@ -185,6 +222,7 @@ module.exports = {
   isConfigured,
   listWems, getWemById, addWem, deleteWem, updateWem,
   listVideos, getVideoById, addVideo, deleteVideo, updateVideo,
-  getBnkConfig, setBnkConfig,
+  getBnkSettings, setBnkSettings,
+  listLobbyProfiles, addLobbyProfile, updateLobbyProfile, deleteLobbyProfile,
   addRequest, listRequests, updateRequest
 };

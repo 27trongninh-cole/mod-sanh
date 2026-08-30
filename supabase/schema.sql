@@ -27,15 +27,27 @@ CREATE TABLE IF NOT EXISTS video_library (
   added_at timestamptz DEFAULT now()
 );
 
--- ── Cấu hình Music_Login.bnk đang active (bnk lưu trên GitHub) ──
-CREATE TABLE IF NOT EXISTS bnk_config (
+-- ── Cấu hình chung: link bnk (dùng chung) + Replacement ID (chung cho mọi sảnh) ──
+CREATE TABLE IF NOT EXISTS bnk_settings (
   id int PRIMARY KEY DEFAULT 1 CHECK (id = 1),   -- luôn chỉ 1 dòng
-  bnk_url text NOT NULL,                 -- link raw GitHub
-  source_id bigint NOT NULL,             -- ID slot nhạc gốc trong bnk (luôn cố định, không đổi theo bài)
-  replacement_id bigint NOT NULL,        -- ID mới gán cho track đã mod (để không ghi đè ID gốc)
-  video_filename text NOT NULL,          -- tên file video game đọc (đổi theo từng phiên bản game)
+  bnk_url text NOT NULL,                 -- link raw GitHub, dùng chung cho mọi sảnh
+  replacement_id bigint NOT NULL,        -- ID chung gán cho file .wem đã mod (mọi sảnh đều trỏ vào ID này)
   updated_at timestamptz DEFAULT now(),
   updated_by text
+);
+
+-- ── Danh sách các "sảnh" game luân phiên (thường/sự kiện/...) ──
+-- Mỗi dòng là 1 sảnh: ID nhạc gốc riêng (source_id) + tên file video riêng.
+-- Lúc build, TẤT CẢ sảnh đang active đều được patch vào chung 1 file bnk,
+-- và mỗi sảnh có 1 file video (cùng nội dung, khác tên) trong zip trả về —
+-- để dù game đang xoay sang sảnh nào, mod vẫn hiển thị đúng.
+CREATE TABLE IF NOT EXISTS lobby_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,                    -- tên gợi nhớ cho admin, vd "Sảnh thường", "Sảnh Trung Thu"
+  source_id bigint NOT NULL,             -- ID slot nhạc gốc trong bnk của riêng sảnh này
+  video_filename text NOT NULL,          -- tên file video game đọc cho riêng sảnh này
+  active boolean NOT NULL DEFAULT true,  -- tắt tạm khi hết sự kiện, khỏi cần xoá
+  created_at timestamptz DEFAULT now()
 );
 
 -- ── Yêu cầu wem từ user (không cần tài khoản, chỉ cần cách liên hệ) ──
@@ -53,7 +65,8 @@ CREATE TABLE IF NOT EXISTS wem_requests (
 -- ── RLS: đọc công khai thư viện + config, ghi phải qua server (service role) ──
 ALTER TABLE wem_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE video_library ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bnk_config ENABLE ROW LEVEL SECURITY;
+ALTER TABLE bnk_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE lobby_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE wem_requests ENABLE ROW LEVEL SECURITY;
 
 -- Không cấp policy nào cho anon/authenticated => chỉ service role (server) mới

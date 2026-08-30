@@ -154,29 +154,18 @@ button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
 
       <div class="card">
         <div class="add-toggle" id="bnkEditToggle">
-          <h2 style="margin-bottom:0">Cấu hình game (bnk + video)</h2>
+          <h2 style="margin-bottom:0">Cấu hình chung (bnk + Replacement ID)</h2>
           <button class="edit-icon-btn" type="button">✏️ Sửa</button>
         </div>
-        <div class="desc">3 thứ này luôn đi cùng nhau — mỗi khi game update cần đổi cả 3.</div>
+        <div class="desc">Dùng chung cho MỌI sảnh — chỉ đổi khi game thay hẳn file bnk gốc hoặc đổi ID track mod.</div>
         <div id="bnkStatusBox" style="margin-top:4px"></div>
 
         <div class="add-form" id="bnkEditForm">
           <label>Link GitHub (raw) file Music_Login.bnk</label>
           <input type="text" id="bnkUrlInput" placeholder="https://raw.githubusercontent.com/.../Music_Login.bnk">
 
-          <div class="grid2">
-            <div>
-              <label>Source ID (slot nhạc gốc)</label>
-              <input type="number" id="sourceIdInput" placeholder="vd: 520249413">
-            </div>
-            <div>
-              <label>Replacement ID (track đã mod)</label>
-              <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
-            </div>
-          </div>
-
-          <label>Tên file video (đúng tên game đang đọc trong ISPDiff/LobbyMovie/)</label>
-          <input type="text" id="videoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+          <label>Replacement ID (chung cho mọi sảnh, chỉ 1 file .wem duy nhất)</label>
+          <input type="number" id="replacementIdInput" placeholder="vd: 218149148">
 
           <div class="row">
             <button id="saveBnkBtn">💾 Lưu cấu hình</button>
@@ -184,6 +173,36 @@ button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
           </div>
           <div class="msg" id="bnkMsg"></div>
         </div>
+      </div>
+
+      <div class="card">
+        <div class="add-toggle" id="lobbyAddToggle">
+          <h2 style="margin-bottom:0">Danh sách sảnh (luân phiên)</h2>
+          <button class="edit-icon-btn" type="button">➕ Thêm sảnh</button>
+        </div>
+        <div class="desc">Mỗi sảnh 1 Source ID riêng + 1 tên file video riêng. Lúc build, TẤT CẢ sảnh đang bật (🟢) đều được nhét vào chung 1 zip — dù game xoay sang sảnh nào cũng có sẵn.</div>
+
+        <div class="add-form" id="lobbyAddForm">
+          <label>Tên gợi nhớ</label>
+          <input type="text" id="lobbyNameInput" placeholder="vd: Sảnh thường, Sảnh Trung Thu...">
+          <div class="grid2">
+            <div>
+              <label>Source ID (ID nhạc gốc của sảnh này)</label>
+              <input type="number" id="lobbySourceIdInput" placeholder="vd: 520249413">
+            </div>
+            <div>
+              <label>Tên file video (đúng tên game đọc)</label>
+              <input type="text" id="lobbyVideoFilenameInput" placeholder="vd: video_lobby_v3.mp4">
+            </div>
+          </div>
+          <div class="row">
+            <button id="addLobbyBtn">➕ Thêm sảnh</button>
+            <button class="secondary small" id="cancelLobbyBtn" type="button">Huỷ</button>
+          </div>
+          <div class="msg" id="lobbyMsg"></div>
+        </div>
+
+        <div id="lobbyList" style="margin-top:12px"></div>
       </div>
     </div>
 
@@ -340,24 +359,34 @@ function setupToggle(toggleId, formId) {
 setupToggle('wemAddToggle', 'wemAddForm');
 setupToggle('vidAddToggle', 'vidAddForm');
 
-// ── bnk edit toggle (prefill current values) ──
+// ── bnk settings edit toggle (prefill current values) ──
 const bnkToggle = document.getElementById('bnkEditToggle');
 const bnkForm = document.getElementById('bnkEditForm');
-let lastBnkConfig = null;
+let lastBnkSettings = null;
 bnkToggle.addEventListener('click', () => {
   const opening = !bnkForm.classList.contains('open');
   bnkToggle.classList.toggle('open');
   bnkForm.classList.toggle('open');
-  if (opening && lastBnkConfig) {
-    document.getElementById('bnkUrlInput').value = lastBnkConfig.bnk_url || '';
-    document.getElementById('sourceIdInput').value = lastBnkConfig.source_id || '';
-    document.getElementById('replacementIdInput').value = lastBnkConfig.replacement_id || '';
-    document.getElementById('videoFilenameInput').value = lastBnkConfig.video_filename || '';
+  if (opening && lastBnkSettings) {
+    document.getElementById('bnkUrlInput').value = lastBnkSettings.bnk_url || '';
+    document.getElementById('replacementIdInput').value = lastBnkSettings.replacement_id || '';
   }
 });
 document.getElementById('cancelBnkBtn').addEventListener('click', () => {
   bnkToggle.classList.remove('open');
   bnkForm.classList.remove('open');
+});
+
+// ── lobby add toggle ──
+const lobbyToggle = document.getElementById('lobbyAddToggle');
+const lobbyForm = document.getElementById('lobbyAddForm');
+lobbyToggle.addEventListener('click', () => {
+  lobbyToggle.classList.toggle('open');
+  lobbyForm.classList.toggle('open');
+});
+document.getElementById('cancelLobbyBtn').addEventListener('click', () => {
+  lobbyToggle.classList.remove('open');
+  lobbyForm.classList.remove('open');
 });
 
 // ── login ──
@@ -382,24 +411,22 @@ async function boot(silent = false) {
     main.style.display = 'block';
     const startPage = (location.hash || '#overview').slice(1);
     goToPage(['overview','wem','video','requests'].includes(startPage) ? startPage : 'overview');
-    await Promise.all([loadBnkStatus(), loadWemList(), loadVidList(), loadRequests()]);
+    await Promise.all([loadBnkStatus(), loadLobbyList(), loadWemList(), loadVidList(), loadRequests()]);
   } catch (e) {
     if (!silent) showMsg(document.getElementById('loginMsg'), false, e.message);
     sessionStorage.removeItem('admin_pw');
   }
 }
 
-// ── bnk config ──
+// ── bnk settings ──
 function renderBnkStatus(c, box) {
   if (!c) {
-    box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào - cần điền đủ cả 4 ô bên dưới.</div>';
+    box.innerHTML = '<div class="msg err" style="display:block">Chưa cấu hình lần nào - cần điền đủ 2 ô bên dưới.</div>';
     return;
   }
   const rows = [
     ['Link GitHub bnk', c.bnk_url],
-    ['Source ID', c.source_id],
     ['Replacement ID', c.replacement_id],
-    ['Tên file video', c.video_filename],
     ['Cập nhật lúc', c.updated_at ? new Date(c.updated_at).toLocaleString('vi-VN') : '-'],
     ['Người cập nhật', c.updated_by || '-']
   ];
@@ -408,26 +435,22 @@ function renderBnkStatus(c, box) {
 
 async function loadBnkStatus() {
   const data = await api('/api/admin/status');
-  lastBnkConfig = data.bnkConfig;
-  renderBnkStatus(data.bnkConfig, document.getElementById('bnkStatusBox'));
+  lastBnkSettings = data.bnkSettings;
+  renderBnkStatus(data.bnkSettings, document.getElementById('bnkStatusBox'));
 }
 
 document.getElementById('saveBnkBtn').addEventListener('click', async () => {
   const msg = document.getElementById('bnkMsg');
   const bnkUrl = document.getElementById('bnkUrlInput').value.trim();
-  const sourceId = document.getElementById('sourceIdInput').value.trim();
   const replacementId = document.getElementById('replacementIdInput').value.trim();
-  const videoFilename = document.getElementById('videoFilenameInput').value.trim();
   const btn = document.getElementById('saveBnkBtn');
   btn.disabled = true;
   try {
-    const data = await api('/api/admin/bnk-config', {
+    const data = await api('/api/admin/bnk-settings', {
       method: 'POST',
       body: JSON.stringify({
         bnkUrl: bnkUrl || undefined,
-        sourceId: sourceId || undefined,
-        replacementId: replacementId || undefined,
-        videoFilename: videoFilename || undefined
+        replacementId: replacementId || undefined
       })
     });
     if (data.warning) {
@@ -447,6 +470,50 @@ document.getElementById('saveBnkBtn').addEventListener('click', async () => {
     btn.disabled = false;
   }
 });
+
+// ── lobby profiles (danh sách sảnh) ──
+async function loadLobbyList() {
+  const data = await api('/api/admin/lobby-profiles');
+  const box = document.getElementById('lobbyList');
+  if (!data.profiles.length) { box.innerHTML = '<div class="desc">Chưa có sảnh nào. Thêm ít nhất 1 sảnh để build được.</div>'; return; }
+  box.innerHTML = data.profiles.map(p => `
+    <div class="list-item">
+      <div class="li-main">
+        <div class="li-name">${p.active ? '🟢' : '⚪'} ${escapeHtml(p.name)}</div>
+        <div class="li-sub">Source ID: ${p.source_id} · Video: ${escapeHtml(p.video_filename)}</div>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="secondary small" data-toggle-lobby="${p.id}" data-active="${p.active}">${p.active ? 'Tắt' : 'Bật'}</button>
+        <button class="danger small" data-id="${p.id}" data-kind="lobby-profiles">Xoá</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('addLobbyBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('lobbyMsg');
+  const name = document.getElementById('lobbyNameInput').value.trim();
+  const sourceId = document.getElementById('lobbySourceIdInput').value.trim();
+  const videoFilename = document.getElementById('lobbyVideoFilenameInput').value.trim();
+  if (!name || !sourceId || !videoFilename) { showMsg(msg, false, 'Cần đủ tên, Source ID, tên file video.'); return; }
+  try {
+    await api('/api/admin/lobby-profiles', { method: 'POST', body: JSON.stringify({ name, sourceId, videoFilename }) });
+    showMsg(msg, true, 'Đã thêm sảnh.');
+    ['lobbyNameInput','lobbySourceIdInput','lobbyVideoFilenameInput'].forEach(id => document.getElementById(id).value = '');
+    await loadLobbyList();
+  } catch (e) { showMsg(msg, false, e.message); }
+});
+
+document.body.addEventListener('click', async (e) => {
+  const toggleBtn = e.target.closest('button[data-toggle-lobby]');
+  if (!toggleBtn) return;
+  const id = toggleBtn.dataset.toggleLobby;
+  const currentlyActive = toggleBtn.dataset.active === 'true';
+  try {
+    await api(`/api/admin/lobby-profiles/${id}`, { method: 'PATCH', body: JSON.stringify({ active: !currentlyActive }) });
+    await loadLobbyList();
+  } catch (e2) { alert(e2.message); }
+});
+
 
 // ── wem library ──
 let wemData = [];
@@ -641,15 +708,18 @@ document.body.addEventListener('click', async (e) => {
   } catch (e2) { showMsg(msg, false, e2.message); }
 });
 
-// ── delete (dùng chung cho wem + video) ──
+// ── delete (dùng chung cho wem + video + lobby-profiles) ──
 document.body.addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-id]');
   if (!btn) return;
   const { id, kind } = btn.dataset;
-  if (!confirm('Xoá mục này khỏi thư viện?')) return;
+  const label = kind === 'lobby-profiles' ? 'sảnh' : 'mục này khỏi thư viện';
+  if (!confirm(`Xoá ${label}?`)) return;
   try {
     await api(`/api/admin/${kind}/${id}`, { method: 'DELETE' });
-    if (kind === 'wem') await loadWemList(); else await loadVidList();
+    if (kind === 'wem') await loadWemList();
+    else if (kind === 'video') await loadVidList();
+    else if (kind === 'lobby-profiles') await loadLobbyList();
   } catch (e2) { alert(e2.message); }
 });
 

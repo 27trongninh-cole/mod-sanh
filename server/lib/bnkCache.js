@@ -77,7 +77,7 @@ async function getActive(opts = {}) {
   const stale = !cachedConfig || (now - cachedConfig.fetchedAt) > CONFIG_TTL_MS;
 
   if (opts.forceRefresh || stale) {
-    const remote = await supabaseStore.getBnkConfig();
+    const remote = await supabaseStore.getBnkSettings();
     cachedConfig = remote ? { ...remote, fetchedAt: now } : null;
   }
 

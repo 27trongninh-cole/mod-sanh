@@ -20,8 +20,9 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || null;
 const BASE_DIR = 'com.garena.game.kgvn/files/Extra/2022.V3/';
 const WEM_DIR = BASE_DIR + 'Sound_DLC/Android/';
 const VIDEO_DIR = BASE_DIR + 'ISPDiff/LobbyMovie/';
-// Tên file video KHÔNG cố định — lấy từ bnk_config.video_filename (đổi cùng lúc
-// với link bnk + source/replacement ID mỗi khi bồ cập nhật cấu hình ở /admin).
+// Tên file video KHÔNG cố định — mỗi sảnh (lobby_profiles) có 1 tên riêng,
+// cập nhật trong /admin. Zip trả về sẽ chứa N file video (1 cho mỗi sảnh
+// đang bật), cùng nội dung nhưng khác tên.
 
 const upload = multer({ dest: os.tmpdir(), limits: { fileSize: 200 * 1024 * 1024 } });
 
@@ -124,28 +125,39 @@ app.post('/api/build', upload.fields([{ name: 'video', maxCount: 1 }]), async (r
     if (!audioStripResult.ok) console.warn('[stripAudio] fallback về video gốc:', audioStripResult.reason);
 
     const { bnkBuffer, config } = await bnkCache.getActive();
-    const patchResult = patchIdAndDuration(bnkBuffer, config.source_id, config.replacement_id, wem.duration_ms);
-    if (!patchResult.ok) {
-      throw new Error('Patch bnk thất bại: ' + patchResult.reason);
-    }
+    const profiles = await supabaseStore.listLobbyProfiles({ activeOnly: true });
+    if (!profiles.length) throw new Error('Chưa có sảnh nào đang bật — vào /admin thêm ít nhất 1 sảnh (Source ID + tên video)');
 
-    if (!config.video_filename) throw new Error('Chưa cấu hình tên file video (video_filename) — vào /admin để set');
+    // Patch lần lượt TỪNG sảnh đang bật vào cùng 1 buffer bnk — tất cả đều
+    // trỏ chung về 1 Replacement ID (chỉ có 1 file .wem duy nhất trong zip).
+    let patchedBuffer = bnkBuffer;
+    for (const profile of profiles) {
+      const patchResult = patchIdAndDuration(patchedBuffer, profile.source_id, config.replacement_id, wem.duration_ms);
+      if (!patchResult.ok) {
+        throw new Error(`Patch bnk thất bại ở sảnh "${profile.name}" (Source ID ${profile.source_id}): ` + patchResult.reason);
+      }
+      patchedBuffer = patchResult.buffer;
+    }
 
     const zipWemName = `${config.replacement_id}.wem`;
     res.setHeader('Content-Type', 'application/zip');
     res.setHeader('Content-Disposition', 'attachment; filename="Nhac_sanh.zip"');
     res.setHeader('X-Build-Report', encodeURIComponent(JSON.stringify({
       wemName: wem.name, durationMs: wem.duration_ms, videoSource: videoSourceLabel,
-      sourceId: config.source_id, replacementId: config.replacement_id, videoFilename: config.video_filename,
-      audioStripped
+      replacementId: config.replacement_id, audioStripped,
+      lobbies: profiles.map(p => ({ name: p.name, sourceId: p.source_id, videoFilename: p.video_filename }))
     })));
 
     const archive = archiver('zip', { zlib: { level: 6 } });
     archive.on('error', err => { throw err; });
     archive.pipe(res);
     archive.append(wemBytes, { name: WEM_DIR + zipWemName });
-    archive.append(patchResult.buffer, { name: WEM_DIR + 'Music_Login.bnk' });
-    archive.append(videoBytes, { name: VIDEO_DIR + config.video_filename });
+    archive.append(patchedBuffer, { name: WEM_DIR + 'Music_Login.bnk' });
+    // Mỗi sảnh 1 file video (cùng nội dung, khác tên) — để dù game đang xoay
+    // sang sảnh nào, file cũng đã có sẵn đúng chỗ.
+    for (const profile of profiles) {
+      archive.append(videoBytes, { name: VIDEO_DIR + profile.video_filename });
+    }
     await archive.finalize();
   } catch (err) {
     if (!res.headersSent) res.status(500).json({ ok: false, error: err.message });
@@ -173,8 +185,9 @@ app.post('/api/request', async (req, res) => {
 
 app.get('/api/admin/status', requireAdmin, async (req, res) => {
   try {
-    const bnkConfig = await supabaseStore.getBnkConfig();
-    res.json({ ok: true, supabaseConfigured: supabaseStore.isConfigured(), bnkConfig });
+    const bnkSettings = await supabaseStore.getBnkSettings();
+    const lobbyProfiles = await supabaseStore.listLobbyProfiles();
+    res.json({ ok: true, supabaseConfigured: supabaseStore.isConfigured(), bnkSettings, lobbyProfiles });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }
@@ -256,15 +269,13 @@ app.patch('/api/admin/video/:id', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
-// --- bnk config ---
-app.post('/api/admin/bnk-config', requireAdmin, async (req, res) => {
+// --- cấu hình chung: bnk + Replacement ID ---
+app.post('/api/admin/bnk-settings', requireAdmin, async (req, res) => {
   try {
-    const { bnkUrl, sourceId, replacementId, videoFilename, updatedBy } = req.body || {};
-    const saved = await supabaseStore.setBnkConfig({
+    const { bnkUrl, replacementId, updatedBy } = req.body || {};
+    const saved = await supabaseStore.setBnkSettings({
       bnkUrl,
-      sourceId: sourceId != null ? parseInt(sourceId, 10) : null,
       replacementId: replacementId != null ? parseInt(replacementId, 10) : null,
-      videoFilename,
       updatedBy
     });
     bnkCache.invalidate();
@@ -276,8 +287,45 @@ app.post('/api/admin/bnk-config', requireAdmin, async (req, res) => {
     } catch (verifyErr) {
       verifyWarning = 'Đã lưu cấu hình, nhưng chưa xác nhận được link bnk còn sống: ' + verifyErr.message;
     }
-    res.json({ ok: true, config: saved, warning: verifyWarning });
+    res.json({ ok: true, settings: saved, warning: verifyWarning });
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+// --- danh sách sảnh (lobby_profiles) ---
+app.get('/api/admin/lobby-profiles', requireAdmin, async (req, res) => {
+  try { res.json({ ok: true, profiles: await supabaseStore.listLobbyProfiles() }); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.post('/api/admin/lobby-profiles', requireAdmin, async (req, res) => {
+  try {
+    const { name, sourceId, videoFilename, active } = req.body || {};
+    if (!name || sourceId == null || !videoFilename) {
+      return res.status(400).json({ ok: false, error: 'Cần name, sourceId, videoFilename' });
+    }
+    const saved = await supabaseStore.addLobbyProfile({
+      name, sourceId: parseInt(sourceId, 10), videoFilename, active
+    });
+    res.json({ ok: true, profile: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.patch('/api/admin/lobby-profiles/:id', requireAdmin, async (req, res) => {
+  try {
+    const { name, sourceId, videoFilename, active } = req.body || {};
+    const patch = {};
+    if (name !== undefined) patch.name = name;
+    if (sourceId !== undefined) patch.sourceId = parseInt(sourceId, 10);
+    if (videoFilename !== undefined) patch.videoFilename = videoFilename;
+    if (active !== undefined) patch.active = active;
+    const saved = await supabaseStore.updateLobbyProfile(req.params.id, patch);
+    res.json({ ok: true, profile: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.delete('/api/admin/lobby-profiles/:id', requireAdmin, async (req, res) => {
+  try { await supabaseStore.deleteLobbyProfile(req.params.id); res.json({ ok: true }); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
 // --- yêu cầu wem ---
