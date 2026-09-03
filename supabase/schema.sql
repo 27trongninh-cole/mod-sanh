@@ -62,14 +62,35 @@ CREATE TABLE IF NOT EXISTS wem_requests (
   created_at timestamptz DEFAULT now()
 );
 
+-- ── Device-based Manual License Activation cho tính năng "tự tải nhạc lên"
+--    trong app APK (melo-ninstaller) — admin duyệt từng máy qua trang /admin,
+--    APK tự đọc thẳng bảng này bằng anon key (không qua server Node) để
+--    kiểm tra máy mình có được duyệt chưa. ──
+CREATE TABLE IF NOT EXISTS device_licenses (
+  device_id text PRIMARY KEY,            -- ANDROID_ID lấy từ app, admin không tự bịa
+  label text,                            -- ghi chú của admin, vd tên người dùng/Zalo
+  status text NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'revoked')),
+  created_at timestamptz DEFAULT now()
+);
+
 -- ── RLS: đọc công khai thư viện + config, ghi phải qua server (service role) ──
 ALTER TABLE wem_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE video_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bnk_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lobby_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE wem_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE device_licenses ENABLE ROW LEVEL SECURITY;
 
 -- Không cấp policy nào cho anon/authenticated => chỉ service role (server) mới
 -- đọc/ghi được các bảng này. Client (trình duyệt) không gọi thẳng Supabase,
 -- mà gọi qua API của server mình (giống lofinity) — an toàn hơn, và cũng
 -- tránh phải lộ Supabase key ra trình duyệt.
+--
+-- NGOẠI LỆ: bnk_settings, lobby_profiles, device_licenses cần APK đọc THẲNG
+-- bằng anon key (build mod offline ngay trên máy + kiểm tra kích hoạt) — nếu
+-- app đã cần tính năng đó, chạy thêm 3 policy CHỈ-ĐỌC dưới đây (không cấp
+-- insert/update/delete cho anon bao giờ — mọi ghi vẫn qua /admin):
+--
+-- create policy "public read bnk_settings" on bnk_settings for select using (true);
+-- create policy "public read active lobby_profiles" on lobby_profiles for select using (active = true);
+-- create policy "public read device_licenses" on device_licenses for select using (true);

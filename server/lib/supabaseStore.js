@@ -218,11 +218,52 @@ async function updateRequest(id, { status, adminNote }) {
   return data;
 }
 
+// ───────────────────────── device_licenses ─────────────────────────
+// Device-based Manual License Activation cho tính năng "tự tải nhạc lên"
+// trong app APK — app chỉ ĐỌC bảng này bằng anon key; mọi thêm/sửa/xoá đều
+// đi qua đây (service role, qua trang /admin), không có đường nào khác.
+
+async function listDeviceLicenses() {
+  const db = requireClient();
+  const { data, error } = await db.from('device_licenses').select('*').order('created_at', { ascending: false });
+  if (error) throw new Error('Supabase lỗi khi đọc device_licenses: ' + error.message);
+  return data;
+}
+
+async function addDeviceLicense({ deviceId, label, status }) {
+  const db = requireClient();
+  const { data, error } = await db.from('device_licenses').insert({
+    device_id: deviceId, label: label || null, status: status || 'active'
+  }).select().single();
+  if (error) {
+    if (error.code === '23505') throw new Error('Device ID này đã có trong danh sách rồi.');
+    throw new Error('Supabase lỗi khi thêm device license: ' + error.message);
+  }
+  return data;
+}
+
+async function updateDeviceLicense(deviceId, { status, label }) {
+  const db = requireClient();
+  const patch = {};
+  if (status !== undefined) patch.status = status;
+  if (label !== undefined) patch.label = label;
+  const { data, error } = await db.from('device_licenses').update(patch).eq('device_id', deviceId).select().single();
+  if (error) throw new Error('Supabase lỗi khi cập nhật device license: ' + error.message);
+  return data;
+}
+
+async function deleteDeviceLicense(deviceId) {
+  const db = requireClient();
+  const { error } = await db.from('device_licenses').delete().eq('device_id', deviceId);
+  if (error) throw new Error('Supabase lỗi khi xoá device license: ' + error.message);
+}
+
 module.exports = {
   isConfigured,
   listWems, getWemById, addWem, deleteWem, updateWem,
   listVideos, getVideoById, addVideo, deleteVideo, updateVideo,
   getBnkSettings, setBnkSettings,
   listLobbyProfiles, addLobbyProfile, updateLobbyProfile, deleteLobbyProfile,
-  addRequest, listRequests, updateRequest
+  addRequest, listRequests, updateRequest,
+  listDeviceLicenses, addDeviceLicense, updateDeviceLicense, deleteDeviceLicense
 };

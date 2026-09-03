@@ -348,6 +348,36 @@ app.patch('/api/admin/requests/:id', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
+// --- device licenses (Device-based Manual License Activation cho APK) ---
+app.get('/api/admin/device-licenses', requireAdmin, async (req, res) => {
+  try { res.json({ ok: true, licenses: await supabaseStore.listDeviceLicenses() }); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.post('/api/admin/device-licenses', requireAdmin, async (req, res) => {
+  try {
+    const { deviceId, label } = req.body || {};
+    if (!deviceId || !deviceId.trim()) {
+      return res.status(400).json({ ok: false, error: 'Cần Device ID' });
+    }
+    const saved = await supabaseStore.addDeviceLicense({ deviceId: deviceId.trim(), label, status: 'active' });
+    res.json({ ok: true, license: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.patch('/api/admin/device-licenses/:deviceId', requireAdmin, async (req, res) => {
+  try {
+    const { status, label } = req.body || {};
+    const saved = await supabaseStore.updateDeviceLicense(req.params.deviceId, { status, label });
+    res.json({ ok: true, license: saved });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.delete('/api/admin/device-licenses/:deviceId', requireAdmin, async (req, res) => {
+  try { await supabaseStore.deleteDeviceLicense(req.params.deviceId); res.json({ ok: true }); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
 app.listen(PORT, () => {
   console.log(`Server đang chạy tại http://localhost:${PORT}`);
   if (!ADMIN_PASSWORD) console.log('⚠ ADMIN_PASSWORD chưa được set — trang /admin sẽ bị khoá.');

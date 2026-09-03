@@ -204,6 +204,28 @@ button.small.edit-btn:hover{background:var(--accent-glow);color:var(--accent2)}
 
         <div id="lobbyList" style="margin-top:12px"></div>
       </div>
+
+      <div class="card">
+        <div class="add-toggle" id="deviceAddToggle">
+          <h2 style="margin-bottom:0">🔑 Kích hoạt thiết bị (tự tải nhạc lên)</h2>
+          <button class="edit-icon-btn" type="button">➕ Thêm Device ID</button>
+        </div>
+        <div class="desc">App gửi Device ID cho bồ (qua Zalo/Discord...) — dán vào đây để duyệt máy đó dùng được tính năng "tự tải nhạc lên" trong app.</div>
+
+        <div class="add-form" id="deviceAddForm">
+          <label>Device ID (dán y nguyên từ app)</label>
+          <input type="text" id="deviceIdInput" placeholder="vd: a1b2c3d4e5f6g7h8">
+          <label>Ghi chú (tên người dùng, Zalo...) — không bắt buộc</label>
+          <input type="text" id="deviceLabelInput" placeholder="vd: Ninh - Zalo 090xxxxxxx">
+          <div class="row">
+            <button id="addDeviceBtn">➕ Thêm & duyệt</button>
+            <button class="secondary small" id="cancelDeviceBtn" type="button">Huỷ</button>
+          </div>
+          <div class="msg" id="deviceMsg"></div>
+        </div>
+
+        <div id="deviceList" style="margin-top:12px"></div>
+      </div>
     </div>
 
     <!-- ═══ THƯ VIỆN NHẠC ═══ -->
@@ -358,6 +380,7 @@ function setupToggle(toggleId, formId) {
 }
 setupToggle('wemAddToggle', 'wemAddForm');
 setupToggle('vidAddToggle', 'vidAddForm');
+setupToggle('deviceAddToggle', 'deviceAddForm');
 
 // ── bnk settings edit toggle (prefill current values) ──
 const bnkToggle = document.getElementById('bnkEditToggle');
@@ -389,6 +412,14 @@ document.getElementById('cancelLobbyBtn').addEventListener('click', () => {
   lobbyForm.classList.remove('open');
 });
 
+// ── device license add toggle ──
+const deviceToggle = document.getElementById('deviceAddToggle');
+const deviceForm = document.getElementById('deviceAddForm');
+document.getElementById('cancelDeviceBtn').addEventListener('click', () => {
+  deviceToggle.classList.remove('open');
+  deviceForm.classList.remove('open');
+});
+
 // ── login ──
 document.getElementById('loginBtn').addEventListener('click', () => {
   pw = pwInput.value;
@@ -411,7 +442,7 @@ async function boot(silent = false) {
     main.style.display = 'block';
     const startPage = (location.hash || '#overview').slice(1);
     goToPage(['overview','wem','video','requests'].includes(startPage) ? startPage : 'overview');
-    await Promise.all([loadBnkStatus(), loadLobbyList(), loadWemList(), loadVidList(), loadRequests()]);
+    await Promise.all([loadBnkStatus(), loadLobbyList(), loadDeviceList(), loadWemList(), loadVidList(), loadRequests()]);
   } catch (e) {
     if (!silent) showMsg(document.getElementById('loginMsg'), false, e.message);
     sessionStorage.removeItem('admin_pw');
@@ -511,6 +542,50 @@ document.body.addEventListener('click', async (e) => {
   try {
     await api(`/api/admin/lobby-profiles/${id}`, { method: 'PATCH', body: JSON.stringify({ active: !currentlyActive }) });
     await loadLobbyList();
+  } catch (e2) { alert(e2.message); }
+});
+
+// ── device licenses (kích hoạt thiết bị cho tính năng tự tải nhạc lên) ──
+async function loadDeviceList() {
+  const data = await api('/api/admin/device-licenses');
+  const box = document.getElementById('deviceList');
+  if (!data.licenses.length) { box.innerHTML = '<div class="desc">Chưa có máy nào được duyệt.</div>'; return; }
+  box.innerHTML = data.licenses.map(d => `
+    <div class="list-item">
+      <div class="li-main">
+        <div class="li-name">${d.status === 'active' ? '🟢' : '🔴'} ${escapeHtml(d.label || '(chưa ghi chú)')}</div>
+        <div class="li-sub" style="word-break:break-all">${escapeHtml(d.device_id)}</div>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="secondary small" data-toggle-device="${escapeHtml(d.device_id)}" data-active="${d.status === 'active'}">${d.status === 'active' ? 'Thu hồi' : 'Duyệt lại'}</button>
+        <button class="danger small" data-id="${escapeHtml(d.device_id)}" data-kind="device-licenses">Xoá</button>
+      </div>
+    </div>`).join('');
+}
+
+document.getElementById('addDeviceBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('deviceMsg');
+  const deviceId = document.getElementById('deviceIdInput').value.trim();
+  const label = document.getElementById('deviceLabelInput').value.trim();
+  if (!deviceId) { showMsg(msg, false, 'Cần dán Device ID.'); return; }
+  try {
+    await api('/api/admin/device-licenses', { method: 'POST', body: JSON.stringify({ deviceId, label }) });
+    showMsg(msg, true, 'Đã duyệt máy này.');
+    ['deviceIdInput', 'deviceLabelInput'].forEach(id => document.getElementById(id).value = '');
+    await loadDeviceList();
+  } catch (e) { showMsg(msg, false, e.message); }
+});
+
+document.body.addEventListener('click', async (e) => {
+  const toggleBtn = e.target.closest('button[data-toggle-device]');
+  if (!toggleBtn) return;
+  const deviceId = toggleBtn.dataset.toggleDevice;
+  const currentlyActive = toggleBtn.dataset.active === 'true';
+  try {
+    await api(`/api/admin/device-licenses/${encodeURIComponent(deviceId)}`, {
+      method: 'PATCH', body: JSON.stringify({ status: currentlyActive ? 'revoked' : 'active' })
+    });
+    await loadDeviceList();
   } catch (e2) { alert(e2.message); }
 });
 
@@ -708,18 +783,19 @@ document.body.addEventListener('click', async (e) => {
   } catch (e2) { showMsg(msg, false, e2.message); }
 });
 
-// ── delete (dùng chung cho wem + video + lobby-profiles) ──
+// ── delete (dùng chung cho wem + video + lobby-profiles + device-licenses) ──
 document.body.addEventListener('click', async (e) => {
   const btn = e.target.closest('button[data-id]');
   if (!btn) return;
   const { id, kind } = btn.dataset;
-  const label = kind === 'lobby-profiles' ? 'sảnh' : 'mục này khỏi thư viện';
+  const label = kind === 'lobby-profiles' ? 'sảnh' : kind === 'device-licenses' ? 'device này khỏi danh sách duyệt' : 'mục này khỏi thư viện';
   if (!confirm(`Xoá ${label}?`)) return;
   try {
-    await api(`/api/admin/${kind}/${id}`, { method: 'DELETE' });
+    await api(`/api/admin/${kind}/${encodeURIComponent(id)}`, { method: 'DELETE' });
     if (kind === 'wem') await loadWemList();
     else if (kind === 'video') await loadVidList();
     else if (kind === 'lobby-profiles') await loadLobbyList();
+    else if (kind === 'device-licenses') await loadDeviceList();
   } catch (e2) { alert(e2.message); }
 });
 
